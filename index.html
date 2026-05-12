@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Daddy's Game Workshop</title>
+<style>
+:root{
+  --bg:#08031c;
+  --panel:#141d3d;
+  --text:#f7fbff;
+  --muted:#c8d8ff;
+  --line:#5f7dff;
+  --gold:#ffe66d;
+  --cyan:#57f7ff;
+  --green:#7dff9b;
+  --pink:#ff5fd7;
+  --red:#ff5470;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:
+    radial-gradient(circle at 18% 10%,#293bff66,transparent 28%),
+    radial-gradient(circle at 85% 18%,#ff5fd744,transparent 26%),
+    radial-gradient(circle at 50% 100%,#00f5ff22,transparent 42%),
+    linear-gradient(180deg,#090522,#060814 60%,#02030a);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:var(--text);
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(180deg,#000,transparent 80%);
+}
+header{
+  padding:18px 14px 18px;
+  border-bottom:4px solid var(--cyan);
+  background:
+    radial-gradient(circle at 50% 0,#57f7ff33,transparent 45%),
+    linear-gradient(180deg,#151e4af2,#08101fe8);
+  position:relative;
+  z-index:1;
+  box-shadow:0 10px 30px #0009,0 0 28px #57f7ff33;
+  text-align:center;
+}
+.logoWrap{
+  display:inline-block;
+  padding:12px 18px 14px;
+  border:4px solid #fff2a8;
+  border-radius:28px;
+  background:linear-gradient(180deg,#32166f,#151f55 55%,#0b1029);
+  box-shadow:0 8px 0 #080b20,0 0 22px #ff5fd7,0 0 38px #57f7ff88,inset 0 0 18px #ffffff22;
+}
+.logo{
+  margin:0;
+  font-size:clamp(30px,7.2vw,62px);
+  line-height:.98;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  font-weight:1000;
+  color:#fff;
+  text-align:center;
+  text-shadow:3px 3px 0 #10162c,6px 6px 0 #ff5fd7,9px 9px 0 #293bff,0 0 18px #57f7ff,0 0 38px #57f7ff;
+}
+.subtitle{
+  margin:12px auto 0;
+  max-width:820px;
+  color:var(--muted);
+  line-height:1.42;
+  font-size:clamp(15px,3.8vw,18px);
+  font-weight:800;
+  background:linear-gradient(180deg,#101a42cc,#080f28cc);
+  border:3px solid #57f7ff;
+  border-radius:22px;
+  padding:14px 16px;
+  box-shadow:0 0 22px #57f7ff33,inset 0 0 18px #ffffff10;
+}
+main{
+  max-width:1100px;
+  margin:auto;
+  padding:14px;
+}
+.card{
+  background:linear-gradient(180deg,#172456ee,#0a1128ee);
+  border:3px solid #5f7dff;
+  border-radius:24px;
+  box-shadow:0 14px 40px #0008, inset 0 0 0 2px #ffffff12,0 0 24px #5f7dff22;
+  overflow:hidden;
+  margin:14px 0;
+}
+.card h2{
+  font-size:19px;
+  margin:0;
+  padding:14px 14px 4px;
+  background:linear-gradient(180deg,#26378a,#141f4e);
+  color:#fff;
+  text-shadow:2px 2px 0 #050714,0 0 12px #57f7ff66;
+}
+.instruction{
+  margin:0;
+  padding:0 14px 14px;
+  background:linear-gradient(180deg,#141f4e,#10193c);
+  color:#dbe7ff;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+  border-bottom:2px solid #425ed3;
+}
+.body{padding:14px}
+label{
+  display:block;
+  font-size:14px;
+  font-weight:1000;
+  color:#fff2a8;
+  margin:12px 0 6px;
+  text-shadow:1px 1px 0 #000;
+}
+input,select,textarea{
+  width:100%;
+  background:#071020;
+  border:3px solid #536fff;
+  border-radius:16px;
+  color:#fff;
+  padding:14px;
+  font:inherit;
+  font-size:16px;
+  box-shadow:inset 0 0 16px #0008,0 0 14px #536fff22;
+}
+textarea{min-height:110px;resize:vertical}
+button,a.buttonLink{
+  display:block;
+  text-decoration:none;
+  text-align:center;
+  border:3px solid #87a0ff;
+  background:linear-gradient(180deg,#3756bf,#16255d);
+  color:white;
+  border-radius:18px;
+  font-weight:1000;
+  min-height:58px;
+  padding:12px 14px;
+  font-size:16px;
+  box-shadow:0 8px 0 #071020,0 12px 24px #0008,inset 0 2px 0 #ffffff33;
+  text-shadow:1px 2px 0 #000;
+  cursor:pointer;
+}
+button:active,a.buttonLink:active{transform:translateY(5px);box-shadow:0 3px 0 #071020,0 8px 15px #0008;filter:brightness(1.2)}
+.primary{background:linear-gradient(180deg,#ffdf6d,#b36d16);border-color:#fff2a8;color:#2b1600;text-shadow:1px 1px 0 #fff6c7}
+.good{background:linear-gradient(180deg,#7dff9b,#168342);border-color:#c6ffd4;color:#001d0b;text-shadow:1px 1px 0 #baffc7}
+.magic{background:linear-gradient(180deg,#57f7ff,#2464de);border-color:#bfffff;color:#001a2b;text-shadow:1px 1px 0 #bfffff}
+.family{background:linear-gradient(180deg,#ff5fd7,#872063);border-color:#ffc6f1;color:#fff}
+.danger{background:linear-gradient(180deg,#ff5470,#83172a);border-color:#ffc1cb;color:#fff}
+.row,.navGrid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.choiceGrid,.kidGrid,.grid2{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+}
+.choiceBtn{
+  min-height:76px;
+  font-size:15px;
+  background:linear-gradient(180deg,#2b3f9a,#141f4e);
+}
+.choiceBtn.selected{
+  background:linear-gradient(180deg,#ff5fd7,#7c2dff);
+  border-color:#ffd6ff;
+  box-shadow:0 8px 0 #071020,0 0 24px #ff5fd766,inset 0 2px 0 #ffffff55;
+}
+.choiceBtn small{display:block;font-size:11px;color:#dbe7ff;margin-top:4px}
+.notice,.kidHint{
+  font-size:14px;
+  color:#eff6ff;
+  background:linear-gradient(180deg,#12235a,#0a142f);
+  border:2px solid #57f7ff;
+  border-radius:18px;
+  padding:12px;
+  line-height:1.45;
+  font-weight:800;
+  box-shadow:0 0 16px #57f7ff22;
+}
+.kidHint{
+  margin-top:10px;
+  border:2px dashed #ffe66d;
+  color:#fff7c7;
+}
+.choiceBox,.gameBox,.savedGame{
+  background:#0b1430;
+  border:2px solid #334fb8;
+  border-radius:18px;
+  padding:10px;
+  margin-top:8px;
+}
+.choiceBox label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:8px 0;
+  color:#eaf1ff;
+  font-size:14px;
+}
+.choiceBox input[type="checkbox"]{
+  width:24px;
+  height:24px;
+  accent-color:#ffdf6d;
+  box-shadow:none;
+}
+.updateBox{
+  margin:12px 0;
+  padding:12px;
+  border:3px dashed #ffe66d;
+  border-radius:20px;
+  background:linear-gradient(180deg,#1c2b66,#101a42);
+}
+.tabs{
+  display:flex;
+  gap:10px;
+  padding:12px;
+  background:#0c1426;
+  border-bottom:3px solid #425ed3;
+  overflow:auto
+}
+.tab{
+  min-width:132px;
+  min-height:52px;
+  border-radius:16px;
+  font-size:14px
+}
+.tab.active{
+  background:linear-gradient(180deg,#ff5fd7,#7c2dff);
+  border-color:#ffd6ff;
+}
+#prompt,#shareLink,#gameJson{
+  min-height:230px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12px;
+  line-height:1.35;
+}
+.status{
+  margin-top:10px;
+  padding:10px;
+  border-radius:14px;
+  background:#071020;
+  color:#fff2a8;
+  font-weight:900;
+}
+.hidden{display:none!important}
+.gameTitle{
+  font-size:28px;
+  color:#fff2a8;
+  margin:6px 0;
+  font-weight:1000;
+  text-shadow:2px 2px 0 #000;
+}
+.gameText{
+  white-space:pre-wrap;
+  color:#eaf2ff;
+  font-weight:800;
+  line-height:1.4;
+}
+.kidCard{
+  background:#0b1430;
+  border:2px solid #536fff;
+  border-radius:18px;
+  padding:14px;
+  text-align:center;
+  font-weight:1000;
+  color:white;
+}
+.small{
+  color:#c8d8ff;
+  font-size:13px;
+  font-weight:800;
+  margin-top:6px;
+}
+@media(min-width:720px){
+  .navGrid{grid-template-columns:repeat(4,1fr)}
+  .row,.grid2,.choiceGrid{grid-template-columns:1fr 1fr}
+  .kidGrid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="logoWrap">
+<h1 class="logo">Daddy's<br>Game<br>Workshop</h1>
+</div>
+<p class="subtitle">
+One file. One family game hub. Build games, save games, update games, copy share links, and let friends play only the game they were sent.
+</p>
+</header>
+
+<main>
+<section class="card" id="navCard">
+  <h2>🎮 Start Here</h2>
+  <p class="instruction">Pick what you want to do.</p>
+  <div class="body">
+    <div class="navGrid">
+      <button class="primary" onclick="showSection('builderCard')">🛠️ Build / Update</button>
+      <button class="good" onclick="showSection('gamesCard')">🎮 Family Games</button>
+      <button class="magic" onclick="showSection('playCard')">▶️ Play Current Game</button>
+      <button class="family" onclick="toggleFamilyMode()">🔐 Family Mode</button>
+    </div>
+    <div class="status" id="familyModeStatus"></div>
+  </div>
+</section>
+
+<section class="card hidden" id="playCard">
+  <h2>▶️ Play Game</h2>
+  <p class="instruction" id="playInstruction">This is the play-only area. Shared links open here automatically.</p>
+  <div class="body">
+    <div class="gameBox">
+      <div class="gameTitle" id="playTitle">No game loaded yet</div>
+      <div class="small" id="playMeta"></div>
+      <div class="gameText" id="playText">Build a game first, tap a saved game, or open a shared link.</div>
+      <div id="choiceArea"></div>
+    </div>
+    <div class="row">
+      <button class="good" onclick="startGame()">▶️ Start / Restart</button>
+      <button class="magic" onclick="copyCurrentGameLink()">🔗 Copy Game Link</button>
+    </div>
+    <div class="row hidden" id="familyImportArea">
+      <select id="bucketSelect">
+        <option value="Quinton">Quinton</option>
+        <option value="Lincoln">Lincoln</option>
+        <option value="Adella">Adella</option>
+        <option value="Gemma">Gemma</option>
+        <option value="Family Games">Family Games</option>
+      </select>
+      <button class="family" onclick="saveCurrentGameToBucket()">💾 Save Copy to Bucket</button>
+    </div>
+    <div class="kidHint" id="friendNote">Friends who open a shared link can play only that one game. They cannot see your family buckets unless Family Mode is turned on on their own device.</div>
+    <div class="status hidden" id="playStatus"></div>
+  </div>
+</section>
+
+<section class="card" id="builderCard">
+<h2>🛠️ Build or Update a Game</h2>
+<p class="instruction">This builder creates a simple shareable starter game and a Dad Prompt for bigger custom games.</p>
+<div class="body">
+<div class="notice">
+<strong>Simple kid flow:</strong><br>
+1. Fill out the idea.<br>
+2. Tap <strong>Generate Starter Game</strong>.<br>
+3. Tap <strong>Save to Bucket</strong> or <strong>Copy Share Link</strong>.<br>
+4. Friends get a play-only link.
+</div>
+
+<label>🛠️ What do you want to do?</label>
+<div class="choiceGrid">
+<button class="choiceBtn selected" data-mode="new" onclick="pickMode(this)">🆕 New Game<small>Make something brand new</small></button>
+<button class="choiceBtn" data-mode="update" onclick="pickMode(this)">🔧 Update My Game<small>Change a saved game</small></button>
+</div>
+
+<div id="updateFields" class="updateBox hidden">
+<div class="kidHint">Pick an older saved game and the builder will fill in what it knows from the last version.</div>
+<label>🎮 Pick the game you want to update</label>
+<select id="existingGameSelect" onchange="handleGameSelect()"></select>
+
+<label>➕ What do you want to add?</label>
+<textarea id="addChanges" placeholder="Example: Add more dragon eggs, a boss fight, and a shop."></textarea>
+
+<label>➖ What do you want to remove?</label>
+<textarea id="removeChanges" placeholder="Example: Remove the timer or hard jumping part."></textarea>
+
+<label>😕 What feels broken, boring, or not fun?</label>
+<textarea id="problemChanges" placeholder="Example: The monsters are too easy, or the buttons are confusing."></textarea>
+
+<label>✅ What should stay the same?</label>
+<textarea id="keepChanges" placeholder="Example: Keep the big jump button, dragon pets, and colorful style."></textarea>
+</div>
+
+<label>👧 Who is making it?</label>
+<select id="author">
+<option>Quinton</option>
+<option>Lincoln</option>
+<option>Adella</option>
+<option>Gemma</option>
+<option>Family Games</option>
+</select>
+
+<label>🕹️ Game name</label>
+<input id="name" value="My Awesome Game">
+
+<label id="ideaLabel">💭 What is the game idea?</label>
+<textarea id="idea">A kid-friendly game where the player explores a magical world, meets funny monsters, finds treasure, and gets stronger over time.</textarea>
+
+<label>🎥 How should the player see the game?</label>
+<div class="choiceGrid">
+<button class="choiceBtn selected" data-view="first-person" onclick="pickView(this)">👀 First Person<small>See through the hero's eyes</small></button>
+<button class="choiceBtn" data-view="side-scrolling" onclick="pickView(this)">➡️ Side Scrolling<small>Move left and right like Mario</small></button>
+<button class="choiceBtn" data-view="top-down" onclick="pickView(this)">🗺️ Top Down<small>Look from above</small></button>
+<button class="choiceBtn" data-view="third-person" onclick="pickView(this)">🧍 Third Person<small>Camera behind the hero</small></button>
+</div>
+
+<label>✨ Something else?</label>
+<input id="customView" placeholder="Example: card game, board game, racing game, pet simulator, tower defense...">
+
+<div class="grid2">
+<div>
+<label>🌈 Visual style</label>
+<select id="style">
+<option value="Colorful video game">Colorful video game</option>
+<option value="PS1 retro fantasy">PS1 retro fantasy</option>
+<option value="Cartoon adventure">Cartoon adventure</option>
+<option value="Pixel art">Pixel art</option>
+<option value="Spooky but kid-safe">Spooky but kid-safe</option>
+<option value="Neon arcade">Neon arcade</option>
+<option value="Clean app style">Clean app style</option>
+</select>
+</div>
+<div>
+<label>📱 Where will it play?</label>
+<select id="device">
+<option value="iPhone/iPad first">iPhone/iPad first</option>
+<option value="Computer first">Computer first</option>
+<option value="Phone and computer">Phone and computer</option>
+</select>
+</div>
+</div>
+
+<label>⭐ Pick game parts</label>
+<div class="choiceBox grid2">
+<label><input type="checkbox" class="feat" value="big kid-friendly buttons" checked> Big buttons</label>
+<label><input type="checkbox" class="feat" value="levels or stages" checked> Levels / stages</label>
+<label><input type="checkbox" class="feat" value="treasure or rewards" checked> Treasure / rewards</label>
+<label><input type="checkbox" class="feat" value="funny monsters or obstacles"> Funny monsters</label>
+<label><input type="checkbox" class="feat" value="pets or helpers"> Pets / helpers</label>
+<label><input type="checkbox" class="feat" value="shop or upgrades"> Shop / upgrades</label>
+<label><input type="checkbox" class="feat" value="boss fight"> Boss fight</label>
+<label><input type="checkbox" class="feat" value="save progress"> Save progress</label>
+</div>
+
+<label>🧠 Tell Dad how to make it feel</label>
+<textarea id="extra">Make my game easy to play and fun to understand. Use big buttons, clear words, bright colors, and cool reactions when something happens. Make it feel like the game idea I imagined.</textarea>
+
+<div class="row">
+<button class="primary" onclick="generateAll()">⚡ Generate Starter Game</button>
+<button class="good" onclick="saveCurrentGameToBucket()">💾 Save to Bucket</button>
+</div>
+<div class="row">
+<button class="magic" onclick="copyCurrentGameLink()">🔗 Copy Share Link</button>
+<button class="family" onclick="copyPrompt()">👨‍🔧 Ask Dad to Build It</button>
+</div>
+<div class="status" id="status">Ready.</div>
+</div>
+</section>
+
+<section class="card" id="gamesCard">
+<h2>👨‍👩‍👧‍👦 Family Games</h2>
+<p class="instruction">Games saved on this device show here. Family Mode must be on to view and play bucket contents.</p>
+<div class="body">
+<div class="kidGrid" id="kidGrid"></div>
+<div class="kidHint">Saved buckets are stored on this browser/device. Share links work for friends because the game data is inside the link.</div>
+</div>
+</section>
+
+<section class="card" id="toolsCard">
+<h2>🧰 Share / Dad Tools</h2>
+<p class="instruction">Copy a play-only share link, or use Ask Dad to Build It when you want Dad/ChatGPT to make a bigger custom HTML game later.</p>
+<div class="tabs">
+<button class="tab active" onclick="showTab('shareLink',this)">🔗 Share Link</button>
+<button class="tab" onclick="showTab('prompt',this)">🤖 Dad Prompt</button>
+<button class="tab" onclick="showTab('gameJson',this)">📦 Game Data</button>
+</div>
+<div class="body">
+<textarea id="shareLink" readonly></textarea>
+<textarea id="prompt" readonly class="hidden"></textarea>
+<textarea id="gameJson" readonly class="hidden"></textarea>
+<div class="kidHint">
+<strong>Important:</strong> This one-file hub can share starter games inside links. Bigger custom games that ChatGPT makes as separate HTML still need either their own upload, or they can be kept as future upgrades when you add online hosting/storage.
+</div>
+</div>
+</section>
+</main>
+
+<script>
+const FAMILY_MODE_KEY = "dgw_family_mode_v2";
+const FAMILY_GAMES_KEY = "dgw_family_games_v2";
+const PARENT_CODE = "4242";
+const KIDS = ["Quinton","Lincoln","Adella","Gemma","Family Games"];
+
+let buildMode = "new";
+let selectedView = "first-person";
+let currentGame = null;
+let currentSceneIndex = 0;
+
+function el(id){return document.getElementById(id)}
+function val(id){return el(id).value}
+function setVal(id,v){el(id).value = v || ""}
+function feats(){return [...document.querySelectorAll(".feat:checked")].map(x=>x.value)}
+function isFamilyMode(){return localStorage.getItem(FAMILY_MODE_KEY) === "on"}
+function setStatus(id,msg){const x=el(id); if(x){x.textContent=msg; x.classList.remove("hidden")}}
+function showSection(id){
+  ["builderCard","gamesCard","playCard","toolsCard"].forEach(s=>el(s).classList.toggle("hidden", s!==id));
+  window.scrollTo(0,0);
+}
+function updateFamilyModeStatus(){
+  el("familyModeStatus").textContent = isFamilyMode() ? "Family Mode is ON for this device." : "Family Mode is OFF. Friends only get play-only mode.";
+  if(el("familyImportArea")) el("familyImportArea").classList.toggle("hidden", !isFamilyMode() || !currentGame);
+}
+function toggleFamilyMode(){
+  if(isFamilyMode()){
+    localStorage.removeItem(FAMILY_MODE_KEY);
+    updateFamilyModeStatus();
+    renderSavedGames();
+    return;
+  }
+  const code = prompt("Parent code?");
+  if(code === PARENT_CODE){
+    localStorage.setItem(FAMILY_MODE_KEY,"on");
+    updateFamilyModeStatus();
+    renderSavedGames();
+  }else if(code !== null){
+    alert("Wrong code.");
+  }
+}
+function loadSavedGames(){
+  try{return JSON.parse(localStorage.getItem(FAMILY_GAMES_KEY)) || {}}catch(e){return {}}
+}
+function saveSavedGames(data){localStorage.setItem(FAMILY_GAMES_KEY, JSON.stringify(data))}
+function allSavedGameList(){
+  const saved = loadSavedGames();
+  const list = [];
+  KIDS.forEach(bucket=>(saved[bucket]||[]).forEach((game,index)=>list.push({bucket,index,game})));
+  return list;
+}
+function renderSavedGames(){
+  const grid = el("kidGrid");
+  grid.innerHTML = "";
+  const saved = loadSavedGames();
+  KIDS.forEach(kid=>{
+    const games = saved[kid] || [];
+    const card = document.createElement("div");
+    card.className = "kidCard";
+    card.innerHTML = `<div>${kid}</div><div class="small">${games.length ? games.length + " saved game(s)" : "No saved games yet"}</div>`;
+    if(isFamilyMode() && games.length){
+      games.slice().reverse().forEach((game, reverseIndex)=>{
+        const realIndex = games.length - 1 - reverseIndex;
+        const item = document.createElement("div");
+        item.className = "savedGame";
+        item.innerHTML = `<div>${escapeHtml(game.title || "Untitled Game")}</div><div class="small">${escapeHtml(game.author || "")}</div>`;
+        const playBtn = document.createElement("button");
+        playBtn.textContent = "▶️ Play";
+        playBtn.onclick = ()=>playSavedGame(kid, realIndex);
+        const shareBtn = document.createElement("button");
+        shareBtn.className = "magic";
+        shareBtn.textContent = "🔗 Copy Link";
+        shareBtn.onclick = ()=>{currentGame=game; copyCurrentGameLink()};
+        item.appendChild(playBtn);
+        item.appendChild(shareBtn);
+        card.appendChild(item);
+      });
+    }
+    grid.appendChild(card);
+  });
+}
+function populateExistingGames(){
+  const select = el("existingGameSelect");
+  const list = allSavedGameList();
+  select.innerHTML = "";
+  if(!list.length){
+    select.innerHTML = '<option value="">No saved games yet</option>';
+    return;
+  }
+  list.forEach((item,i)=>{
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = `${item.bucket}: ${item.game.title || "Untitled Game"}`;
+    select.appendChild(opt);
+  });
+  handleGameSelect();
+}
+function handleGameSelect(){
+  const list = allSavedGameList();
+  const item = list[Number(val("existingGameSelect"))];
+  if(!item) return;
+  const g = item.game;
+  setVal("author", item.bucket);
+  setVal("name", g.title || "");
+  setVal("idea", g.description || g.story || "");
+  setVal("customView", g.view || "");
+  setVal("style", g.style || "Colorful video game");
+  setVal("device", g.device || "iPhone/iPad first");
+  setVal("extra", g.extra || "Keep what works, make it more fun, and use big clear buttons.");
+  setVal("addChanges", "");
+  setVal("removeChanges", "");
+  setVal("problemChanges", "");
+  setVal("keepChanges", "Keep the main idea, characters, style, and anything that was fun in the last version.");
+  generateAll();
+}
+function pickMode(btn){
+  document.querySelectorAll("[data-mode]").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  buildMode = btn.dataset.mode;
+  el("updateFields").classList.toggle("hidden", buildMode !== "update");
+  el("ideaLabel").textContent = buildMode === "update" ? "💭 What is the game idea now?" : "💭 What is the game idea?";
+  populateExistingGames();
+}
+function pickView(btn){
+  document.querySelectorAll("[data-view]").forEach(b=>b.classList.remove("selected"));
+  btn.classList.add("selected");
+  selectedView = btn.dataset.view;
+}
+function spec(){
+  const custom = val("customView").trim();
+  return {
+    mode: buildMode,
+    title: val("name") || "Untitled Game",
+    author: val("author"),
+    description: val("idea"),
+    view: custom || selectedView,
+    style: val("style"),
+    device: val("device"),
+    features: feats(),
+    extra: val("extra"),
+    updateNotes: {
+      add: val("addChanges"),
+      remove: val("removeChanges"),
+      problems: val("problemChanges"),
+      keep: val("keepChanges")
+    }
+  };
+}
+function gameFromSpec(s){
+  const updateText = s.mode === "update"
+    ? `\n\nUpdate request:\nAdd: ${s.updateNotes.add || "Nothing listed"}\nRemove: ${s.updateNotes.remove || "Nothing listed"}\nFix: ${s.updateNotes.problems || "Nothing listed"}\nKeep: ${s.updateNotes.keep || "Nothing listed"}`
+    : "";
+  return {
+    version: "dgw-onefile-v1",
+    title: s.title,
+    author: s.author,
+    description: s.description,
+    view: s.view,
+    style: s.style,
+    device: s.device,
+    features: s.features,
+    extra: s.extra,
+    story: `${s.description}${updateText}`,
+    createdAt: new Date().toISOString(),
+    scenes: [
+      {title:s.title,text:`Welcome to ${s.title}!\n\n${s.description}\n\nStyle: ${s.style}\nGame type: ${s.view}`,choices:[{text:"Start the adventure",next:1},{text:"Check the rules",next:2}]},
+      {title:"Adventure Begins",text:`You step into the game world.\n\nYour game parts are: ${s.features.join(", ") || "your imagination"}.\n\n${s.extra}`,choices:[{text:"Look for a reward",next:3},{text:"Try a brave move",next:4}]},
+      {title:"How to Play",text:"Use the big choices to move through the game. This is the starter shared version. Dad can turn this idea into a bigger custom game later.",choices:[{text:"Start now",next:1}]},
+      {title:"Reward Found!",text:"You found something awesome. Add your own treasure, pets, upgrades, cards, vehicles, or powers in the next version.",choices:[{text:"Keep playing",next:4},{text:"Restart path",next:0}]},
+      {title:"Victory Moment",text:"Nice! You reached the end of this starter version.\n\nSend the link to someone so they can play it too.",choices:[]}
+    ]
+  };
+}
+function encodeGame(game){
+  return btoa(unescape(encodeURIComponent(JSON.stringify(game))));
+}
+function decodeGame(code){
+  return JSON.parse(decodeURIComponent(escape(atob(code))));
+}
+function makeShareLink(game){
+  const base = location.href.replace(/#.*$/,"").replace(/\?.*$/,"");
+  return base + "#play=" + encodeGame(game);
+}
+function getSharedCodeFromHash(){
+  const hash = window.location.hash || "";
+  const match = hash.match(/#(?:play|game)=(.+)$/);
+  return match ? match[1] : null;
+}
+function checkForSharedGame(){
+  const code = getSharedCodeFromHash();
+  if(!code) return;
+  try{
+    currentGame = decodeGame(code);
+    showSection("playCard");
+    startGame();
+    updateFamilyModeStatus();
+    el("navCard").classList.toggle("hidden", !isFamilyMode());
+    el("builderCard").classList.add("hidden");
+    el("gamesCard").classList.add("hidden");
+    el("toolsCard").classList.add("hidden");
+  }catch(e){
+    showSection("playCard");
+    el("playTitle").textContent = "This shared game link could not be opened.";
+    el("playText").textContent = "The link may be incomplete, too long, or copied incorrectly.";
+  }
+}
+function generateAll(){
+  const s = spec();
+  currentGame = gameFromSpec(s);
+  el("shareLink").value = makeShareLink(currentGame);
+  el("prompt").value = promptFor(s);
+  el("gameJson").value = JSON.stringify(currentGame,null,2);
+  currentSceneIndex = 0;
+  renderScene();
+  setStatus("status","Starter game generated. You can play it, save it, or copy the share link.");
+  updateFamilyModeStatus();
+}
+function startGame(){
+  if(!currentGame) generateAll();
+  currentSceneIndex = 0;
+  renderScene();
+}
+function playSavedGame(kid,index){
+  const saved = loadSavedGames();
+  if(!saved[kid] || !saved[kid][index]) return;
+  currentGame = saved[kid][index];
+  showSection("playCard");
+  startGame();
+}
+function renderScene(){
+  if(!currentGame) return;
+  const scenes = currentGame.scenes || [];
+  const scene = scenes[currentSceneIndex] || scenes[0] || {title:currentGame.title,text:currentGame.description,choices:[]};
+  el("playTitle").textContent = scene.title || currentGame.title || "Game";
+  el("playMeta").textContent = currentGame.author ? "By " + currentGame.author : "";
+  el("playText").textContent = scene.text || scene.description || "";
+  const choiceArea = el("choiceArea");
+  choiceArea.innerHTML = "";
+  const choices = Array.isArray(scene.choices) ? scene.choices : [];
+  if(!choices.length){
+    const done = document.createElement("div");
+    done.className = "kidHint";
+    done.textContent = "End of this starter game. Tap Start / Restart to play again.";
+    choiceArea.appendChild(done);
+    return;
+  }
+  choices.forEach(choice=>{
+    const btn = document.createElement("button");
+    btn.textContent = choice.text || "Choose";
+    btn.onclick = ()=>{
+      currentSceneIndex = typeof choice.next === "number" ? choice.next : Math.min(currentSceneIndex + 1, scenes.length-1);
+      renderScene();
+    };
+    choiceArea.appendChild(btn);
+  });
+}
+function saveCurrentGameToBucket(){
+  if(!currentGame) generateAll();
+  const bucket = (el("bucketSelect") && !el("bucketSelect").closest(".hidden")) ? val("bucketSelect") : val("author");
+  const saved = loadSavedGames();
+  if(!saved[bucket]) saved[bucket] = [];
+  const copy = JSON.parse(JSON.stringify(currentGame));
+  copy.savedAt = new Date().toISOString();
+  saved[bucket].push(copy);
+  saveSavedGames(saved);
+  populateExistingGames();
+  renderSavedGames();
+  setStatus("status",`Saved to ${bucket}.`);
+  setStatus("playStatus",`Saved to ${bucket}.`);
+}
+function copyCurrentGameLink(){
+  if(!currentGame) generateAll();
+  const link = makeShareLink(currentGame);
+  el("shareLink").value = link;
+  copyText(link,"Share link copied.");
+}
+function copyPrompt(){
+  if(!currentGame) generateAll();
+  copyText(el("prompt").value,"Dad Prompt copied.");
+}
+function copyText(text,msg){
+  if(navigator.share && text.startsWith("http")){
+    navigator.share({title:"Play my game",url:text}).catch(()=>fallbackCopy(text,msg));
+  }else{
+    fallbackCopy(text,msg);
+  }
+}
+function fallbackCopy(text,msg){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(()=>{
+      setStatus("status",msg);
+      setStatus("playStatus",msg);
+    }).catch(()=>prompt("Copy this:", text));
+  }else{
+    prompt("Copy this:", text);
+  }
+}
+function promptFor(s){
+  const updateBlock = s.mode === "update" ? `
+UPDATE THIS EXISTING GAME
+Add:
+${s.updateNotes.add}
+
+Remove:
+${s.updateNotes.remove}
+
+Fix or improve:
+${s.updateNotes.problems}
+
+Keep the same:
+${s.updateNotes.keep}
+` : "";
+  return `You are my kid-friendly app/game builder inside ChatGPT.
+
+Build or update a single-file HTML/CSS/JavaScript project.
+
+PROJECT
+Name: ${s.title}
+Kid creator: ${s.author}
+Kid's game idea:
+${s.description}
+
+Preferred game format / camera / platform style:
+${s.view}
+
+Target device:
+${s.device}
+
+Visual style:
+${s.style}
+
+REQUIRED FEATURES
+${s.features.map(f=>"- "+f).join("\n")}
+
+EXTRA INSTRUCTIONS
+${s.extra}
+
+${updateBlock}
+
+IMPORTANT INTERPRETATION RULES
+- Do not assume this has to be a dungeon crawler.
+- Interpret the kid's idea first, then choose mechanics that fit the idea.
+- If the idea sounds like a card game, make a card game.
+- If it sounds like a board game, make a board game.
+- If it sounds like a platformer, make a side-scroller.
+- If it sounds like an exploring game, choose first-person, top-down, or third-person based on the request.
+- Keep the controls and labels obvious for kids.
+
+BUILD RULES
+- Keep it free to run.
+- Make it work as one downloadable .html file.
+- Make it mobile-friendly on iPhone/iPad.
+- Use no paid APIs.
+- Use no external libraries unless absolutely necessary.
+- Use big kid-friendly buttons and clear labels.
+- Include touch controls if game-based.
+- Preserve previous working features unless I ask to remove them.
+- Give me the finished file as a downloadable artifact.`;
+}
+function showTab(id,btn){
+  ["shareLink","prompt","gameJson"].forEach(x=>el(x).classList.add("hidden"));
+  el(id).classList.remove("hidden");
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  btn.classList.add("active");
+}
+function escapeHtml(str){
+  return String(str || "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+window.addEventListener("hashchange", checkForSharedGame);
+updateFamilyModeStatus();
+renderSavedGames();
+populateExistingGames();
+generateAll();
+if(getSharedCodeFromHash()){
+  checkForSharedGame();
+}else{
+  showSection("builderCard");
+}
+</script>
+</body>
+</html>
