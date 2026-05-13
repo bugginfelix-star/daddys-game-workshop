@@ -1,0 +1,17 @@
+{
+  "updated": "2026-05-13",
+  "games": {
+    "adella": [
+      {
+        "title": "Space Star Shooter",
+        "slug": "space-star-shooter",
+        "path": "games/adella/space-star-shooter/",
+        "index_html": "games/adella/space-star-shooter/index.html",
+        "public_url": "https://bugginfelix-star.github.io/daddys-game-workshop/games/adella/space-star-shooter/"
+      }
+    ],
+    "quinton": [],
+    "lincoln": [],
+    "gemma": []
+  }
+}
