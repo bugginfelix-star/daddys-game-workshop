@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Colortopia - Adella</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#fff7d9;color:#2b1b55;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{background:radial-gradient(circle at 12% 8%,#ff7ad933,transparent 24%),radial-gradient(circle at 86% 12%,#66f7ff33,transparent 25%),linear-gradient(#fff7d9,#ffd7ef)}
+#app{height:100%;display:flex;flex-direction:column}
+header{padding:calc(7px + env(safe-area-inset-top)) 10px 7px;background:linear-gradient(#ff83d8,#845dff);border-bottom:3px solid #fff2a8;box-shadow:0 8px 24px #0005;z-index:4;color:white}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{font-size:19px;margin:0;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:2px 2px #5a2877,0 0 12px #fff}
+.pill{font-size:11px;font-weight:1000;background:linear-gradient(#fff38b,#ffb23f);color:#5a2a00;border:2px solid #fff8bd;border-radius:999px;padding:5px 9px;white-space:nowrap}
+#hud{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}
+.hud{background:#ffffff33;border:1.5px solid #fff;border-radius:12px;text-align:center;padding:5px 2px;box-shadow:inset 0 0 12px #0002}
+.hud b{display:block;font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:.3px}.hud span{font-size:13px;font-weight:1000;color:#fff}
+#stage{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none;padding:8px;background:linear-gradient(135deg,#ffeaa8,#ffd3f1 45%,#baf7ff)}
+#workWrap{height:100%;display:flex;gap:8px}
+#boardShell{position:relative;flex:1;background:#c07a45;border:4px solid #8d4f27;border-radius:24px;padding:10px;box-shadow:inset 0 0 0 4px #e9a86d,0 10px 24px #0004;min-width:0}
+#board{width:100%;height:100%;background:#fffdf4;border-radius:18px;border:3px dashed #ff83d8;display:block;touch-action:none}
+#sidePanel{width:116px;display:flex;flex-direction:column;gap:7px;overflow:auto}
+.tool{min-height:48px;border:3px solid #fff;border-radius:18px;background:linear-gradient(#77f7ff,#3aa7ff);color:#09214a;font-size:13px;font-weight:1000;box-shadow:0 5px 0 #2d3b77;text-shadow:1px 1px #d7ffff;padding:5px}
+.tool.active{background:linear-gradient(#fff38b,#ffb23f);color:#5a2a00;box-shadow:0 5px 0 #9e5a10}
+.tool.pink{background:linear-gradient(#ff9de6,#f345bf);color:white;text-shadow:1px 2px #7b176b}
+.tool.green{background:linear-gradient(#a5ffb6,#33d864);color:#06230c;text-shadow:1px 1px #dcffe2}
+#tray{z-index:5;display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:7px;background:linear-gradient(#fff4c5,#ffd3f1);border-top:3px solid #fff;border-bottom:3px solid #ff83d8;box-shadow:0 -6px 18px #0002}
+.swatch,.piece{min-height:38px;border:3px solid white;border-radius:14px;box-shadow:0 4px 0 #b07d93;font-size:20px;font-weight:1000;display:flex;align-items:center;justify-content:center}
+.swatch.active,.piece.active{outline:4px solid #845dff}
+#toast{position:absolute;z-index:9;top:12px;left:12px;right:12px;background:#2b1b55ee;border:2px solid #ffe66d;border-radius:16px;color:#ffe66d;text-align:center;font-weight:1000;padding:10px;opacity:0;transform:translateY(-8px);transition:.18s;pointer-events:none;box-shadow:0 10px 24px #0008}
+#toast.show{opacity:1;transform:translateY(0)}
+#banner{position:absolute;z-index:10;left:50%;top:34%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(#fff18a,#ffb23f);color:#5a2a00;border:4px solid #fff6b8;border-radius:22px;padding:13px 18px;font-size:24px;font-weight:1000;text-align:center;opacity:0;transition:.2s;pointer-events:none;box-shadow:0 12px 32px #0006,0 0 28px #ffe66d88}
+#banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(#fff7d9ee,#ffd3f1f2)}
+.panel{width:min(760px,100%);max-height:96%;overflow:auto;text-align:center;background:linear-gradient(#ff83d8,#845dff);border:4px solid #fff;border-radius:30px;padding:18px;box-shadow:0 22px 55px #0007,0 0 34px #fff6;color:white}
+.logo{font-size:clamp(36px,9vw,64px);line-height:.93;margin:0 0 8px;font-weight:1000;text-transform:uppercase;text-shadow:3px 3px #5a2877,5px 5px #ffb23f,-3px -2px #77f7ff}
+.panel h2{margin:0 0 8px;font-size:clamp(24px,6vw,40px);color:#fff38b;text-shadow:2px 2px #5a2877}
+.panel p,.panel li{color:#fff;font-size:16px;line-height:1.35;font-weight:800}.panel ul{text-align:left;padding-left:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+.tile{background:#ffffff30;border:2px solid #fff;border-radius:18px;padding:10px 6px;font-size:13px;font-weight:1000}
+.row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}@media(min-width:620px){.row{grid-template-columns:1fr 1fr}}
+button{width:100%;min-height:58px;border:3px solid #fff2a8;border-radius:20px;background:linear-gradient(#ffec82,#ffb23f 60%,#b36d16);color:#5a2a00;font-size:18px;font-weight:1000;box-shadow:0 7px 0 #7e4d13,0 12px 24px #0005;text-shadow:1px 1px #fff8bf}
+button:active{transform:translateY(4px);box-shadow:0 3px 0 #7e4d13}
+button.blue{background:linear-gradient(#75fbff,#2b82ff 64%,#1751bd);border-color:#c8ffff;color:#00182c;text-shadow:1px 1px #c8ffff}
+button.green{background:linear-gradient(#9cffab,#29c957 64%,#13732e);border-color:#d6ffdd;color:#06230c;text-shadow:1px 1px #d6ffdd}
+.projectCard{background:#ffffff30;border:2px solid #fff;border-radius:18px;padding:10px;margin:8px 0;text-align:left}
+.projectCard strong{color:#fff38b}.small{font-size:13px;color:#fff}
+@media(max-width:640px){
+ #workWrap{flex-direction:column}
+ #sidePanel{width:auto;height:104px;flex-direction:row;overflow:auto}
+ .tool{min-width:86px}
+ #tray{grid-template-columns:repeat(6,1fr)}
+ .swatch,.piece{min-height:34px;font-size:18px}
+}
+@media(max-height:700px){.tool{min-height:42px;font-size:12px}h1{font-size:16px}.hud b{font-size:8px}.hud span{font-size:12px}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+<div class="top"><h1>🎨 Colortopia</h1><div class="pill" id="projectPill">Rainbow Card</div></div>
+<div id="hud">
+<div class="hud"><b>Project</b><span id="projectNum">1/6</span></div>
+<div class="hud"><b>Stars</b><span id="stars">0</span></div>
+<div class="hud"><b>Gems</b><span id="gems">0</span></div>
+<div class="hud"><b>Badges</b><span id="badges">0</span></div>
+</div>
+</header>
+
+<div id="tray"></div>
+
+<div id="stage">
+<div id="workWrap">
+<div id="boardShell"><canvas id="board"></canvas></div>
+<div id="sidePanel">
+<button class="tool active" id="drawTool">🖍️ Draw</button>
+<button class="tool" id="colorTool">🎨 Color</button>
+<button class="tool" id="cutTool">✂️ Cut</button>
+<button class="tool" id="glueTool">🧴 Glue</button>
+<button class="tool" id="stickerTool">🌟 Stickers</button>
+<button class="tool green" id="finishBtn">✅ Finish</button>
+<button class="tool" id="undoBtn">↩️ Undo</button>
+<button class="tool pink" id="clearBtn">🧹 Clear</button>
+</div>
+</div>
+<div id="toast"></div><div id="banner"></div>
+<div id="overlay">
+<div class="panel">
+<div class="logo">Color<br>topia</div>
+<h2>Adella's Craft Table</h2>
+<p>Color, draw, cut, glue, and decorate fun art projects. Finish crafts to earn stickers, glitter stars, rainbow gems, and badges.</p>
+<div class="grid"><div class="tile">🖍️ Color</div><div class="tile">✂️ Cut Shapes</div><div class="tile">🧴 Glue</div><div class="tile">🌟 Stickers</div><div class="tile">🏆 Badges</div><div class="tile">📱 Touch</div></div>
+<div class="row"><button onclick="showProjects()">▶️ Start Crafting</button><button class="blue" onclick="showHow()">❔ How to Play</button></div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+const canvas=document.getElementById("board"),ctx=canvas.getContext("2d");
+const tray=document.getElementById("tray"),overlay=document.getElementById("overlay"),toast=document.getElementById("toast"),banner=document.getElementById("banner");
+const ui={projectPill:document.getElementById("projectPill"),projectNum:document.getElementById("projectNum"),stars:document.getElementById("stars"),gems:document.getElementById("gems"),badges:document.getElementById("badges")};
+let dpr=1,W=0,H=0,tool="draw",color="#ff4fb8",shape="circle",sticker="⭐",drawing=false,last=null,dragItem=null,history=[];
+let current=0,stars=0,gems=0,badges=0,completed={};
+const projects=[
+ {name:"Rainbow Card",goal:"Color a rainbow card and add stickers.",bg:"#fff8d8",template:"rainbow",reward:"Rainbow Sticker Pack"},
+ {name:"Silly Monster Mask",goal:"Build a funny monster face with eyes, shapes, and colors.",bg:"#e8fff5",template:"monster",reward:"Googly Eye Badge"},
+ {name:"Paper Flower Garden",goal:"Cut and glue flowers, leaves, sun, and clouds.",bg:"#eaffde",template:"garden",reward:"Flower Garden Badge"},
+ {name:"Space Rocket Poster",goal:"Build a rocket scene with stars and planets.",bg:"#101943",template:"space",reward:"Galaxy Glitter"},
+ {name:"Magical Castle Collage",goal:"Make a castle with flags, gems, hearts, and sparkles.",bg:"#f5e7ff",template:"castle",reward:"Castle Craft Badge"},
+ {name:"Mega Masterpiece",goal:"Use everything to make your own huge art project!",bg:"#fffdf4",template:"blank",reward:"Craft Master Crown"}
+];
+const colors=["#ff4fb8","#ff3f4f","#ff9f2e","#ffe64d","#6ee85f","#48d8ff","#4f6bff","#9b5cff","#8b4b25","#ffffff","#111111","#ffd6ee"];
+const shapes=["circle","square","triangle","heart","star","flower","moon","cloud"];
+const stickers=["⭐","🌈","😊","🌸","💎","🐱","💖","🪐","🦋","✨","☀️","🚀"];
+function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(2,Math.max(1,devicePixelRatio||1));W=Math.floor(r.width*dpr);H=Math.floor(r.height*dpr);canvas.width=W;canvas.height=H;newBoard(false)}
+window.addEventListener("resize",resize);
+function showToast(m){toast.textContent=m;toast.classList.add("show");clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove("show"),1400)}
+function showBanner(m){banner.textContent=m;banner.classList.add("show");clearTimeout(showBanner.t);showBanner.t=setTimeout(()=>banner.classList.remove("show"),1300)}
+function updateHud(){ui.projectPill.textContent=projects[current].name;ui.projectNum.textContent=(current+1)+"/"+projects.length;ui.stars.textContent=stars;ui.gems.textContent=gems;ui.badges.textContent=badges}
+function showHow(){overlay.style.display="flex";overlay.innerHTML='<div class="panel"><h2>How to Play</h2><ul><li>Pick a craft project.</li><li>Use Draw or Color to decorate the paper.</li><li>Use Cut to create safe digital paper shapes.</li><li>Use Glue to place cutouts on the craft board.</li><li>Add stickers, then tap Finish to earn rewards.</li><li>No losing. Just make fun art.</li></ul><button onclick="showProjects()">▶️ Pick Project</button></div>'}
+window.showHow=showHow;
+function showProjects(){let cards=projects.map((p,i)=>{let locked=i>0&&!completed[i-1];let done=completed[i];return `<div class="projectCard"><strong>${done?"✅":locked?"🔒":"🎨"} ${p.name}</strong><div class="small">${p.goal}</div><button ${locked?"disabled":`onclick="startProject(${i})"`}>${locked?"Locked":done?"Replay":"Make This"}</button></div>`}).join("");overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Choose a Project</h2>${cards}<button class="blue" onclick="showHow()">❔ Instructions</button></div>`}
+window.showProjects=showProjects;
+function startProject(i){current=i;overlay.style.display="none";newBoard(true);updateTray();updateHud();showBanner(projects[current].name);showToast(projects[current].goal)}
+window.startProject=startProject;
+function saveState(){try{history.push(canvas.toDataURL());if(history.length>12)history.shift()}catch(e){}}
+function restore(src){let img=new Image();img.onload=()=>{ctx.clearRect(0,0,W,H);ctx.drawImage(img,0,0,W,H)};img.src=src}
+function undo(){if(history.length){restore(history.pop());showToast("Undo!")}else showToast("Nothing to undo yet.")}
+function clearBoard(){if(confirm("Clear this project and start over?"))newBoard(true)}
+function newBoard(save){if(!W||!H)return;if(save)history=[];ctx.fillStyle=projects[current]?.bg||"#fffdf4";ctx.fillRect(0,0,W,H);drawTemplate(projects[current]?.template||"rainbow");updateHud()}
+function drawTemplate(t){ctx.save();ctx.lineWidth=4*dpr;ctx.strokeStyle="#00000022";ctx.fillStyle="#ffffff55";
+ if(t==="rainbow"){for(let i=0;i<5;i++){ctx.strokeStyle=["#ff4fb8","#ff9f2e","#ffe64d","#6ee85f","#48d8ff"][i];ctx.lineWidth=18*dpr;ctx.beginPath();ctx.arc(W*.5,H*.62,(190-i*28)*dpr,Math.PI,0);ctx.stroke()}ctx.fillStyle="#fff";round(W*.15,H*.62,W*.7,H*.25,18*dpr);ctx.fill();ctx.strokeStyle="#ff83d8";ctx.stroke()}
+ if(t==="monster"){ctx.fillStyle="#b7ff8a";ctx.beginPath();ctx.arc(W*.5,H*.48,150*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(W*.42,H*.42,32*dpr,0,Math.PI*2);ctx.arc(W*.58,H*.42,32*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#111";ctx.beginPath();ctx.arc(W*.42,H*.42,10*dpr,0,Math.PI*2);ctx.arc(W*.58,H*.42,10*dpr,0,Math.PI*2);ctx.fill()}
+ if(t==="garden"){ctx.fillStyle="#8cff9f";ctx.fillRect(0,H*.65,W,H*.35);ctx.fillStyle="#ffe66d";ctx.beginPath();ctx.arc(W*.82,H*.18,42*dpr,0,Math.PI*2);ctx.fill()}
+ if(t==="space"){ctx.fillStyle="#101943";ctx.fillRect(0,0,W,H);for(let i=0;i<40;i++){ctx.fillStyle="#fff";ctx.fillRect(Math.random()*W,Math.random()*H,2*dpr,2*dpr)}}
+ if(t==="castle"){ctx.fillStyle="#d4a7ff";ctx.fillRect(W*.28,H*.42,W*.44,H*.28);ctx.fillRect(W*.24,H*.35,W*.12,H*.35);ctx.fillRect(W*.64,H*.35,W*.12,H*.35);ctx.fillStyle="#ff69d6";ctx.beginPath();ctx.moveTo(W*.24,H*.35);ctx.lineTo(W*.30,H*.25);ctx.lineTo(W*.36,H*.35);ctx.fill();ctx.beginPath();ctx.moveTo(W*.64,H*.35);ctx.lineTo(W*.70,H*.25);ctx.lineTo(W*.76,H*.35);ctx.fill()}
+ ctx.restore()}
+function round(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function updateTray(){tray.innerHTML="";let arr=tool==="cut"?shapes:tool==="sticker"?stickers:colors;arr.forEach(v=>{let el=document.createElement("div");el.className=(tool==="cut"||tool==="sticker")?"piece":"swatch";if(tool==="cut"){el.textContent=shapeIcon(v);if(v===shape)el.classList.add("active");el.onclick=()=>{shape=v;updateTray()}}else if(tool==="sticker"){el.textContent=v;if(v===sticker)el.classList.add("active");el.onclick=()=>{sticker=v;updateTray()}}else{el.style.background=v;if(v===color)el.classList.add("active");el.onclick=()=>{color=v;updateTray()}}tray.appendChild(el)})}
+function shapeIcon(s){return{circle:"●",square:"■",triangle:"▲",heart:"♥",star:"★",flower:"✿",moon:"☾",cloud:"☁"}[s]}
+function setTool(t){tool=t;document.querySelectorAll(".tool").forEach(b=>b.classList.remove("active"));let id={draw:"drawTool",color:"colorTool",cut:"cutTool",glue:"glueTool",sticker:"stickerTool"}[t];if(id)document.getElementById(id).classList.add("active");updateTray();showToast(t==="cut"?"Choose a cutout shape.":t==="glue"?"Tap to glue your cutout.":t==="sticker"?"Pick a sticker.":"Choose a color and draw.")}
+function point(e){const r=canvas.getBoundingClientRect();const p=e.touches?e.touches[0]:e;return{x:(p.clientX-r.left)*dpr,y:(p.clientY-r.top)*dpr}}
+function down(e){e.preventDefault();let p=point(e);saveState();drawing=true;last=p;if(tool==="cut"||tool==="glue"){drawShape(p.x,p.y,shape,color);spark(p.x,p.y);showToast(tool==="cut"?"Cutout made!":"Glued with sparkles!");drawing=false}else if(tool==="sticker"){drawSticker(p.x,p.y,sticker);spark(p.x,p.y);drawing=false}else if(tool==="color"){paintDot(p.x,p.y,32*dpr)}}
+function move(e){if(!drawing)return;e.preventDefault();let p=point(e);if(tool==="draw"){ctx.strokeStyle=color;ctx.lineWidth=8*dpr;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p}else if(tool==="color"){paintDot(p.x,p.y,34*dpr)}}
+function up(){drawing=false;last=null}
+function paintDot(x,y,r){ctx.fillStyle=color;ctx.globalAlpha=.35;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}
+function drawShape(x,y,s,c){ctx.save();ctx.fillStyle=c;ctx.strokeStyle="#ffffff";ctx.lineWidth=4*dpr;if(s==="circle"){ctx.beginPath();ctx.arc(x,y,26*dpr,0,Math.PI*2);ctx.fill();ctx.stroke()}if(s==="square"){round(x-25*dpr,y-25*dpr,50*dpr,50*dpr,8*dpr);ctx.fill();ctx.stroke()}if(s==="triangle"){ctx.beginPath();ctx.moveTo(x,y-30*dpr);ctx.lineTo(x-30*dpr,y+25*dpr);ctx.lineTo(x+30*dpr,y+25*dpr);ctx.closePath();ctx.fill();ctx.stroke()}if(s==="heart"){ctx.font=`${48*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("♥",x,y);ctx.strokeText("♥",x,y)}if(s==="star"){ctx.font=`${48*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("★",x,y);ctx.strokeText("★",x,y)}if(s==="flower"){ctx.font=`${48*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("✿",x,y)}if(s==="moon"){ctx.font=`${50*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("☾",x,y)}if(s==="cloud"){ctx.font=`${50*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("☁",x,y)}ctx.restore()}
+function drawSticker(x,y,s){ctx.font=`${44*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(s,x,y)}
+function spark(x,y){for(let i=0;i<14;i++){ctx.fillStyle=["#ffe66d","#ff69d6","#72f7ff","#9cffab"][i%4];ctx.beginPath();ctx.arc(x+(Math.random()-.5)*70*dpr,y+(Math.random()-.5)*70*dpr,3*dpr,0,Math.PI*2);ctx.fill()}}
+function finishProject(){completed[current]=true;stars+=3+current;gems+=1;badges=Object.keys(completed).length;let reward=projects[current].reward;showBanner("Craft Complete!");overlay.style.display="flex";let next=current<projects.length-1?current+1:0;let all=Object.keys(completed).length>=projects.length;overlay.innerHTML=`<div class="panel"><h2>${all?"Craft Master!":"Project Finished!"}</h2><p>You earned <strong>${reward}</strong>, glitter stars, and a rainbow gem.</p><div class="grid"><div class="tile">⭐ Stars +${3+current}</div><div class="tile">💎 Gem +1</div><div class="tile">🏆 Badges ${badges}</div></div><div class="row"><button onclick="startProject(${next})">${all?"Make More Art":"Next Project"}</button><button class="blue" onclick="showProjects()">Project List</button></div></div>`;updateHud()}
+document.getElementById("drawTool").onclick=()=>setTool("draw");document.getElementById("colorTool").onclick=()=>setTool("color");document.getElementById("cutTool").onclick=()=>setTool("cut");document.getElementById("glueTool").onclick=()=>setTool("glue");document.getElementById("stickerTool").onclick=()=>setTool("sticker");document.getElementById("finishBtn").onclick=finishProject;document.getElementById("undoBtn").onclick=undo;document.getElementById("clearBtn").onclick=clearBoard;
+canvas.addEventListener("touchstart",down,{passive:false});canvas.addEventListener("touchmove",move,{passive:false});canvas.addEventListener("touchend",up,{passive:false});canvas.addEventListener("mousedown",down);canvas.addEventListener("mousemove",move);window.addEventListener("mouseup",up);
+resize();updateTray();updateHud();
+</script>
+</body>
+</html>
