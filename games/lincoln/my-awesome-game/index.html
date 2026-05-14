@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Lincoln - My Awesome Game</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#08122b;color:white;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{background:radial-gradient(circle at 18% 8%,#6cf7ff33,transparent 24%),radial-gradient(circle at 85% 14%,#ff69d633,transparent 24%),linear-gradient(#1b2f73,#08122b)}
+#app{height:100%;display:flex;flex-direction:column}
+header{padding:calc(7px + env(safe-area-inset-top)) 10px 7px;background:linear-gradient(#392b8f,#172257);border-bottom:2px solid #72f7ff;box-shadow:0 8px 24px #0008;z-index:4}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{font-size:18px;margin:0;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:2px 2px #000,0 0 12px #72f7ff}
+.pill{font-size:11px;font-weight:1000;background:linear-gradient(#fff38b,#ffb23f);color:#261400;border:2px solid #fff8bd;border-radius:999px;padding:5px 9px;white-space:nowrap}
+#hud{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:7px}
+.hud{background:#081224;border:1.5px solid #72f7ff;border-radius:12px;text-align:center;padding:5px 2px;box-shadow:inset 0 0 12px #0009}
+.hud b{display:block;font-size:9px;color:#cbd5ff;text-transform:uppercase;letter-spacing:.3px}.hud span{font-size:13px;font-weight:1000}
+#stage{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#toast{position:absolute;z-index:8;top:12px;left:12px;right:12px;background:#081224ee;border:2px solid #ffe66d;border-radius:16px;color:#ffe66d;text-align:center;font-weight:1000;padding:10px;opacity:0;transform:translateY(-8px);transition:.18s;pointer-events:none;box-shadow:0 10px 24px #0008}
+#toast.show{opacity:1;transform:translateY(0)}
+#banner{position:absolute;z-index:9;left:50%;top:34%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(#fff18a,#ffaa3d);color:#241300;border:4px solid #fff6b8;border-radius:22px;padding:13px 18px;font-size:24px;font-weight:1000;text-align:center;opacity:0;transition:.2s;pointer-events:none;box-shadow:0 12px 32px #0009,0 0 28px #ffe66d88}
+#banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(#02030ce8,#08031cf2)}
+.panel{width:min(760px,100%);max-height:96%;overflow:auto;text-align:center;background:linear-gradient(#392b8f,#172257);border:4px solid #72f7ff;border-radius:30px;padding:18px;box-shadow:0 22px 55px #000b,0 0 34px #72f7ff66}
+.logo{font-size:clamp(30px,8vw,56px);line-height:.93;margin:0 0 8px;font-weight:1000;text-transform:uppercase;text-shadow:3px 3px #000,5px 5px #ff69d6,-3px -2px #72f7ff}
+.panel h2{margin:0 0 8px;font-size:clamp(24px,6vw,40px);color:#ffe66d;text-shadow:2px 2px #000}
+.panel p,.panel li{color:#dbe7ff;font-size:16px;line-height:1.35;font-weight:800}.panel ul{text-align:left;padding-left:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+.tile{background:#081224;border:2px solid #72f7ff;border-radius:18px;padding:10px 6px;font-size:13px;font-weight:1000}
+.row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}@media(min-width:620px){.row{grid-template-columns:1fr 1fr}}
+button{width:100%;min-height:58px;border:3px solid #fff2a8;border-radius:20px;background:linear-gradient(#ffec82,#ffaa3d 60%,#b36d16);color:#251300;font-size:18px;font-weight:1000;box-shadow:0 7px 0 #071020,0 12px 24px #0008;text-shadow:1px 1px #fff8bf}
+button:active{transform:translateY(4px);box-shadow:0 3px 0 #071020}
+button.blue{background:linear-gradient(#75fbff,#2b82ff 64%,#1751bd);border-color:#c8ffff;color:#00182c;text-shadow:1px 1px #c8ffff}
+#controls{z-index:6;display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(#172257,#060b18);border-top:2px solid #72f7ff}
+.ctrl{min-height:58px;border:3px solid #90a4ff;border-radius:18px;background:linear-gradient(#4d60c8,#1d2b6d);color:white;font-size:13px;font-weight:1000;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 6px 0 #071020;text-shadow:1px 2px #000;padding:5px}
+.ctrl.magic{background:linear-gradient(#ff79e1,#d33ab7,#7b176b);border-color:#ffc9f1}
+.ctrl.heal{background:linear-gradient(#9cffab,#29c957,#13732e);border-color:#d6ffdd;color:#06230c;text-shadow:1px 1px #d6ffdd}
+.ctrl.gold{background:linear-gradient(#ffec82,#ffaa3d,#9d5d12);border-color:#fff7bf;color:#251300;text-shadow:1px 1px #fff7bf}
+.ctrl:active{transform:translateY(4px);box-shadow:0 2px 0 #071020}
+#questionBox{position:absolute;left:10px;right:10px;bottom:10px;z-index:12;background:#081224ee;border:3px solid #ffe66d;border-radius:20px;padding:12px;text-align:center;display:none;box-shadow:0 12px 30px #0009}
+#qText{font-size:18px;font-weight:1000;color:#ffe66d;margin-bottom:8px}
+.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.answers button{min-height:50px;margin:0;font-size:17px}
+#hint{position:absolute;left:10px;right:10px;bottom:10px;z-index:4;color:#ffffff99;font-size:12px;font-weight:1000;text-align:center;pointer-events:none}
+.itemRow{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0}
+.item{background:#081224;border:2px solid #72f7ff;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:1000}
+@media(max-height:700px){.ctrl{min-height:50px;font-size:11px}h1{font-size:15px}.hud b{font-size:8px}.hud span{font-size:12px}.panel{padding:14px}#qText{font-size:16px}.answers button{min-height:46px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="top"><h1>🧙 Lincoln's My Awesome Game</h1><div class="pill" id="modePill">Adventure</div></div>
+<div id="hud"><div class="hud"><b>Health</b><span id="hp">100</span></div><div class="hud"><b>Dragon</b><span id="dragonHp">—</span></div><div class="hud"><b>Questions</b><span id="progress">0/10</span></div><div class="hud"><b>Items</b><span id="items">0</span></div><div class="hud"><b>Score</b><span id="score">0</span></div></div></header>
+<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><div id="hint">Find the funny monster, tap Interact, answer math, collect magic items.</div><div id="questionBox"><div id="qText"></div><div class="answers" id="answers"></div></div>
+<div id="overlay"><div class="panel"><div class="logo">My Awesome<br>Game</div><h2>Math Magic Dragon Quest</h2><p>Explore a magical first-person world, answer 10 third-grade math questions, collect power-ups, and defeat a random dragon.</p><div class="grid"><div class="tile">👀 First Person</div><div class="tile">➕ 10 Math Quests</div><div class="tile">🎁 Magic Items</div><div class="tile">🐲 Random Dragon</div><div class="tile">🔥 Breath Effects</div><div class="tile">📱 Big Buttons</div></div><div class="row"><button onclick="startGame()">▶️ Start Adventure</button><button class="blue" onclick="showHow()">❔ How to Play</button></div></div></div></div>
+<div id="controls"><div class="ctrl" id="leftBtn">↩️ Turn</div><div class="ctrl" id="backBtn">⬇️ Back</div><div class="ctrl gold" id="forwardBtn">⬆️ Forward</div><div class="ctrl" id="rightBtn">Turn ↪️</div><div class="ctrl magic" id="interactBtn">✨ Interact</div></div>
+</div>
+<script>
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d",{alpha:false});
+const overlay=document.getElementById("overlay"),toast=document.getElementById("toast"),banner=document.getElementById("banner"),questionBox=document.getElementById("questionBox"),qText=document.getElementById("qText"),answers=document.getElementById("answers"),controls=document.getElementById("controls"),hint=document.getElementById("hint");
+const ui={hp:document.getElementById("hp"),dragonHp:document.getElementById("dragonHp"),progress:document.getElementById("progress"),items:document.getElementById("items"),score:document.getElementById("score"),mode:document.getElementById("modePill")};
+let dpr=1,W=0,H=0,running=false,mode="explore",time=0,player={x:1,y:1,dir:1,hp:100,maxHp:100,score:0},level=0,items=[],currentQ=null,dragon=null,particles=[],texts=[];
+const dirs=[{x:0,y:-1,name:"North"},{x:1,y:0,name:"East"},{x:0,y:1,name:"South"},{x:-1,y:0,name:"West"}];
+const map=["###########","#P..M....E#","#.###.###.#","#..M..M...#","###.#.###.#","#M..M..M..#","#..###..M.#","#M....M..D#","###########"].map(r=>r.split(""));
+const qList=[{q:"7 × 6 = ?",a:42,opts:[36,42,48,40]},{q:"84 ÷ 7 = ?",a:12,opts:[11,12,13,14]},{q:"325 + 148 = ?",a:473,opts:[463,473,483,477]},{q:"900 - 275 = ?",a:625,opts:[625,635,615,705]},{q:"What is 4 groups of 9?",a:36,opts:[32,36,40,45]},{q:"Which number has 6 hundreds, 3 tens, and 5 ones?",a:635,opts:[653,635,365,536]},{q:"1/2 of 18 = ?",a:9,opts:[6,8,9,12]},{q:"A dragon has 5 bags with 8 gems each. How many gems?",a:40,opts:[35,40,45,48]},{q:"72 ÷ 8 = ?",a:9,opts:[7,8,9,10]},{q:"19 + 27 + 31 = ?",a:77,opts:[67,76,77,87]}];
+const itemDefs=[["🛡️","Flame Shield","fire resist"],["❄️","Frost Cloak","ice resist"],["👢","Wind Boots","dodge"],["🪨","Earth Armor","armor"],["💚","Antidote Charm","poison resist"],["⭐","Star Wand","magic"],["🧪","Healing Potion","heal"],["⚔️","Brave Sword","attack"],["💎","Sparkle Gem","bonus"],["❤️","Heart Crystal","health"]];
+const dragonTypes={Fire:{color:"#ff623d",breath:"#ff9a2e",emoji:"🔥",text:"orange flame breath"},Ice:{color:"#68d8ff",breath:"#b7f3ff",emoji:"❄️",text:"blue frost breath"},Wind:{color:"#d8f7ff",breath:"#ffffff",emoji:"💨",text:"swirling gust breath"},Earth:{color:"#a97943",breath:"#d1a06a",emoji:"🪨",text:"rocks and dust breath"},Poison:{color:"#75e36e",breath:"#8cff5e",emoji:"☠️",text:"green poison cloud breath"}};
+function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(2,Math.max(1,devicePixelRatio||1));W=Math.floor(r.width*dpr);H=Math.floor(r.height*dpr);canvas.width=W;canvas.height=H}window.addEventListener("resize",resize);resize();
+function showToast(m){toast.textContent=m;toast.classList.add("show");clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove("show"),1500)}
+function showBanner(m){banner.textContent=m;banner.classList.add("show");clearTimeout(showBanner.t);showBanner.t=setTimeout(()=>banner.classList.remove("show"),1400)}
+function updateHud(){ui.hp.textContent=Math.max(0,Math.round(player.hp));ui.dragonHp.textContent=dragon?Math.max(0,Math.round(dragon.hp)):"—";ui.progress.textContent=level+"/10";ui.items.textContent=items.length;ui.score.textContent=player.score;ui.mode.textContent=mode==="battle"?"Dragon Battle":"Adventure"}
+function startGame(){player={x:1,y:1,dir:1,hp:100,maxHp:100,score:0};level=0;items=[];dragon=null;mode="explore";particles=[];texts=[];questionBox.style.display="none";overlay.style.display="none";controls.innerHTML=exploreControls();bindControls();running=true;hint.style.display="block";hint.textContent="Find a funny monster, tap Interact, answer math, collect magic items.";showBanner("Adventure Start!");updateHud();requestAnimationFrame(loop)}window.startGame=startGame;
+function showHow(){overlay.style.display="flex";overlay.innerHTML='<div class="panel"><h2>How to Play</h2><ul><li>Move in first person through the magical world.</li><li>Tap Interact when you see a funny monster.</li><li>Answer 10 third-grade math questions.</li><li>Each correct answer gives one magic item.</li><li>After 10 items, fight a random Fire, Ice, Wind, Earth, or Poison dragon.</li><li>Use Attack, Magic, and Heal to win.</li></ul><button onclick="startGame()">▶️ Start Adventure</button></div>'}window.showHow=showHow;
+function exploreControls(){return '<div class="ctrl" id="leftBtn">↩️ Turn</div><div class="ctrl" id="backBtn">⬇️ Back</div><div class="ctrl gold" id="forwardBtn">⬆️ Forward</div><div class="ctrl" id="rightBtn">Turn ↪️</div><div class="ctrl magic" id="interactBtn">✨ Interact</div>'}
+function battleControls(){return '<div class="ctrl gold" id="attackBtn">⚔️ Attack</div><div class="ctrl magic" id="magicBtn">⭐ Magic</div><div class="ctrl heal" id="healBtn">💚 Heal</div><div class="ctrl" id="defendBtn">🛡️ Defend</div><div class="ctrl magic" id="itemsBtn">🎒 Items</div>'}
+function tap(id,fn){const el=document.getElementById(id);if(!el)return;el.addEventListener("touchstart",e=>{e.preventDefault();fn()},{passive:false});el.addEventListener("mousedown",e=>{e.preventDefault();fn()})}
+function bindControls(){tap("leftBtn",()=>turn(-1));tap("rightBtn",()=>turn(1));tap("forwardBtn",()=>move(1));tap("backBtn",()=>move(-1));tap("interactBtn",interact);tap("attackBtn",attack);tap("magicBtn",magic);tap("healBtn",heal);tap("defendBtn",defend);tap("itemsBtn",showInventory)}
+function cell(x,y){if(y<0||y>=map.length||x<0||x>=map[y].length)return"#";return map[y][x]}
+function turn(n){if(mode!=="explore")return;player.dir=(player.dir+n+4)%4;showToast("Facing "+dirs[player.dir].name)}
+function move(step){if(mode!=="explore")return;const d=dirs[player.dir];let nx=player.x+d.x*step,ny=player.y+d.y*step;if(cell(nx,ny)==="#"){showToast("A magical wall blocks the way.");return}player.x=nx;player.y=ny;if(cell(nx,ny)==="D"&&level>=10)startDragon();else if(cell(nx,ny)==="E"&&level<10)showToast("The dragon portal opens after 10 math items.")}
+function interact(){if(mode!=="explore")return;const d=dirs[player.dir],fx=player.x+d.x,fy=player.y+d.y,c=cell(fx,fy);if(c==="M"){askQuestion();return}if(c==="D"&&level>=10){startDragon();return}showToast("Nothing to interact with here. Find a funny monster!")}
+function askQuestion(){if(level>=10){showToast("You have all 10 items. Go to the dragon portal!");return}currentQ=qList[level];qText.textContent=currentQ.q;answers.innerHTML="";currentQ.opts.forEach(o=>{let b=document.createElement("button");b.textContent=o;b.onclick=()=>answer(o);answers.appendChild(b)});questionBox.style.display="block";hint.style.display="none"}
+function answer(v){if(!currentQ)return;if(v===currentQ.a){const item=itemDefs[level];items.push(item);level++;player.score+=100;questionBox.style.display="none";hint.style.display="block";showBanner("Correct!");showToast("You earned "+item[0]+" "+item[1]);if(item[2]==="health"){player.maxHp+=40;player.hp+=40}if(level>=10){showBanner("Dragon Path Open!");showToast("The question askers open the dragon lair! Go to the portal.");}}else{showToast("Try again. You can do it!");player.score=Math.max(0,player.score-5)}updateHud()}
+function hasItem(effect){return items.some(i=>i[2]===effect)}
+function startDragon(){const names=Object.keys(dragonTypes);const type=names[Math.floor(Math.random()*names.length)];dragon={type,hp:520,maxHp:520,atk:24,defending:false};mode="battle";controls.innerHTML=battleControls();bindControls();hint.style.display="none";showBanner(type+" Dragon!");showToast("Its breath is "+dragonTypes[type].text+"!");updateHud()}
+function playerStats(){let atk=34,mag=42,healAmt=32;if(hasItem("attack"))atk+=24;if(hasItem("bonus")){atk+=14;mag+=14}if(hasItem("magic"))mag+=28;if(hasItem("heal"))healAmt+=32;if(hasItem("armor"))player.maxHp=Math.max(player.maxHp,120);return{atk,mag,healAmt}}
+function attack(){if(mode!=="battle")return;const s=playerStats();dragon.hp-=s.atk;addText(W*.5,H*.35,"-"+s.atk,"#ffe66d");burst(W*.5,H*.35,"#ffe66d",18);showToast("Sword attack!");dragonTurn()}
+function magic(){if(mode!=="battle")return;const s=playerStats();dragon.hp-=s.mag;addText(W*.5,H*.35,"MAGIC -"+s.mag,"#ff69d6");burst(W*.5,H*.35,"#ff69d6",24);showToast("Math magic blast!");dragonTurn()}
+function heal(){if(mode!=="battle")return;const s=playerStats();player.hp=Math.min(player.maxHp,player.hp+s.healAmt);addText(W*.5,H*.70,"HEAL +"+s.healAmt,"#8cff9f");burst(W*.5,H*.70,"#8cff9f",18);showToast("Healing magic!");dragonTurn()}
+function defend(){if(mode!=="battle")return;dragon.defending=true;showToast("Defend ready!");dragonTurn()}
+function dragonTurn(){if(dragon.hp<=0){win();return}setTimeout(()=>{let dmg=dragon.atk+Math.floor(Math.random()*12),type=dragon.type;if(type==="Fire"&&hasItem("fire resist"))dmg=Math.floor(dmg*.45);if(type==="Ice"&&hasItem("ice resist"))dmg=Math.floor(dmg*.45);if(type==="Poison"&&hasItem("poison resist"))dmg=Math.floor(dmg*.45);if(type==="Earth"&&hasItem("armor"))dmg=Math.floor(dmg*.65);if(type==="Wind"&&hasItem("dodge")&&Math.random()<.35){showToast("Wind Boots dodged the breath!");updateHud();return}if(dragon.defending){dmg=Math.floor(dmg*.5);dragon.defending=false}player.hp-=dmg;showBreath(type);addText(W*.5,H*.65,"-"+dmg,"#ff5e72");if(player.hp<=0)lose();updateHud()},450);updateHud()}
+function showBreath(type){const d=dragonTypes[type];showToast(d.emoji+" "+type+" breath!");for(let i=0;i<35;i++)particles.push({x:W*.5+(Math.random()-.5)*90*dpr,y:H*.38+i*5*dpr,dx:(Math.random()-.5)*4*dpr,dy:rnd(1,6)*dpr,r:rnd(3,10)*dpr,c:d.breath,life:rnd(20,42)})}
+function win(){running=false;player.score+=500;overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>You defeated the dragon with math magic!</h2><p>Lincoln collected all 10 power-ups and beat the ${dragon.type} Dragon.</p><div class="itemRow">${items.map(i=>`<div class="item">${i[0]} ${i[1]}</div>`).join("")}</div><button onclick="startGame()">🔁 Play Again</button></div>`}
+function lose(){running=false;overlay.style.display="flex";overlay.innerHTML='<div class="panel"><h2>Try Again!</h2><p>The dragon was tough, but your math magic is growing stronger.</p><button onclick="startGame()">🔁 Try Again</button></div>'}
+function showInventory(){showToast(items.map(i=>i[0]).join(" ")||"No items yet.")}
+function rnd(a,b){return a+Math.random()*(b-a)}
+function addText(x,y,m,c="#ffe66d"){texts.push({x,y,m,c,life:50,vy:-.7*dpr})}
+function burst(x,y,c,n=12){for(let i=0;i<n&&particles.length<90;i++){const a=Math.random()*Math.PI*2,s=rnd(1,5)*dpr;particles.push({x,y,dx:Math.cos(a)*s,dy:Math.sin(a)*s,r:rnd(2,6)*dpr,c,life:rnd(18,35)})}}
+function rel(forward,side){const f=dirs[player.dir],r=dirs[(player.dir+1)%4];return{x:player.x+f.x*forward+r.x*side,y:player.y+f.y*forward+r.y*side}}
+function draw(){ctx.clearRect(0,0,W,H);if(mode==="battle")drawBattle();else drawExplore();drawParticles();drawTexts()}
+function drawExplore(){let sky=ctx.createLinearGradient(0,0,0,H*.55);sky.addColorStop(0,"#8be7ff");sky.addColorStop(1,"#f8f0ff");ctx.fillStyle=sky;ctx.fillRect(0,0,W,H*.55);ctx.fillStyle="#65dd75";ctx.fillRect(0,H*.55,W,H*.45);ctx.fillStyle="#ffe66d";ctx.beginPath();ctx.arc(W*.82,H*.13,28*dpr,0,Math.PI*2);ctx.fill();for(let i=3;i>=1;i--){const p=rel(i,0),blocked=cell(p.x,p.y)==="#",monster=cell(p.x,p.y)==="M",portal=cell(p.x,p.y)==="D"||cell(p.x,p.y)==="E";let y1=H*(.28+i*.09),y2=H*(.42+i*.15),w1=W*(.18+i*.08),w2=W*(.32+i*.17);ctx.fillStyle=blocked?"#7d573b":"#6b5a9d";trap(W/2,y1,w1,W/2,y2,w2);ctx.fill();ctx.strokeStyle="#fff8";ctx.lineWidth=2*dpr;ctx.stroke();if(monster)drawMonster(W/2,y1+40*dpr,50*dpr*(1.25/i));if(portal)drawPortal(W/2,y1+45*dpr,60*dpr*(1.2/i));}[-1,1].forEach(s=>{const p=rel(1,s);ctx.fillStyle=cell(p.x,p.y)==="#"?"#8b633d":"#a0e67e";let x=s<0?W*.04:W*.70,y=H*.58;roundRect(x,y,W*.26,H*.24,16*dpr);ctx.fill();ctx.strokeStyle="#fff8";ctx.lineWidth=2*dpr;ctx.stroke();});ctx.fillStyle="#081224cc";roundRect(W*.27,8*dpr,W*.46,30*dpr,12*dpr);ctx.fill();ctx.fillStyle="#ffe66d";ctx.font=`${15*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("Facing "+dirs[player.dir].name,W/2,23*dpr)}
+function trap(x1,y1,w1,x2,y2,w2){ctx.beginPath();ctx.moveTo(x1-w1/2,y1);ctx.lineTo(x1+w1/2,y1);ctx.lineTo(x2+w2/2,y2);ctx.lineTo(x2-w2/2,y2);ctx.closePath()}
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function drawMonster(x,y,s){ctx.save();ctx.translate(x,y);ctx.fillStyle="#ffcc4d";ctx.beginPath();ctx.arc(0,0,s,0,Math.PI*2);ctx.fill();ctx.fillStyle="#081224";ctx.beginPath();ctx.arc(-s*.25,-s*.15,s*.1,0,Math.PI*2);ctx.arc(s*.25,-s*.15,s*.1,0,Math.PI*2);ctx.fill();ctx.fillRect(-s*.25,s*.15,s*.5,s*.08);ctx.font=`${s*.55}px system-ui`;ctx.textAlign="center";ctx.fillText("?",0,-s*.65);ctx.restore()}
+function drawPortal(x,y,s){ctx.save();ctx.translate(x,y);ctx.strokeStyle=level>=10?"#ff69d6":"#72f7ff";ctx.lineWidth=7*dpr;ctx.beginPath();ctx.ellipse(0,0,s*.55,s*.85,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle=level>=10?"#ff69d655":"#72f7ff44";ctx.beginPath();ctx.ellipse(0,0,s*.45,s*.72,0,0,Math.PI*2);ctx.fill();ctx.restore()}
+function drawBattle(){const type=dragonTypes[dragon.type];ctx.fillStyle="#17091c";ctx.fillRect(0,0,W,H);ctx.fillStyle="#3b1847";ctx.fillRect(0,H*.55,W,H*.45);ctx.fillStyle=type.color;ctx.beginPath();ctx.arc(W*.5,H*.35,80*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#111";ctx.beginPath();ctx.arc(W*.46,H*.32,7*dpr,0,Math.PI*2);ctx.arc(W*.54,H*.32,7*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.font=`${20*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText(type.emoji+" "+dragon.type+" Dragon",W*.5,H*.20);ctx.fillStyle="#111";roundRect(W*.18,H*.10,W*.64,12*dpr,6*dpr);ctx.fill();ctx.fillStyle="#ff5e72";roundRect(W*.18,H*.10,W*.64*(dragon.hp/dragon.maxHp),12*dpr,6*dpr);ctx.fill();ctx.fillStyle="#72f7ff";ctx.beginPath();ctx.arc(W*.5,H*.72,38*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";ctx.font=`${18*dpr}px system-ui`;ctx.fillText("Hero",W*.5,H*.82)}
+function drawParticles(){particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/35);ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;p.x+=p.dx;p.y+=p.dy;p.life--});particles=particles.filter(p=>p.life>0)}
+function drawTexts(){texts.forEach(t=>{ctx.globalAlpha=Math.max(0,t.life/50);ctx.font=`${18*dpr}px system-ui`;ctx.textAlign="center";ctx.strokeStyle="#000";ctx.lineWidth=4*dpr;ctx.strokeText(t.m,t.x,t.y);ctx.fillStyle=t.c;ctx.fillText(t.m,t.x,t.y);ctx.globalAlpha=1;t.y+=t.vy;t.life--});texts=texts.filter(t=>t.life>0)}
+function loop(now){time=now;if(running)draw();requestAnimationFrame(loop)}
+document.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"||e.key==="a")turn(-1);if(e.key==="ArrowRight"||e.key==="d")turn(1);if(e.key==="ArrowUp"||e.key==="w")move(1);if(e.key==="ArrowDown"||e.key==="s")move(-1);if(e.key===" "||e.key==="Enter")mode==="battle"?attack():interact();if(e.key==="m")magic();if(e.key==="h")heal()});
+resize();draw();requestAnimationFrame(loop);
+</script>
+</body>
+</html>
