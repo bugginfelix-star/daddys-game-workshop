@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Run from the redhat</title>
+<style>
+:root{
+  --sky:#86d9ff;
+  --grass:#6ee27d;
+  --road:#4f566b;
+  --panel:#111b44;
+  --text:#ffffff;
+  --gold:#ffe66d;
+  --cyan:#62f7ff;
+  --pink:#ff5fd7;
+  --green:#7dff9b;
+  --red:#ff3658;
+  --blue:#5f7dff;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  background:#050720;
+  color:var(--text);
+}
+body{
+  background:
+    radial-gradient(circle at 20% 10%,#62f7ff55,transparent 24%),
+    radial-gradient(circle at 85% 22%,#ff5fd744,transparent 25%),
+    linear-gradient(180deg,#0b1648,#050720);
+}
+#wrap{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  position:relative;
+  z-index:5;
+  padding:8px 9px;
+  background:linear-gradient(180deg,#1b2d74,#0c1432);
+  border-bottom:3px solid var(--cyan);
+  box-shadow:0 8px 20px #0008;
+}
+h1{
+  margin:0;
+  font-size:19px;
+  line-height:1.05;
+  text-shadow:2px 2px 0 #000,0 0 12px var(--cyan);
+}
+#hud{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:6px;
+  font-size:12px;
+  font-weight:1000;
+}
+.hudBox{
+  background:#071020;
+  border:2px solid #536fff;
+  border-radius:12px;
+  padding:5px 3px;
+  text-align:center;
+  box-shadow:inset 0 0 10px #0008;
+}
+#gameArea{
+  position:relative;
+  flex:1;
+  overflow:hidden;
+  touch-action:none;
+}
+canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+#controls{
+  position:relative;
+  z-index:6;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:8px;
+  padding:8px;
+  background:linear-gradient(180deg,#0b1230,#060814);
+  border-top:3px solid #536fff;
+}
+.ctrl{
+  min-height:58px;
+  border:3px solid #87a0ff;
+  border-radius:18px;
+  background:linear-gradient(180deg,#3756bf,#16255d);
+  color:white;
+  font-size:16px;
+  font-weight:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 6px 0 #071020,0 0 16px #536fff33;
+  text-shadow:1px 2px 0 #000;
+}
+.ctrl:active{transform:translateY(4px);box-shadow:0 2px 0 #071020}
+.wideControls{
+  grid-template-columns:1fr 1fr 1fr;
+}
+.action{
+  background:linear-gradient(180deg,#ffdf6d,#b36d16);
+  border-color:#fff2a8;
+  color:#2b1600;
+  text-shadow:1px 1px 0 #fff6c7;
+}
+.shield{
+  background:linear-gradient(180deg,#57f7ff,#2464de);
+  border-color:#bfffff;
+  color:#001a2b;
+  text-shadow:1px 1px 0 #bfffff;
+}
+#overlay{
+  position:absolute;
+  inset:0;
+  z-index:10;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:linear-gradient(180deg,#02030cd8,#08031ce8);
+}
+.panel{
+  width:min(620px,100%);
+  max-height:95%;
+  overflow:auto;
+  text-align:center;
+  background:linear-gradient(180deg,#172456,#0a1128);
+  border:4px solid var(--cyan);
+  border-radius:26px;
+  padding:18px;
+  box-shadow:0 0 28px #62f7ff66,0 18px 40px #0009,inset 0 0 0 2px #ffffff14;
+}
+.panel h2{
+  margin:0 0 8px;
+  font-size:clamp(27px,7vw,42px);
+  color:var(--gold);
+  text-shadow:2px 2px 0 #000,0 0 14px #ffe66d66;
+}
+.panel p,.panel li{
+  color:#dbe7ff;
+  font-size:16px;
+  line-height:1.38;
+  font-weight:800;
+}
+.panel ul{text-align:left;padding-left:22px}
+button{
+  width:100%;
+  min-height:58px;
+  margin-top:10px;
+  border:3px solid #fff2a8;
+  border-radius:18px;
+  background:linear-gradient(180deg,#ffdf6d,#b36d16);
+  color:#2b1600;
+  font-size:18px;
+  font-weight:1000;
+  box-shadow:0 7px 0 #071020,0 12px 24px #0008;
+  text-shadow:1px 1px 0 #fff6c7;
+}
+button:active{transform:translateY(4px);box-shadow:0 3px 0 #071020}
+.secondary{
+  background:linear-gradient(180deg,#57f7ff,#2464de);
+  border-color:#bfffff;
+  color:#001a2b;
+  text-shadow:1px 1px 0 #bfffff;
+}
+#toast{
+  position:absolute;
+  z-index:8;
+  left:10px;
+  right:10px;
+  top:10px;
+  background:#071020ee;
+  border:2px solid var(--gold);
+  border-radius:16px;
+  padding:10px;
+  text-align:center;
+  color:var(--gold);
+  font-weight:1000;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(-8px);
+  transition:.25s;
+  box-shadow:0 8px 22px #0008;
+}
+#toast.show{opacity:1;transform:translateY(0)}
+#banner{
+  position:absolute;
+  z-index:9;
+  left:50%;
+  top:38%;
+  transform:translate(-50%,-50%) scale(.8);
+  background:linear-gradient(180deg,#ffdf6d,#b36d16);
+  color:#251400;
+  border:4px solid #fff2a8;
+  border-radius:24px;
+  padding:14px 20px;
+  font-size:26px;
+  font-weight:1000;
+  text-align:center;
+  text-shadow:1px 1px 0 #fff6c7;
+  box-shadow:0 12px 30px #0009,0 0 22px #ffe66d99;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
+#banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.smallNote{font-size:13px!important;color:#c8d8ff!important}
+@media(max-height:690px){
+  .ctrl{min-height:50px;font-size:14px}
+  h1{font-size:16px}
+  #hud{font-size:11px}
+  .panel{padding:13px}
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+<header>
+  <h1>🏃 Run from the redhat</h1>
+  <div id="hud">
+    <div class="hudBox">Score<br><span id="score">0</span></div>
+    <div class="hudBox">IQ Power<br><span id="brain">100</span></div>
+    <div class="hudBox">Level<br><span id="level">1</span></div>
+    <div class="hudBox">Stars<br><span id="stars">0</span>/<span id="needStars">3</span></div>
+  </div>
+</header>
+
+<div id="gameArea">
+  <canvas id="game"></canvas>
+  <div id="toast"></div>
+  <div id="banner"></div>
+  <div id="overlay">
+    <div class="panel">
+      <h2>Run from the redhat</h2>
+      <p>A silly first-person cartoon escape game for Family Games.</p>
+      <ul>
+        <li>Run through goofy cartoon places.</li>
+        <li>Avoid red MEGA hat chasers.</li>
+        <li>Collect Brain Stars, Books, Lightbulbs, Smart Snacks, Shields, and Speed Sneakers.</li>
+        <li>Reach the safe zone before your IQ Power runs out.</li>
+      </ul>
+      <button onclick="startGame()">▶️ Start Game</button>
+      <button class="secondary" onclick="showHowToPlay()">❔ How to Play</button>
+      <p class="smallNote">This is a silly fictional cartoon chase. No real people or real campaign branding are used.</p>
+    </div>
+  </div>
+</div>
+
+<div id="controls" class="wideControls">
+  <div class="ctrl" onclick="turnLeft()">↩️ Turn</div>
+  <div class="ctrl action" onclick="moveForward()">⬆️ Forward</div>
+  <div class="ctrl" onclick="turnRight()">Turn ↪️</div>
+  <div class="ctrl" onclick="moveBack()">⬇️ Back</div>
+  <div class="ctrl shield" onclick="useShield()">🛡️ Shield</div>
+  <div class="ctrl action" onclick="dash()">💨 Dash</div>
+</div>
+</div>
+
+<script>
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+const scoreEl=document.getElementById("score");
+const brainEl=document.getElementById("brain");
+const levelEl=document.getElementById("level");
+const starsEl=document.getElementById("stars");
+const needStarsEl=document.getElementById("needStars");
+const overlay=document.getElementById("overlay");
+const toast=document.getElementById("toast");
+const banner=document.getElementById("banner");
+
+let W=0,H=0,dpr=1;
+let running=false;
+let level=1,maxLevel=5,score=0,brain=100,stars=0,needStars=3;
+let player={x:1,y:1,dir:1};
+let grid=[],rewards=[],chasers=[],particles=[],floatText=[];
+let shieldCount=0,shieldActive=0,speedTurns=0,turnCount=0;
+let chaserMoveEvery=3;
+let levelNames=["Neighborhood Escape","Schoolyard Sprint","Snowy Street Chase","Playground Panic","Final Brain Dash"];
+let highScore=Number(localStorage.getItem("redhat_run_high_score")||0);
+
+const DIRS=[
+  {x:0,y:-1,name:"North"},
+  {x:1,y:0,name:"East"},
+  {x:0,y:1,name:"South"},
+  {x:-1,y:0,name:"West"}
+];
+
+function resize(){
+  const r=canvas.getBoundingClientRect();
+  dpr=Math.max(1,window.devicePixelRatio||1);
+  W=Math.floor(r.width*dpr);
+  H=Math.floor(r.height*dpr);
+  canvas.width=W;canvas.height=H;
+}
+window.addEventListener("resize",resize);
+resize();
+
+function showToast(msg){
+  toast.textContent=msg;
+  toast.classList.add("show");
+  clearTimeout(showToast.t);
+  showToast.t=setTimeout(()=>toast.classList.remove("show"),1400);
+}
+function showBanner(msg){
+  banner.textContent=msg;
+  banner.classList.add("show");
+  clearTimeout(showBanner.t);
+  showBanner.t=setTimeout(()=>banner.classList.remove("show"),1400);
+}
+function updateHud(){
+  scoreEl.textContent=score;
+  brainEl.textContent=Math.max(0,brain);
+  levelEl.textContent=level;
+  starsEl.textContent=stars;
+  needStarsEl.textContent=needStars;
+}
+function showHowToPlay(){
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel">
+    <h2>How to Play</h2>
+    <ul>
+      <li><strong>Forward:</strong> move one space ahead.</li>
+      <li><strong>Turn:</strong> look left or right.</li>
+      <li><strong>Back:</strong> step backward.</li>
+      <li><strong>Dash:</strong> move faster if you found Speed Sneakers.</li>
+      <li><strong>Shield:</strong> block one chaser if you found a Shield Bubble.</li>
+      <li>Collect enough Brain Stars, then reach the green safe zone.</li>
+    </ul>
+    <button onclick="startGame()">▶️ Start Game</button>
+  </div>`;
+}
+function startGame(){
+  resize();
+  level=1;score=0;brain=100;shieldCount=0;shieldActive=0;speedTurns=0;
+  setupLevel();
+  overlay.style.display="none";
+  running=true;
+  showBanner(levelNames[level-1]);
+  requestAnimationFrame(loop);
+}
+function setupLevel(){
+  const maps=[
+    [
+      "#########",
+      "#P..B..E#",
+      "#.###.#.#",
+      "#S..C...#",
+      "#.###.#.#",
+      "#..L..H.#",
+      "#########"
+    ],
+    [
+      "###########",
+      "#P..B....E#",
+      "#.###.###.#",
+      "#..C..S...#",
+      "###.#.###.#",
+      "#H..L..C..#",
+      "###########"
+    ],
+    [
+      "############",
+      "#P...B....E#",
+      "#.####.###.#",
+      "#..C..S..C.#",
+      "###.##.###.#",
+      "#H..L..K...#",
+      "#..###..C..#",
+      "############"
+    ],
+    [
+      "#############",
+      "#P..B...S..E#",
+      "#.###.#####.#",
+      "#..C..L..C..#",
+      "###.###.###.#",
+      "#H..K..B..C.#",
+      "#..###.###..#",
+      "#############"
+    ],
+    [
+      "###############",
+      "#P..B..C...S.E#",
+      "#.###.#####.#.#",
+      "#..C..L..C..K.#",
+      "###.###.###.###",
+      "#H..K..B..C...#",
+      "#..###.###..C.#",
+      "#C....S....B..#",
+      "###############"
+    ]
+  ];
+  const src=maps[level-1];
+  grid=src.map(row=>row.split(""));
+  rewards=[];chasers=[];particles=[];floatText=[];
+  stars=0;needStars=level<5?3+level:7;
+  chaserMoveEvery=Math.max(1,4-Math.floor(level/2));
+  turnCount=0;
+  for(let y=0;y<grid.length;y++){
+    for(let x=0;x<grid[y].length;x++){
+      const c=grid[y][x];
+      if(c==="P"){player={x,y,dir:1};grid[y][x]="."}
+      if("BLSHK".includes(c)){
+        rewards.push({x,y,type:c});
+        grid[y][x]=".";
+      }
+      if(c==="C"){
+        chasers.push({x,y,stun:0});
+        grid[y][x]=".";
+      }
+    }
+  }
+  updateHud();
+}
+function cell(x,y){
+  if(y<0||y>=grid.length||x<0||x>=grid[y].length)return "#";
+  return grid[y][x];
+}
+function blocked(x,y){return cell(x,y)==="#"}
+function rewardAt(x,y){return rewards.findIndex(r=>r.x===x&&r.y===y)}
+function chaserAt(x,y){return chasers.findIndex(c=>c.x===x&&c.y===y)}
+function exitAt(x,y){return cell(x,y)==="E"}
+function safeAt(x,y){return cell(x,y)==="E"}
+
+function turnLeft(){
+  if(!running)return;
+  player.dir=(player.dir+3)%4;
+  afterAction(false);
+}
+function turnRight(){
+  if(!running)return;
+  player.dir=(player.dir+1)%4;
+  afterAction(false);
+}
+function moveForward(){
+  if(!running)return;
+  const d=DIRS[player.dir];
+  tryMove(player.x+d.x,player.y+d.y);
+}
+function moveBack(){
+  if(!running)return;
+  const d=DIRS[player.dir];
+  tryMove(player.x-d.x,player.y-d.y);
+}
+function dash(){
+  if(!running)return;
+  if(speedTurns<=0){showToast("Find Speed Sneakers first!");return}
+  const d=DIRS[player.dir];
+  let moved=false;
+  for(let i=0;i<2;i++){
+    const nx=player.x+d.x,ny=player.y+d.y;
+    if(blocked(nx,ny))break;
+    player.x=nx;player.y=ny;moved=true;
+    collectHere();
+    if(checkExit())return;
+  }
+  if(moved){speedTurns--;showToast("Dash!");afterAction(false)}
+}
+function useShield(){
+  if(!running)return;
+  if(shieldCount<=0){showToast("Find a Shield Bubble first!");return}
+  shieldCount--;
+  shieldActive=2;
+  showToast("Shield Bubble on!");
+  addText(player.x,player.y,"SHIELD!");
+  updateHud();
+}
+function tryMove(nx,ny){
+  if(blocked(nx,ny)){showToast("Bonk! Wall ahead.");return}
+  player.x=nx;player.y=ny;
+  collectHere();
+  if(checkExit())return;
+  afterAction(true);
+}
+function collectHere(){
+  const i=rewardAt(player.x,player.y);
+  if(i<0)return;
+  const r=rewards.splice(i,1)[0];
+  const info={
+    B:{name:"Brain Star",score:100,brain:8,star:1,msg:"Brain Star!"},
+    L:{name:"Lightbulb",score:75,brain:14,star:0,msg:"Bright idea!"},
+    S:{name:"Smart Snack",score:60,brain:18,star:0,msg:"Smart Snack!"},
+    H:{name:"Shield Bubble",score:50,brain:0,star:0,msg:"Shield Bubble!",shield:1},
+    K:{name:"Speed Sneakers",score:50,brain:0,star:0,msg:"Speed Sneakers!",speed:3}
+  }[r.type];
+  score+=info.score;
+  brain=Math.min(120,brain+info.brain);
+  stars+=info.star;
+  if(info.shield)shieldCount++;
+  if(info.speed)speedTurns+=info.speed;
+  showToast(info.msg);
+  addText(player.x,player.y,"+"+info.score);
+  popParticles(r.x,r.y,rewardColor(r.type),16);
+  updateHud();
+}
+function checkExit(){
+  if(!exitAt(player.x,player.y))return false;
+  if(stars<needStars){
+    showToast("Need "+(needStars-stars)+" more Brain Star(s)!");
+    return false;
+  }
+  if(level>=maxLevel){winGame();return true}
+  level++;
+  showBanner(levelNames[level-1]);
+  setupLevel();
+  return true;
+}
+function afterAction(moved){
+  turnCount++;
+  if(turnCount%chaserMoveEvery===0)moveChasers();
+  checkCaught();
+  brain=Math.max(0,brain-1);
+  if(brain<=0)gameOver();
+  updateHud();
+}
+function moveChasers(){
+  chasers.forEach(c=>{
+    if(c.stun>0){c.stun--;return}
+    const options=[
+      {x:c.x+1,y:c.y},{x:c.x-1,y:c.y},{x:c.x,y:c.y+1},{x:c.x,y:c.y-1}
+    ].filter(o=>!blocked(o.x,o.y));
+    options.sort((a,b)=>dist(a,player)-dist(b,player));
+    if(options[0] && Math.random()<(.75+level*.04)){
+      c.x=options[0].x;c.y=options[0].y;
+    }
+  });
+}
+function dist(a,b){return Math.abs(a.x-b.x)+Math.abs(a.y-b.y)}
+function checkCaught(){
+  const i=chaserAt(player.x,player.y);
+  if(i<0)return;
+  if(shieldActive>0){
+    const c=chasers[i];
+    c.stun=3;
+    shieldActive=0;
+    showToast("Shield blocked a MEGA chaser!");
+    addText(player.x,player.y,"BLOCK!");
+    popParticles(player.x,player.y,"#62f7ff",22);
+    return;
+  }
+  brain-=22;
+  showToast("Brain Power Down!");
+  addText(player.x,player.y,"IQ -22");
+  popParticles(player.x,player.y,"#ff3658",24);
+  // push player backward away from chaser if possible
+  const d=DIRS[player.dir];
+  const bx=player.x-d.x,by=player.y-d.y;
+  if(!blocked(bx,by)){player.x=bx;player.y=by}
+  if(brain<=0)gameOver();
+}
+function winGame(){
+  running=false;
+  if(score>highScore){highScore=score;localStorage.setItem("redhat_run_high_score",String(highScore))}
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel">
+    <h2>You Saved Your Brain Power!</h2>
+    <p>You escaped the final stage with <strong>${brain}</strong> IQ Power left.</p>
+    <p>Score: <strong>${score}</strong><br>Best: <strong>${highScore}</strong></p>
+    <button onclick="startGame()">🔁 Play Again</button>
+  </div>`;
+}
+function gameOver(){
+  running=false;
+  if(score>highScore){highScore=score;localStorage.setItem("redhat_run_high_score",String(highScore))}
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel">
+    <h2>Game Over</h2>
+    <p>The MEGA chasers made your Brain Power hit zero.</p>
+    <p>Score: <strong>${score}</strong><br>Best: <strong>${highScore}</strong></p>
+    <button onclick="startGame()">🔁 Play Again</button>
+  </div>`;
+}
+function rewardColor(t){
+  return t==="B"?"#ffe66d":t==="L"?"#62f7ff":t==="S"?"#7dff9b":t==="H"?"#57f7ff":"#ff5fd7";
+}
+function rewardEmoji(t){
+  return t==="B"?"⭐":t==="L"?"💡":t==="S"?"🍎":t==="H"?"🛡️":"👟";
+}
+function popParticles(x,y,color,count){
+  for(let i=0;i<count;i++){
+    particles.push({x,y,dx:(Math.random()-.5)*.12,dy:(Math.random()-.5)*.12,life:28+Math.random()*20,color});
+  }
+}
+function addText(x,y,text){floatText.push({x,y,text,life:48})}
+
+function relativeCell(forward,side){
+  const f=DIRS[player.dir];
+  const r=DIRS[(player.dir+1)%4];
+  return {x:player.x+f.x*forward+r.x*side,y:player.y+f.y*forward+r.y*side};
+}
+function nearestVisibleThing(forward,side){
+  const p=relativeCell(forward,side);
+  const ci=chaserAt(p.x,p.y);
+  if(ci>=0)return {kind:"chaser",obj:chasers[ci],pos:p};
+  const ri=rewardAt(p.x,p.y);
+  if(ri>=0)return {kind:"reward",obj:rewards[ri],pos:p};
+  if(exitAt(p.x,p.y))return {kind:"exit",pos:p};
+  return null;
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  drawWorld();
+  drawMiniMap();
+  drawEffects();
+}
+function drawWorld(){
+  // sky and ground
+  const sky=ctx.createLinearGradient(0,0,0,H*.55);
+  sky.addColorStop(0,"#8fe4ff");
+  sky.addColorStop(1,"#f4fbff");
+  ctx.fillStyle=sky;
+  ctx.fillRect(0,0,W,H*.55);
+  ctx.fillStyle="#69df71";
+  ctx.fillRect(0,H*.55,W,H*.45);
+
+  // sun/clouds
+  ctx.fillStyle="#ffe66d";
+  ctx.beginPath();ctx.arc(W*.82,H*.13,28*dpr,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#fff";
+  for(let i=0;i<3;i++){
+    ctx.beginPath();ctx.ellipse(W*(.18+i*.06),H*.15,28*dpr,13*dpr,0,0,Math.PI*2);ctx.fill();
+  }
+
+  // first person path strips
+  const levels=[
+    {y1:H*.55,y2:H*.97,w1:W*.92,w2:W*1.22,alpha:1},
+    {y1:H*.43,y2:H*.68,w1:W*.55,w2:W*.92,alpha:.9},
+    {y1:H*.34,y2:H*.50,w1:W*.32,w2:W*.55,alpha:.8}
+  ];
+  levels.forEach((seg,i)=>{
+    const p=relativeCell(i+1,0);
+    ctx.globalAlpha=seg.alpha;
+    ctx.fillStyle=blocked(p.x,p.y)?"#9b7953":"#4f566b";
+    drawTrapezoid(W/2,seg.y1,seg.w1,W/2,seg.y2,seg.w2);
+    ctx.fill();
+    ctx.strokeStyle="#ffffff55";
+    ctx.lineWidth=3*dpr;
+    ctx.stroke();
+    if(blocked(p.x,p.y)){
+      ctx.fillStyle="#5b3b23";
+      ctx.font=`${36*dpr}px system-ui`;
+      ctx.textAlign="center";ctx.textBaseline="middle";
+      ctx.fillText("🚧",W/2,(seg.y1+seg.y2)/2);
+    }
+    ctx.globalAlpha=1;
+  });
+
+  // side paths/walls near
+  [-1,1].forEach(side=>{
+    const near=relativeCell(1,side);
+    ctx.fillStyle=blocked(near.x,near.y)?"#b87949":"#87d98d";
+    const x=side<0?W*.05:W*.68;
+    const y=H*.58;
+    roundRect(x,y,W*.27,H*.25,14*dpr);
+    ctx.fill();
+    ctx.strokeStyle="#ffffff55";ctx.lineWidth=3*dpr;ctx.stroke();
+    ctx.fillStyle="#111b44";
+    ctx.font=`${18*dpr}px system-ui`;
+    ctx.textAlign="center";
+    ctx.fillText(side<0?"Left path":"Right path",x+W*.135,y+H*.13);
+  });
+
+  // things in view, far to near
+  for(let f=3;f>=0;f--){
+    for(let s=-1;s<=1;s++){
+      const thing=nearestVisibleThing(f,s);
+      if(!thing)continue;
+      drawThing(thing,f,s);
+    }
+  }
+
+  // direction label
+  ctx.fillStyle="#071020cc";
+  roundRect(W*.28,8*dpr,W*.44,30*dpr,12*dpr);
+  ctx.fill();
+  ctx.fillStyle="#ffe66d";
+  ctx.font=`${15*dpr}px system-ui`;
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillText("Facing "+DIRS[player.dir].name,W/2,23*dpr);
+}
+function drawTrapezoid(x1,y1,w1,x2,y2,w2){
+  ctx.beginPath();
+  ctx.moveTo(x1-w1/2,y1);
+  ctx.lineTo(x1+w1/2,y1);
+  ctx.lineTo(x2+w2/2,y2);
+  ctx.lineTo(x2-w2/2,y2);
+  ctx.closePath();
+}
+function drawThing(thing,f,s){
+  const depth=Math.max(.25,1-(f*.22));
+  const x=W/2 + s*W*.26*depth;
+  const y=H*(.38 + (3-f)*.13);
+  const size=(thing.kind==="chaser"?70:54)*dpr*depth;
+  ctx.save();
+  ctx.translate(x,y);
+  if(thing.kind==="chaser"){
+    drawChaser(size);
+  }else if(thing.kind==="reward"){
+    ctx.font=`${size}px system-ui`;
+    ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText(rewardEmoji(thing.obj.type),0,0);
+  }else if(thing.kind==="exit"){
+    ctx.fillStyle="#7dff9b";
+    roundRect(-size*.8,-size*.55,size*1.6,size*1.1,12*dpr);
+    ctx.fill();
+    ctx.strokeStyle="#fff";ctx.lineWidth=4*dpr;ctx.stroke();
+    ctx.fillStyle="#071020";
+    ctx.font=`${Math.max(12*dpr,size*.24)}px system-ui`;
+    ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText("SAFE",0,0);
+  }
+  ctx.restore();
+}
+function drawChaser(size){
+  // paper-cutout cartoon body
+  ctx.fillStyle="#f2c78f";
+  ctx.beginPath();ctx.arc(0,-size*.12,size*.28,0,Math.PI*2);ctx.fill();
+  // red hat
+  ctx.fillStyle="#ff3658";
+  roundRect(-size*.34,-size*.46,size*.68,size*.22,5*dpr);
+  ctx.fill();
+  ctx.fillStyle="#fff";
+  ctx.font=`${size*.13}px system-ui`;
+  ctx.textAlign="center";ctx.textBaseline="middle";
+  ctx.fillText("MEGA",0,-size*.35);
+  // body
+  ctx.fillStyle="#334fb8";
+  roundRect(-size*.25,size*.15,size*.5,size*.48,9*dpr);
+  ctx.fill();
+  // eyes/mouth
+  ctx.fillStyle="#071020";
+  ctx.beginPath();ctx.arc(-size*.1,-size*.12,size*.035,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(size*.1,-size*.12,size*.035,0,Math.PI*2);ctx.fill();
+  ctx.fillRect(-size*.12,size*.02,size*.24,size*.035);
+}
+function drawMiniMap(){
+  const cellSize=Math.min(12*dpr, W/(grid[0].length+2), H*.18/grid.length);
+  const ox=8*dpr,oy=H-grid.length*cellSize-8*dpr;
+  ctx.globalAlpha=.88;
+  ctx.fillStyle="#071020cc";
+  roundRect(ox-5*dpr,oy-5*dpr,grid[0].length*cellSize+10*dpr,grid.length*cellSize+10*dpr,10*dpr);
+  ctx.fill();
+  for(let y=0;y<grid.length;y++){
+    for(let x=0;x<grid[y].length;x++){
+      ctx.fillStyle=grid[y][x]==="#"?"#5b3b23":grid[y][x]==="E"?"#7dff9b":"#dbe7ff";
+      ctx.fillRect(ox+x*cellSize,oy+y*cellSize,cellSize-1,cellSize-1);
+    }
+  }
+  rewards.forEach(r=>{
+    ctx.fillStyle=rewardColor(r.type);
+    ctx.beginPath();ctx.arc(ox+r.x*cellSize+cellSize/2,oy+r.y*cellSize+cellSize/2,cellSize*.32,0,Math.PI*2);ctx.fill();
+  });
+  chasers.forEach(c=>{
+    ctx.fillStyle="#ff3658";
+    ctx.beginPath();ctx.arc(ox+c.x*cellSize+cellSize/2,oy+c.y*cellSize+cellSize/2,cellSize*.36,0,Math.PI*2);ctx.fill();
+  });
+  ctx.fillStyle="#62f7ff";
+  ctx.beginPath();ctx.arc(ox+player.x*cellSize+cellSize/2,oy+player.y*cellSize+cellSize/2,cellSize*.42,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=1;
+}
+function drawEffects(){
+  particles.forEach(p=>{
+    const px=W/2+(p.x-player.x)*35*dpr+Math.random()*2;
+    const py=H*.5+(p.y-player.y)*35*dpr;
+    ctx.globalAlpha=Math.max(0,p.life/48);
+    ctx.fillStyle=p.color;
+    ctx.beginPath();ctx.arc(px,py,4*dpr,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+    p.x+=p.dx;p.y+=p.dy;p.life--;
+  });
+  particles=particles.filter(p=>p.life>0);
+  floatText.forEach(t=>{
+    const px=W/2+(t.x-player.x)*35*dpr;
+    const py=H*.42+(t.y-player.y)*35*dpr - (48-t.life)*.6*dpr;
+    ctx.globalAlpha=Math.max(0,t.life/48);
+    ctx.font=`${18*dpr}px system-ui`;
+    ctx.textAlign="center";
+    ctx.strokeStyle="#000";ctx.lineWidth=4*dpr;
+    ctx.strokeText(t.text,px,py);
+    ctx.fillStyle="#ffe66d";
+    ctx.fillText(t.text,px,py);
+    ctx.globalAlpha=1;
+    t.life--;
+  });
+  floatText=floatText.filter(t=>t.life>0);
+}
+function roundRect(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function loop(){
+  if(running)draw();
+  requestAnimationFrame(loop);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowUp"||e.key==="w")moveForward();
+  if(e.key==="ArrowDown"||e.key==="s")moveBack();
+  if(e.key==="ArrowLeft"||e.key==="a")turnLeft();
+  if(e.key==="ArrowRight"||e.key==="d")turnRight();
+  if(e.key===" "||e.key==="Shift")dash();
+  if(e.key==="e")useShield();
+});
+draw();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
