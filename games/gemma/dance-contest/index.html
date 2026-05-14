@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Dance Contest - Gemma</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#16051f;color:white;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{background:radial-gradient(circle at 16% 8%,#ff83df44,transparent 25%),radial-gradient(circle at 86% 12%,#72f7ff44,transparent 25%),linear-gradient(#311064,#13051e)}
+#app{height:100%;display:flex;flex-direction:column}
+header{z-index:4;padding:calc(7px + env(safe-area-inset-top)) 10px 7px;background:linear-gradient(#ff75d8,#815bff);border-bottom:3px solid #fff2a8;box-shadow:0 8px 24px #0008}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{font-size:19px;line-height:1;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:2px 2px #5a2877,0 0 12px #fff}
+.pill{font-size:11px;font-weight:1000;background:linear-gradient(#fff38b,#ffb23f);color:#5a2a00;border:2px solid #fff8bd;border-radius:999px;padding:5px 9px;white-space:nowrap}
+#hud{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:7px}
+.hud{background:#ffffff33;border:1.5px solid #fff;border-radius:12px;text-align:center;padding:5px 2px;box-shadow:inset 0 0 12px #0003}
+.hud b{display:block;font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:.3px}.hud span{font-size:13px;font-weight:1000;color:#fff}
+#stage{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none;background:linear-gradient(#24124e,#4b1675 55%,#ff9bdc)}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#toast{position:absolute;z-index:9;top:12px;left:12px;right:12px;background:#16051fee;border:2px solid #ffe66d;border-radius:16px;color:#ffe66d;text-align:center;font-weight:1000;padding:10px;opacity:0;transform:translateY(-8px);transition:.18s;pointer-events:none;box-shadow:0 10px 24px #0008}
+#toast.show{opacity:1;transform:translateY(0)}
+#banner{position:absolute;z-index:10;left:50%;top:34%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(#fff18a,#ffb23f);color:#5a2a00;border:4px solid #fff6b8;border-radius:22px;padding:13px 18px;font-size:24px;font-weight:1000;text-align:center;opacity:0;transition:.2s;pointer-events:none;box-shadow:0 12px 32px #0008,0 0 28px #ffe66d88}
+#banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(#16051fee,#ffd3f1dd)}
+.panel{width:min(780px,100%);max-height:96%;overflow:auto;text-align:center;background:linear-gradient(#ff75d8,#815bff);border:4px solid #fff;border-radius:30px;padding:18px;box-shadow:0 22px 55px #0009,0 0 34px #fff6;color:white}
+.logo{font-size:clamp(34px,9vw,64px);line-height:.93;margin:0 0 8px;font-weight:1000;text-transform:uppercase;text-shadow:3px 3px #5a2877,5px 5px #ffb23f,-3px -2px #72f7ff}
+.panel h2{margin:0 0 8px;font-size:clamp(24px,6vw,40px);color:#fff38b;text-shadow:2px 2px #5a2877}
+.panel p,.panel li{color:#fff;font-size:16px;line-height:1.35;font-weight:800}.panel ul{text-align:left;padding-left:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+.tile{background:#ffffff30;border:2px solid #fff;border-radius:18px;padding:10px 6px;font-size:13px;font-weight:1000}
+.row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}@media(min-width:620px){.row{grid-template-columns:1fr 1fr}}
+button{width:100%;min-height:58px;border:3px solid #fff2a8;border-radius:20px;background:linear-gradient(#ffec82,#ffb23f 60%,#b36d16);color:#5a2a00;font-size:18px;font-weight:1000;box-shadow:0 7px 0 #7e4d13,0 12px 24px #0005;text-shadow:1px 1px #fff8bf}
+button:active{transform:translateY(4px);box-shadow:0 3px 0 #7e4d13}
+button.blue{background:linear-gradient(#75fbff,#2b82ff 64%,#1751bd);border-color:#c8ffff;color:#00182c;text-shadow:1px 1px #c8ffff}
+button.green{background:linear-gradient(#9cffab,#29c957 64%,#13732e);border-color:#d6ffdd;color:#06230c;text-shadow:1px 1px #d6ffdd}
+button.pink{background:linear-gradient(#ff79e1,#d33ab7,#7b176b);border-color:#ffc9f1;color:white;text-shadow:1px 2px #000}
+.card{background:#ffffff30;border:2px solid #fff;border-radius:18px;padding:10px;margin:8px 0;text-align:left}.card strong{color:#fff38b}.small{font-size:13px;color:#fff}
+#controls{z-index:6;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(#51217d,#180720);border-top:3px solid #fff}
+.hit{min-height:66px;border:3px solid #fff;border-radius:20px;font-size:25px;font-weight:1000;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 #5a2877;text-shadow:1px 2px #000;padding:6px}
+.hit:active,.hit.down{transform:translateY(4px);box-shadow:0 2px 0 #5a2877}
+#pinkBtn{background:linear-gradient(#ff9de6,#f345bf)}#blueBtn{background:linear-gradient(#99f9ff,#2b82ff)}#purpleBtn{background:linear-gradient(#d59cff,#8b5dff)}#yellowBtn{background:linear-gradient(#fff38b,#ffb23f);color:#5a2a00;text-shadow:1px 1px #fff}
+#muteBtn{position:absolute;right:10px;bottom:10px;z-index:7;width:auto;min-height:38px;font-size:13px;padding:5px 10px}
+#energyWrap{position:absolute;left:10px;right:10px;top:10px;height:14px;background:#16051fbb;border:2px solid #fff;border-radius:999px;overflow:hidden;z-index:6}
+#energyFill{height:100%;width:100%;background:linear-gradient(90deg,#ff5e72,#ffe66d,#8cff9f)}
+@media(max-height:700px){.hit{min-height:54px;font-size:20px}h1{font-size:16px}.hud b{font-size:8px}.hud span{font-size:12px}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+<div class="top"><h1>💃 Dance Contest</h1><div class="pill" id="stagePill">Bedroom Dance Party</div></div>
+<div id="hud">
+<div class="hud"><b>Score</b><span id="score">0</span></div>
+<div class="hud"><b>Combo</b><span id="combo">0</span></div>
+<div class="hud"><b>Stars</b><span id="stars">0</span></div>
+<div class="hud"><b>Coins</b><span id="coins">0</span></div>
+<div class="hud"><b>Best</b><span id="best">0</span></div>
+</div>
+</header>
+<div id="stage">
+<canvas id="game"></canvas>
+<div id="energyWrap"><div id="energyFill"></div></div>
+<button id="muteBtn" onclick="toggleMute()">🔊 Sound</button>
+<div id="toast"></div><div id="banner"></div>
+<div id="overlay">
+<div class="panel">
+<div class="logo">Dance<br>Contest</div>
+<h2>Gemma's Puppy Pop Rhythm Game</h2>
+<p>Pick a dancer, choose a cute helper, tap notes to the beat, and dance against Mr. Puppy Paws.</p>
+<div class="grid"><div class="tile">🎵 Rhythm Notes</div><div class="tile">🐶 Puppy Rivals</div><div class="tile">💖 Big Buttons</div><div class="tile">🎁 Rewards</div><div class="tile">🛒 Shop</div><div class="tile">💾 Saves</div></div>
+<div class="row">
+<button onclick="showStageSelect()">▶️ Play</button>
+<button class="pink" onclick="showCharacters()">👗 Characters</button>
+<button class="blue" onclick="showPets()">🐾 Pet Helpers</button>
+<button class="green" onclick="showShop()">🛒 Shop</button>
+<button class="blue" onclick="showHow()">❔ Instructions</button>
+</div>
+</div></div>
+</div>
+<div id="controls">
+<div class="hit" id="pinkBtn">💖</div>
+<div class="hit" id="blueBtn">⭐</div>
+<div class="hit" id="purpleBtn">🎵</div>
+<div class="hit" id="yellowBtn">✨</div>
+</div>
+</div>
+<script>
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d",{alpha:false});
+const overlay=document.getElementById("overlay"),toast=document.getElementById("toast"),banner=document.getElementById("banner"),energyFill=document.getElementById("energyFill");
+const ui={score:document.getElementById("score"),combo:document.getElementById("combo"),stars:document.getElementById("stars"),coins:document.getElementById("coins"),best:document.getElementById("best"),stagePill:document.getElementById("stagePill")};
+let dpr=1,W=0,H=0,running=false,score=0,combo=0,energy=100,stageIndex=0,notes=[],particles=[],texts=[],songStart=0,songLength=26000,muted=false,audioCtx=null,beatTimer=null,roundDone=false;
+const lanes=[{id:0,emoji:"💖",color:"#ff4fb8",x:.2,keys:["ArrowLeft","a"]},{id:1,emoji:"⭐",color:"#4bdcff",x:.4,keys:["ArrowUp","s"]},{id:2,emoji:"🎵",color:"#a763ff",x:.6,keys:["ArrowDown","d"]},{id:3,emoji:"✨",color:"#ffe66d",x:.8,keys:["ArrowRight","f"]}];
+const stages=[{name:"Bedroom Dance Party",beat:720,need:1200,pattern:[0,1,2,3,1,2,0,3],opponent:"Puppy Pop Twins",song:"Easy Pop Beat"},{name:"Sparkle Studio",beat:620,need:1800,pattern:[0,2,1,3,0,1,2,3,2,1],opponent:"Glitter Pup Crew",song:"Sparkle Stage Beat"},{name:"Puppy Paw Plaza",beat:560,need:2400,pattern:[3,2,1,0,1,3,0,2,2,3,1],opponent:"Mr. Puppy Paws",song:"Puppy Party Beat"},{name:"Rainbow Runway",beat:500,need:3100,pattern:[0,1,0,2,3,2,1,3,0,3,2,1],opponent:"Runway Puppies",song:"Rainbow Pop Beat"},{name:"Final Puppy Dance-Off",beat:440,need:3900,pattern:[0,2,3,1,0,1,2,3,3,2,1,0,1,3],opponent:"Mr. Puppy Paws Team",song:"Final Dance Beat"}];
+const dancers=[{name:"Sparkle Mia",bonus:"score",desc:"+5% score bonus"},{name:"Rainbow Ruby",bonus:"energy",desc:"slower energy loss"},{name:"Starla",bonus:"combo",desc:"bigger combo bonus"},{name:"DJ Kitty Pop",bonus:"coins",desc:"+10% coins"},{name:"Glitter Gem",bonus:"all",desc:"tiny bonus to everything"}];
+const pets=[{name:"Sparkle Kitten",emoji:"🐱",bonus:"shield",desc:"protects one missed note"},{name:"Bubble Puppy",emoji:"🐶",bonus:"coins",desc:"bonus coins"},{name:"Star Bunny",emoji:"🐰",bonus:"combo",desc:"combo points boost"},{name:"Rainbow Bird",emoji:"🐦",bonus:"slow",desc:"slightly slows notes"}];
+const saveKey="gemma_dance_contest_save_v1";
+let save=loadSave(),selectedDancer=save.dancer||0,selectedPet=save.pet||0,missShield=false;
+function loadSave(){try{return JSON.parse(localStorage.getItem(saveKey))||{coins:0,stars:0,unlockedDancers:[0],unlockedPets:[0],unlockedStages:[0],best:{},up:{energy:0,score:0,timing:0},dancer:0,pet:0,won:false}}catch(e){return{coins:0,stars:0,unlockedDancers:[0],unlockedPets:[0],unlockedStages:[0],best:{},up:{energy:0,score:0,timing:0},dancer:0,pet:0,won:false}}}
+function saveGame(){localStorage.setItem(saveKey,JSON.stringify(save))}
+function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(2,Math.max(1,devicePixelRatio||1));W=Math.floor(r.width*dpr);H=Math.floor(r.height*dpr);canvas.width=W;canvas.height=H}
+window.addEventListener("resize",resize);resize();
+function showToast(m){toast.textContent=m;toast.classList.add("show");clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove("show"),1400)}
+function showBanner(m){banner.textContent=m;banner.classList.add("show");clearTimeout(showBanner.t);showBanner.t=setTimeout(()=>banner.classList.remove("show"),1200)}
+function updateHud(){ui.score.textContent=score;ui.combo.textContent=combo;ui.stars.textContent=save.stars;ui.coins.textContent=save.coins;ui.best.textContent=save.best[stageIndex]||0;ui.stagePill.textContent=stages[stageIndex].name;energyFill.style.width=Math.max(0,energy)+"%"}
+function showHome(){stopMusic();running=false;overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><div class="logo">Dance<br>Contest</div><h2>Gemma's Puppy Pop Rhythm Game</h2><p>Tap notes to the beat and win the puppy dance contest.</p><div class="row"><button onclick="showStageSelect()">▶️ Play</button><button class="pink" onclick="showCharacters()">👗 Characters</button><button class="blue" onclick="showPets()">🐾 Pet Helpers</button><button class="green" onclick="showShop()">🛒 Shop</button><button class="blue" onclick="showHow()">❔ Instructions</button></div></div>`}
+function showHow(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Instructions</h2><ul><li>Tap the matching button when the note reaches the sparkle target line.</li><li>Perfect and Great hits build combo and score.</li><li>Missing notes lowers your dance energy.</li><li>Beat Mr. Puppy Paws and puppy dancers to unlock rewards.</li><li>Use coins for dancers, pets, outfits, and upgrades.</li></ul><button onclick="showHome()">⬅️ Back</button></div>`}
+window.showHome=showHome;window.showHow=showHow;
+function showStageSelect(){let html=stages.map((s,i)=>{let unlocked=save.unlockedStages.includes(i);let best=save.best[i]||0;return `<div class="card"><strong>${unlocked?"🎵":"🔒"} ${s.name}</strong><div class="small">${s.song} • Rival: ${s.opponent} • Best ${best}</div><button ${unlocked?`onclick="startStage(${i})"`:"disabled"}>${unlocked?"Dance":"Locked"}</button></div>`}).join("");overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Choose Stage</h2>${html}<button class="blue" onclick="showHome()">⬅️ Back</button></div>`}
+window.showStageSelect=showStageSelect;
+function showCharacters(){let html=dancers.map((d,i)=>{let u=save.unlockedDancers.includes(i),sel=i===selectedDancer;return `<div class="card"><strong>${sel?"✅":u?"👗":"🔒"} ${d.name}</strong><div class="small">${d.desc}</div><button ${u?`onclick="chooseDancer(${i})"`:"disabled"}>${u?sel?"Chosen":"Choose":"Locked"}</button></div>`}).join("");overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Characters</h2>${html}<button class="blue" onclick="showHome()">⬅️ Back</button></div>`}
+window.showCharacters=showCharacters;window.chooseDancer=i=>{selectedDancer=i;save.dancer=i;saveGame();showCharacters()};
+function showPets(){let html=pets.map((p,i)=>{let u=save.unlockedPets.includes(i),sel=i===selectedPet;return `<div class="card"><strong>${sel?"✅":u?p.emoji:"🔒"} ${p.name}</strong><div class="small">${p.desc}</div><button ${u?`onclick="choosePet(${i})"`:"disabled"}>${u?sel?"Chosen":"Choose":"Locked"}</button></div>`}).join("");overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Pet Helpers</h2>${html}<button class="blue" onclick="showHome()">⬅️ Back</button></div>`}
+window.showPets=showPets;window.choosePet=i=>{selectedPet=i;save.pet=i;saveGame();showPets()};
+function showShop(){let u=save.up;function row(k,n,c,t){return `<div class="card"><strong>${n} Lv.${u[k]}</strong><div class="small">${t} • Cost ${c}</div><button onclick="buyUp('${k}',${c})">Buy</button></div>`}overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Shop / Upgrades</h2><p>Coins: <strong>${save.coins}</strong></p>${row("energy","Energy Sparkles",60+u.energy*50,"Start with more dance energy")}${row("score","Score Glitter",70+u.score*55,"More score per note")}${row("timing","Timing Tiara",80+u.timing*60,"More forgiving timing")}<button class="pink" onclick="resetSave()">🧹 Reset Save</button><button class="blue" onclick="showHome()">⬅️ Back</button></div>`}
+window.showShop=showShop;window.buyUp=(k,c)=>{if(save.coins<c){showToast("Not enough coins.");return}save.coins-=c;save.up[k]++;saveGame();showShop()};window.resetSave=()=>{if(confirm("Reset Dance Contest save?")){localStorage.removeItem(saveKey);save=loadSave();selectedDancer=0;selectedPet=0;showHome();updateHud()}};
+function initAudio(){if(audioCtx)return;try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){audioCtx=null}}
+function beep(freq=440,dur=.08,type="sine",vol=.08){if(muted||!audioCtx)return;let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(audioCtx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.stop(audioCtx.currentTime+dur)}
+function startBeat(){stopMusic();if(muted)return;let st=stages[stageIndex],step=0;beatTimer=setInterval(()=>{beep([262,330,392,523][step%4],.07,step%4===0?"square":"sine",.06);if(step%4===0)beep(120,.05,"triangle",.09);step++},st.beat/2)}
+function stopMusic(){if(beatTimer){clearInterval(beatTimer);beatTimer=null}}
+function toggleMute(){muted=!muted;document.getElementById("muteBtn").textContent=muted?"🔇 Muted":"🔊 Sound";if(muted)stopMusic();else if(running)startBeat()}
+window.toggleMute=toggleMute;
+function startStage(i){initAudio();if(audioCtx&&audioCtx.state==="suspended")audioCtx.resume();stageIndex=i;overlay.style.display="none";running=false;roundDone=false;score=0;combo=0;energy=100+save.up.energy*8;notes=[];particles=[];texts=[];missShield=pets[selectedPet].bonus==="shield";showBanner("3");updateHud();let c=3;let cd=setInterval(()=>{c--;if(c>0)showBanner(String(c));else{clearInterval(cd);showBanner("Dance!");beginSong()}},850)}
+window.startStage=startStage;
+function beginSong(){running=true;songStart=performance.now();startBeat();scheduleNotes()}
+function scheduleNotes(){notes=[];let st=stages[stageIndex],t=1200,idx=0;while(t<songLength-1000){let lane=st.pattern[idx%st.pattern.length];if(Math.random()<.18&&stageIndex>1)lane=Math.floor(Math.random()*4);notes.push({lane,time:t,y:-60*dpr,hit:false,miss:false});t+=st.beat;idx++}}
+function hitLane(lane){if(!running||roundDone)return;let targetY=H*.72,best=null,bd=9999;notes.forEach(n=>{if(n.lane===lane&&!n.hit&&!n.miss){let d=Math.abs(n.y-targetY);if(d<bd){bd=d;best=n}}});let windowSize=(70+save.up.timing*8)*dpr;if(best&&bd<windowSize){best.hit=true;combo++;let rating=bd<24*dpr?"Perfect!":bd<48*dpr?"Great!":"Good!";let add=rating==="Perfect!"?120:rating==="Great!"?90:60;if(dancers[selectedDancer].bonus==="score")add=Math.round(add*1.05);if(dancers[selectedDancer].bonus==="combo"||pets[selectedPet].bonus==="combo")add+=combo*4;add+=save.up.score*8;score+=add;energy=Math.min(100+save.up.energy*8,energy+2);addText(W*lanes[lane].x,H*.66,rating,lanes[lane].color);spark(W*lanes[lane].x,H*.72,lanes[lane].color,18);beep([440,554,659,784][lane],.06,"sine",.08)}else{missNote();addText(W*lanes[lane].x,H*.66,"Oops!","#ff5e72")}buttonFlash(lane);updateHud()}
+function missNote(){if(missShield){missShield=false;showToast("Sparkle Kitten protected one miss!");return}combo=0;let loss=dancers[selectedDancer].bonus==="energy"?6:8;energy-=loss;if(energy<=0)loseStage()}
+function buttonFlash(lane){let ids=["pinkBtn","blueBtn","purpleBtn","yellowBtn"];let el=document.getElementById(ids[lane]);el.classList.add("down");setTimeout(()=>el.classList.remove("down"),100)}
+function update(){let elapsed=performance.now()-songStart,st=stages[stageIndex];notes.forEach(n=>{if(!n.hit&&!n.miss){let until=n.time-elapsed;n.y=H*.72-(until/(st.beat*3))*H*.75;if(n.y>H*.86){n.miss=true;missNote();addText(W*lanes[n.lane].x,H*.72,"Miss","#ff5e72")}}});notes=notes.filter(n=>!n.hit&&n.y<H+80*dpr);particles.forEach(p=>{p.x+=p.dx;p.y+=p.dy;p.life--});particles=particles.filter(p=>p.life>0);texts.forEach(t=>{t.y+=t.vy;t.life--});texts=texts.filter(t=>t.life>0);if(elapsed>songLength&&!roundDone){score>=st.need&&energy>0?winStage():loseStage()}updateHud()}
+function winStage(){roundDone=true;running=false;stopMusic();let earnedStars=score>stages[stageIndex].need*1.5?3:score>stages[stageIndex].need*1.2?2:1;let coins=50+earnedStars*25+Math.floor(score/300);if(dancers[selectedDancer].bonus==="coins"||pets[selectedPet].bonus==="coins")coins=Math.round(coins*1.1);save.coins+=coins;save.stars+=earnedStars;if(!save.best[stageIndex]||score>save.best[stageIndex])save.best[stageIndex]=score;if(stageIndex<stages.length-1&&!save.unlockedStages.includes(stageIndex+1))save.unlockedStages.push(stageIndex+1);let unlock="";if(stageIndex+1<dancers.length&&!save.unlockedDancers.includes(stageIndex+1)){save.unlockedDancers.push(stageIndex+1);unlock+=`<p><strong>Unlocked ${dancers[stageIndex+1].name}!</strong></p>`}if(stageIndex+1<pets.length&&!save.unlockedPets.includes(stageIndex+1)){save.unlockedPets.push(stageIndex+1);unlock+=`<p><strong>Unlocked ${pets[stageIndex+1].emoji} ${pets[stageIndex+1].name}!</strong></p>`}if(stageIndex===stages.length-1){save.won=true;unlock+="<p><strong>You Won the Dance Contest!</strong></p>"}saveGame();overlay.style.display="flex";let next=Math.min(stageIndex+1,stages.length-1);overlay.innerHTML=`<div class="panel"><h2>Dance Victory!</h2><p>You beat ${stages[stageIndex].opponent}!</p>${unlock}<div class="grid"><div class="tile">⭐ Stars +${earnedStars}</div><div class="tile">🪙 Coins +${coins}</div><div class="tile">🏆 Score ${score}</div></div><div class="row"><button onclick="startStage(${next})">${stageIndex===stages.length-1?"Final Replay":"Next Stage"}</button><button class="green" onclick="showShop()">🛒 Shop</button><button class="blue" onclick="showStageSelect()">Stages</button></div></div>`;updateHud()}
+function loseStage(){if(roundDone)return;roundDone=true;running=false;stopMusic();save.coins+=Math.floor(score/500);saveGame();overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Almost! Try the beat again!</h2><p>Mr. Puppy Paws says, “Paw-some effort!”</p><div class="grid"><div class="tile">Score ${score}</div><div class="tile">Coins +${Math.floor(score/500)}</div><div class="tile">Keep Practicing!</div></div><div class="row"><button onclick="startStage(${stageIndex})">🔁 Try Again</button><button class="green" onclick="showShop()">🛒 Shop</button><button class="blue" onclick="showStageSelect()">Stages</button></div></div>`;updateHud()}
+function draw(){ctx.clearRect(0,0,W,H);drawStage();drawNotes();drawParticles();drawTexts();requestAnimationFrame(draw)}
+function drawStage(){let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#2a1254");g.addColorStop(.55,"#8d2ba2");g.addColorStop(1,"#ff9bdc");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);for(let i=0;i<7;i++){ctx.strokeStyle=["#ff69d6","#72f7ff","#ffe66d"][i%3]+"55";ctx.lineWidth=5*dpr;ctx.beginPath();ctx.moveTo(W*.5,H*.1);ctx.lineTo(W*(i/6),H*.58);ctx.stroke()}ctx.fillStyle="#3d145f";ctx.fillRect(0,H*.60,W,H*.22);ctx.fillStyle="#ffccf2";ctx.fillRect(0,H*.82,W,H*.18);drawDancer(W*.28,H*.55,dancers[selectedDancer].name,"#72f7ff");drawPuppy(W*.72,H*.55);ctx.fillStyle="#ffffffaa";ctx.fillRect(0,H*.72-3*dpr,W,6*dpr);ctx.fillStyle="#fff";ctx.font=`${16*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText(stages[stageIndex].song+" vs "+stages[stageIndex].opponent,W/2,H*.08);lanes.forEach(l=>{ctx.fillStyle=l.color+"33";ctx.fillRect(W*l.x-38*dpr,0,76*dpr,H);ctx.strokeStyle="#fff8";ctx.lineWidth=2*dpr;ctx.strokeRect(W*l.x-38*dpr,H*.72-38*dpr,76*dpr,76*dpr);ctx.font=`${34*dpr}px system-ui`;ctx.fillText(l.emoji,W*l.x,H*.72+10*dpr)})}
+function drawDancer(x,y,name,color){ctx.save();ctx.translate(x,y);ctx.fillStyle=color;ctx.beginPath();ctx.arc(0,-60*dpr,28*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#ff69d6";ctx.beginPath();ctx.moveTo(0,-30*dpr);ctx.lineTo(-34*dpr,45*dpr);ctx.lineTo(34*dpr,45*dpr);ctx.closePath();ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=5*dpr;ctx.beginPath();ctx.moveTo(-18*dpr,-18*dpr);ctx.lineTo(-55*dpr,-45*dpr);ctx.moveTo(18*dpr,-18*dpr);ctx.lineTo(55*dpr,-45*dpr);ctx.stroke();ctx.font=`${14*dpr}px system-ui`;ctx.textAlign="center";ctx.fillStyle="#fff";ctx.fillText(name,0,66*dpr);ctx.restore()}
+function drawPuppy(x,y){ctx.save();ctx.translate(x,y);ctx.fillStyle="#fff3d6";ctx.beginPath();ctx.arc(0,-50*dpr,34*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#8b5a2b";ctx.beginPath();ctx.ellipse(-30*dpr,-58*dpr,14*dpr,24*dpr,.3,0,Math.PI*2);ctx.ellipse(30*dpr,-58*dpr,14*dpr,24*dpr,-.3,0,Math.PI*2);ctx.fill();ctx.fillStyle="#111";ctx.beginPath();ctx.arc(-11*dpr,-55*dpr,4*dpr,0,Math.PI*2);ctx.arc(11*dpr,-55*dpr,4*dpr,0,Math.PI*2);ctx.fill();ctx.font=`${14*dpr}px system-ui`;ctx.textAlign="center";ctx.fillStyle="#fff";ctx.fillText("Mr. Puppy Paws",0,25*dpr);ctx.restore()}
+function drawNotes(){notes.forEach(n=>{let l=lanes[n.lane],x=W*l.x,y=n.y;ctx.fillStyle=l.color;ctx.beginPath();ctx.arc(x,y,28*dpr,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=4*dpr;ctx.stroke();ctx.font=`${27*dpr}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(l.emoji,x,y+1*dpr)})}
+function spark(x,y,c,n=12){for(let i=0;i<n&&particles.length<90;i++){let a=Math.random()*Math.PI*2,s=(1+Math.random()*4)*dpr;particles.push({x,y,dx:Math.cos(a)*s,dy:Math.sin(a)*s,r:(2+Math.random()*4)*dpr,c,life:18+Math.random()*25})}}
+function addText(x,y,m,c="#ffe66d"){texts.push({x,y,m,c,life:42,vy:-.7*dpr})}
+function drawParticles(){particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/35);ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;p.x+=p.dx;p.y+=p.dy;p.life--});particles=particles.filter(p=>p.life>0)}
+function drawTexts(){texts.forEach(t=>{ctx.globalAlpha=Math.max(0,t.life/42);ctx.font=`${20*dpr}px system-ui`;ctx.textAlign="center";ctx.strokeStyle="#000";ctx.lineWidth=4*dpr;ctx.strokeText(t.m,t.x,t.y);ctx.fillStyle=t.c;ctx.fillText(t.m,t.x,t.y);ctx.globalAlpha=1;t.y+=t.vy;t.life--});texts=texts.filter(t=>t.life>0)}
+function loop(){if(running)update();requestAnimationFrame(loop)}
+["pinkBtn","blueBtn","purpleBtn","yellowBtn"].forEach((id,i)=>{let el=document.getElementById(id);el.addEventListener("touchstart",e=>{e.preventDefault();hitLane(i)},{passive:false});el.addEventListener("mousedown",e=>{e.preventDefault();hitLane(i)})});
+document.addEventListener("keydown",e=>{lanes.forEach(l=>{if(l.keys.includes(e.key))hitLane(l.id)})});
+resize();updateHud();requestAnimationFrame(draw);requestAnimationFrame(loop);
+</script>
+</body>
+</html>
