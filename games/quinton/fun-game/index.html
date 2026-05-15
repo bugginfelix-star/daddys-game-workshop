@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Fun Game - Quinton</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#071526;color:white;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+body{background:radial-gradient(circle at 15% 8%,#6ff7ff33,transparent 25%),radial-gradient(circle at 86% 12%,#ffdf6433,transparent 25%),linear-gradient(#103d75,#071526)}
+#app{height:100%;display:flex;flex-direction:column}
+header{z-index:5;padding:calc(7px + env(safe-area-inset-top)) 10px 7px;background:linear-gradient(#1b74bd,#12335d);border-bottom:3px solid #ffe66d;box-shadow:0 8px 24px #0008}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+h1{font-size:19px;line-height:1;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:2px 2px #001225,0 0 12px #67f7ff}
+.pill{font-size:11px;font-weight:1000;background:linear-gradient(#fff38b,#ffb23f);color:#5a2a00;border:2px solid #fff8bd;border-radius:999px;padding:5px 9px;white-space:nowrap}
+#hud{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:7px}
+.hud{background:#ffffff22;border:1.5px solid #9eefff;border-radius:12px;text-align:center;padding:5px 2px;box-shadow:inset 0 0 12px #0003}
+.hud b{display:block;font-size:9px;color:#dff8ff;text-transform:uppercase;letter-spacing:.3px}.hud span{font-size:13px;font-weight:1000;color:white}
+#stage{position:relative;flex:1;min-height:0;overflow:hidden;touch-action:none;background:linear-gradient(#92e6ff,#dffcff 40%,#7bd86b 41%,#3f9f4f)}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#toast{position:absolute;z-index:9;top:12px;left:12px;right:12px;background:#071526ee;border:2px solid #ffe66d;border-radius:16px;color:#ffe66d;text-align:center;font-weight:1000;padding:10px;opacity:0;transform:translateY(-8px);transition:.18s;pointer-events:none;box-shadow:0 10px 24px #0008}
+#toast.show{opacity:1;transform:translateY(0)}
+#banner{position:absolute;z-index:10;left:50%;top:34%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(#fff18a,#ffb23f);color:#5a2a00;border:4px solid #fff6b8;border-radius:22px;padding:13px 18px;font-size:24px;font-weight:1000;text-align:center;opacity:0;transition:.2s;pointer-events:none;box-shadow:0 12px 32px #0008,0 0 28px #ffe66d88}
+#banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(#071526ee,#12335dee)}
+.panel{width:min(800px,100%);max-height:96%;overflow:auto;text-align:center;background:linear-gradient(#1b74bd,#12335d);border:4px solid #9eefff;border-radius:30px;padding:18px;box-shadow:0 22px 55px #000b,0 0 34px #67f7ff66;color:white}
+.logo{font-size:clamp(34px,9vw,62px);line-height:.93;margin:0 0 8px;font-weight:1000;text-transform:uppercase;text-shadow:3px 3px #001225,5px 5px #ffb23f,-3px -2px #67f7ff}
+.panel h2{margin:0 0 8px;font-size:clamp(24px,6vw,40px);color:#fff38b;text-shadow:2px 2px #001225}
+.panel p,.panel li{color:#e8f9ff;font-size:16px;line-height:1.35;font-weight:800}.panel ul{text-align:left;padding-left:22px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+.tile{background:#ffffff22;border:2px solid #9eefff;border-radius:18px;padding:10px 6px;font-size:13px;font-weight:1000}
+.row{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}@media(min-width:620px){.row{grid-template-columns:1fr 1fr}}
+button{width:100%;min-height:58px;border:3px solid #fff2a8;border-radius:20px;background:linear-gradient(#ffec82,#ffb23f 60%,#b36d16);color:#5a2a00;font-size:18px;font-weight:1000;box-shadow:0 7px 0 #7e4d13,0 12px 24px #0006;text-shadow:1px 1px #fff8bf}
+button:active{transform:translateY(4px);box-shadow:0 3px 0 #7e4d13}
+button.blue{background:linear-gradient(#75fbff,#2b82ff 64%,#1751bd);border-color:#c8ffff;color:#00182c;text-shadow:1px 1px #c8ffff}
+button.green{background:linear-gradient(#9cffab,#29c957 64%,#13732e);border-color:#d6ffdd;color:#06230c;text-shadow:1px 1px #d6ffdd}
+button.pink{background:linear-gradient(#ff79e1,#d33ab7,#7b176b);border-color:#ffc9f1;color:white;text-shadow:1px 2px #000}
+.card{background:#ffffff22;border:2px solid #9eefff;border-radius:18px;padding:10px;margin:8px 0;text-align:left}
+.card strong{color:#fff38b}.small{font-size:13px;color:#e8f9ff}
+#controls{z-index:6;display:grid;grid-template-columns:1.1fr 1.1fr 1.1fr 1fr;gap:8px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(#12335d,#071526);border-top:3px solid #9eefff}
+.ctrl{min-height:58px;border:3px solid #9eefff;border-radius:20px;background:linear-gradient(#3aa7ff,#1751bd);color:white;font-size:14px;font-weight:1000;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 6px 0 #001225;text-shadow:1px 2px #000;padding:6px}
+.ctrl.gold{background:linear-gradient(#ffec82,#ffb23f);color:#5a2a00;text-shadow:1px 1px #fff8bf;border-color:#fff7bf}
+.ctrl.green{background:linear-gradient(#9cffab,#29c957);color:#06230c;text-shadow:1px 1px #d6ffdd;border-color:#d6ffdd}
+.ctrl.pink{background:linear-gradient(#ff79e1,#d33ab7);color:white;border-color:#ffc9f1}
+.ctrl:active{transform:translateY(4px);box-shadow:0 2px 0 #001225}
+#dpad{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.dpadBtn{min-height:38px;border-radius:14px;font-size:16px}
+#hintText{position:absolute;left:12px;right:12px;bottom:10px;z-index:4;text-align:center;font-weight:1000;font-size:12px;color:#001225aa;pointer-events:none}
+@media(max-height:700px){.ctrl{min-height:50px;font-size:12px}h1{font-size:16px}.hud b{font-size:8px}.hud span{font-size:12px}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+<div class="top"><h1>🌟 Fun Game</h1><div class="pill" id="areaPill">Sunny Meadow</div></div>
+<div id="hud">
+<div class="hud"><b>Coins</b><span id="coinsHud">0</span></div>
+<div class="hud"><b>Orbs</b><span id="orbsHud">8</span></div>
+<div class="hud"><b>Team</b><span id="teamHud">1</span></div>
+<div class="hud"><b>Area</b><span id="areaHud">1</span></div>
+<div class="hud"><b>Pity</b><span id="pityHud">0/1028</span></div>
+</div>
+</header>
+
+<div id="stage">
+<canvas id="game"></canvas>
+<div id="hintText">Walk into wild creatures to battle. Rare Sparkle Variants appear at 1/1028, guaranteed on 1028.</div>
+<div id="toast"></div><div id="banner"></div>
+<div id="overlay">
+<div class="panel">
+<div class="logo">Fun<br>Game</div>
+<h2>Quinton’s Creature Catching Adventure</h2>
+<p>Explore, battle, catch original creatures, evolve them, trade with NPCs, find rare Sparkle Variants, and beat bosses.</p>
+<div class="grid">
+<div class="tile">🧭 Explore</div><div class="tile">🐾 Catch Creatures</div><div class="tile">✨ Sparkle 1/1028</div>
+<div class="tile">🔁 NPC Trades</div><div class="tile">💎 Evolve</div><div class="tile">👑 Bosses</div>
+</div>
+<div class="row"><button onclick="continueGame()">▶️ Continue</button><button class="green" onclick="newGame()">🌱 New Game</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="showCollection()">📚 Collection</button><button class="green" onclick="showShop()">🛒 Shop</button></div>
+</div>
+</div>
+</div>
+
+<div id="controls">
+<div id="dpad">
+<button class="dpadBtn ctrl" id="blank1"></button><button class="dpadBtn ctrl gold" id="upBtn">⬆️</button><button class="dpadBtn ctrl" id="blank2"></button>
+<button class="dpadBtn ctrl gold" id="leftBtn">⬅️</button><button class="dpadBtn ctrl" id="menuBtn">☰</button><button class="dpadBtn ctrl gold" id="rightBtn">➡️</button>
+<button class="dpadBtn ctrl" id="blank3"></button><button class="dpadBtn ctrl gold" id="downBtn">⬇️</button><button class="dpadBtn ctrl" id="blank4"></button>
+</div>
+<div class="ctrl pink" id="teamBtn">🐾 Team</div>
+<div class="ctrl green" id="bagBtn">🎒 Bag</div>
+<div class="ctrl" id="shopBtn">🛒 Shop</div>
+</div>
+</div>
+
+<script>
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d",{alpha:false});
+const overlay=document.getElementById("overlay"),toast=document.getElementById("toast"),banner=document.getElementById("banner");
+const ui={coins:document.getElementById("coinsHud"),orbs:document.getElementById("orbsHud"),team:document.getElementById("teamHud"),area:document.getElementById("areaHud"),pity:document.getElementById("pityHud"),areaPill:document.getElementById("areaPill")};
+let dpr=1,W=0,H=0,running=false,mode="map",player,wilds=[],particles=[],texts=[],battle=null,keys={},last=0;
+const saveKey="quinton_fun_game_creature_save_v1";
+const areas=[
+ {name:"Sunny Meadow",theme:"#67d86b",types:["Grass","Light"],boss:"Giant Thornhog"},
+ {name:"Crystal Cave",theme:"#7b72ff",types:["Rock","Light"],boss:"Rockjaw"},
+ {name:"Bubble Beach",theme:"#4bdcff",types:["Water","Air"],boss:"Wavewhale"},
+ {name:"Windy Woods",theme:"#55c579",types:["Air","Electric","Grass"],boss:"Stormbranch"},
+ {name:"Lava Castle",theme:"#ff6a3d",types:["Fire","Poison"],boss:"Blazeroar"},
+ {name:"Sparkle Summit",theme:"#d778ff",types:["Ice","Light","Electric"],boss:"Shadow Spark Dragon"}
+];
+const dex=[
+ {name:"Leaflet",evo:"Leaflion",type:"Grass",hp:42,atk:10,sp:16,color:"#5bd85a",spark:"#ff85e7",rarity:1,emoji:"🍃"},
+ {name:"Embercub",evo:"Emberroar",type:"Fire",hp:39,atk:14,sp:18,color:"#ff7b3d",spark:"#ffd866",rarity:1.1,emoji:"🔥"},
+ {name:"Bubblefin",evo:"Wavefin",type:"Water",hp:44,atk:9,sp:18,color:"#4bdcff",spark:"#a675ff",rarity:1,emoji:"💧"},
+ {name:"Zapkit",evo:"Zaplion",type:"Electric",hp:36,atk:13,sp:21,color:"#ffe66d",spark:"#67f7ff",rarity:1.25,emoji:"⚡"},
+ {name:"Pebblor",evo:"Rockhorn",type:"Rock",hp:55,atk:12,sp:11,color:"#9b7957",spark:"#88ff9b",rarity:1.1,emoji:"🪨"},
+ {name:"Puffwing",evo:"Cloudwing",type:"Air",hp:38,atk:10,sp:22,color:"#d8f7ff",spark:"#ff80d6",rarity:1.15,emoji:"☁️"},
+ {name:"Mudmunch",evo:"Mudmammoth",type:"Rock",hp:52,atk:13,sp:10,color:"#8b5a2b",spark:"#65ffd0",rarity:1.2,emoji:"🌱"},
+ {name:"Glowbug",evo:"Glowmoth",type:"Light",hp:34,atk:9,sp:24,color:"#d6ff5e",spark:"#ffffff",rarity:1.35,emoji:"💡"},
+ {name:"Frosttail",evo:"Frostfox",type:"Ice",hp:41,atk:12,sp:20,color:"#9eefff",spark:"#ffccff",rarity:1.35,emoji:"❄️"},
+ {name:"Venofrog",evo:"Venoking",type:"Poison",hp:43,atk:13,sp:15,color:"#8cff5e",spark:"#c065ff",rarity:1.3,emoji:"🐸"}
+];
+let save=loadSave();
+function defaultSave(){return{coins:80,orbs:8,betterOrbs:0,heals:3,gems:0,area:0,unlockedAreas:[0],defeatedBosses:[],sparkleCharm:false,sparklePity:0,collection:[],team:[],active:0,pos:{x:120,y:210},bossReady:false,won:false}}
+function loadSave(){try{let s=JSON.parse(localStorage.getItem(saveKey));if(s&&s.team&&s.team.length)return s}catch(e){}let s=defaultSave();s.team=[makeCreature(0,5,false)];s.collection=[s.team[0]];return s}
+function saveGame(){localStorage.setItem(saveKey,JSON.stringify(save))}
+function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(2,Math.max(1,devicePixelRatio||1));W=Math.floor(r.width*dpr);H=Math.floor(r.height*dpr);canvas.width=W;canvas.height=H}
+window.addEventListener("resize",resize);resize();
+function showToast(m){toast.textContent=m;toast.classList.add("show");clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove("show"),1500)}
+function showBanner(m){banner.textContent=m;banner.classList.add("show");clearTimeout(showBanner.t);showBanner.t=setTimeout(()=>banner.classList.remove("show"),1400)}
+function updateHud(){ui.coins.textContent=save.coins;ui.orbs.textContent=save.orbs+(save.betterOrbs?"/"+save.betterOrbs:"");ui.team.textContent=save.team.length;ui.area.textContent=(save.area+1);ui.pity.textContent=save.sparklePity+"/1028";ui.areaPill.textContent=areas[save.area].name}
+function makeCreature(idx,level=3,spark=false){let d=dex[idx];let evo=level>=8;return{id:Date.now()+Math.random(),dex:idx,name:evo?d.evo:d.name,type:d.type,level,exp:0,hpMax:d.hp+level*5+(evo?20:0),hp:d.hp+level*5+(evo?20:0),atk:d.atk+level*2+(evo?8:0),sp:d.sp,spark,evo}}
+function rollCreature(){let pool=dex.map((d,i)=>i).filter(i=>areas[save.area].types.includes(dex[i].type));if(!pool.length)pool=[0,1,2,3];let idx=pool[Math.floor(Math.random()*pool.length)];let sparkle=false;let baseChance=1/1028;if(save.sparkleCharm)baseChance=1/512;if(save.sparklePity>=1027){sparkle=true;save.sparklePity=0}else if(Math.random()<baseChance){sparkle=true;save.sparklePity=0}else{save.sparklePity++}let c=makeCreature(idx,2+save.area*2+Math.floor(Math.random()*3),sparkle);saveGame();if(sparkle)showBanner("Rare Sparkle Variant!");return c}
+function continueGame(){overlay.style.display="none";startMap(false)}
+function newGame(){if(confirm("Start a new Fun Game save?")){localStorage.removeItem(saveKey);save=loadSave();overlay.style.display="none";startMap(true)}}
+window.continueGame=continueGame;window.newGame=newGame;
+function startMap(reset){mode="map";running=true;player={x:save.pos.x*dpr,y:save.pos.y*dpr,r:16*dpr};spawnWilds();updateHud();showBanner(areas[save.area].name)}
+function spawnWilds(){wilds=[];for(let i=0;i<5;i++){let c=rollCreature();wilds.push({x:(150+Math.random()*520)*dpr,y:(95+Math.random()*330)*dpr,r:20*dpr,creature:c,dx:(Math.random()-.5)*.6*dpr,dy:(Math.random()-.5)*.6*dpr})}}
+function showHow(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Instructions</h2><ul><li>Walk into wild original creatures to battle.</li><li>Use Attack or Special to weaken them.</li><li>Use Capture Orbs to catch them.</li><li>Sparkle Variants are rare: 1/1028, guaranteed on the 1028th encounter after 1027 non-sparkles.</li><li>Train, evolve, trade with NPCs, shop, and beat bosses.</li></ul><button onclick="continueGame()">▶️ Continue</button></div>`}
+window.showHow=showHow;
+function showMenu(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Menu</h2><div class="row"><button onclick="showCollection()">📚 Collection</button><button onclick="showTeam()">🐾 Team</button><button onclick="showShop()">🛒 Shop</button><button onclick="showTrade()">🔁 Trade Hut</button><button onclick="startBoss()">👑 Boss Battle</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="resetSave()">🧹 Reset Save</button><button class="green" onclick="closeOverlay()">Back to Map</button></div></div>`}
+function closeOverlay(){overlay.style.display="none"}
+window.closeOverlay=closeOverlay;window.showMenu=showMenu;
+function showCollection(){let html=save.collection.map((c,i)=>creatureCard(c,i,false)).join("")||"<p>No creatures yet.</p>";overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Collection</h2><p>${save.collection.length} creatures caught. Sparkles: ${save.collection.filter(c=>c.spark).length}</p>${html}<button class="green" onclick="closeOverlay()">Back</button></div>`}
+window.showCollection=showCollection;
+function showTeam(){let html=save.team.map((c,i)=>creatureCard(c,i,true)).join("");overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Creature Team / Helpers</h2><p>Your active helper walks with you and battles first.</p>${html}<button class="green" onclick="closeOverlay()">Back</button></div>`}
+window.showTeam=showTeam;
+function creatureCard(c,i,team){return `<div class="card"><strong>${c.spark?"✨ ":""}${c.name} Lv.${c.level}</strong><div class="small">${c.type} • HP ${Math.round(c.hp)}/${c.hpMax} • ATK ${c.atk} ${c.evo?"• Evolved":""}</div>${team?`<button onclick="setActive(${i})">${i===save.active?"Active":"Make Active"}</button>`:""}</div>`}
+window.setActive=i=>{save.active=i;saveGame();showTeam()};
+function showShop(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Shop</h2><p>Coins: <strong>${save.coins}</strong></p>
+<div class="card"><strong>Capture Orb x3</strong><div class="small">Cost 30 coins</div><button onclick="buy('orbs',3,30)">Buy</button></div>
+<div class="card"><strong>Better Capture Orb x1</strong><div class="small">Cost 45 coins</div><button onclick="buy('betterOrbs',1,45)">Buy</button></div>
+<div class="card"><strong>Healing Snacks x2</strong><div class="small">Cost 25 coins</div><button onclick="buy('heals',2,25)">Buy</button></div>
+<div class="card"><strong>Evolution Gem</strong><div class="small">Cost 100 coins</div><button onclick="buy('gems',1,100)">Buy</button></div>
+<div class="card"><strong>Sparkle Charm</strong><div class="small">${save.defeatedBosses.length>=1?"Improves odds to 1/512. Cost 250 coins.":"Locked until you beat a boss."}</div><button ${save.defeatedBosses.length>=1&&!save.sparkleCharm?`onclick="buyCharm()"`:"disabled"}>${save.sparkleCharm?"Owned":"Buy"}</button></div>
+<button class="green" onclick="closeOverlay()">Back</button></div>`}
+window.showShop=showShop;
+window.buy=(item,n,cost)=>{if(save.coins<cost){showToast("Not enough coins.");return}save.coins-=cost;save[item]+=n;saveGame();updateHud();showShop()};
+window.buyCharm=()=>{if(save.coins>=250){save.coins-=250;save.sparkleCharm=true;saveGame();showShop();showToast("Sparkle Charm unlocked!")}};
+function showTrade(){let hasPeb=save.collection.findIndex(c=>dex[c.dex].name==="Pebblor")>=0,hasBub=save.collection.findIndex(c=>dex[c.dex].name==="Bubblefin")>=0;overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>NPC Trade Hut</h2>
+<div class="card"><strong>Trade Pebblor for Frosttail</strong><div class="small">A friendly trader wants a Pebblor.</div><button ${hasPeb?`onclick="trade('Pebblor','Frosttail')"`:"disabled"}>Trade</button></div>
+<div class="card"><strong>Trade Bubblefin for Glowbug</strong><div class="small">A glowing bug keeper wants a Bubblefin.</div><button ${hasBub?`onclick="trade('Bubblefin','Glowbug')"`:"disabled"}>Trade</button></div>
+<button class="green" onclick="closeOverlay()">Back</button></div>`}
+window.showTrade=showTrade;
+window.trade=(give,get)=>{if(!confirm("Trade your "+give+" for "+get+"?"))return;let gi=save.collection.findIndex(c=>dex[c.dex].name===give);let getIdx=dex.findIndex(d=>d.name===get);if(gi>=0&&getIdx>=0){save.collection.splice(gi,1);let nc=makeCreature(getIdx,5,false);save.collection.push(nc);if(save.team.length<4)save.team.push(nc);saveGame();showTrade();showToast("Trade complete!")}};
+function resetSave(){if(confirm("Reset Fun Game save?")){localStorage.removeItem(saveKey);save=loadSave();overlay.style.display="none";startMap(true)}}
+window.resetSave=resetSave;
+function move(dx,dy){if(mode!=="map"||overlay.style.display==="flex")return;player.x+=dx*6*dpr;player.y+=dy*6*dpr;player.x=Math.max(20*dpr,Math.min(W-20*dpr,player.x));player.y=Math.max(70*dpr,Math.min(H-35*dpr,player.y));save.pos={x:player.x/dpr,y:player.y/dpr};for(let w of wilds){if(Math.hypot(player.x-w.x,player.y-w.y)<player.r+w.r){startBattle(w.creature,false);wilds=wilds.filter(a=>a!==w);return}}}
+function startBattle(creature,boss=false){mode="battle";battle={wild:creature,boss,turn:"player",msg:boss?"Boss appeared!":"Wild creature appeared!"};overlay.style.display="flex";renderBattle()}
+function startBoss(){let idx=Math.min(save.area,dex.length-1);let b=makeCreature(idx,7+save.area*3,false);b.name=areas[save.area].boss;b.hpMax+=70+save.area*20;b.hp=b.hpMax;b.atk+=8+save.area*3;startBattle(b,true)}
+window.startBoss=startBoss;
+function activeCreature(){if(!save.team.length){let c=makeCreature(0,5,false);save.team.push(c);save.collection.push(c)}return save.team[save.active]||save.team[0]}
+function renderBattle(){let a=activeCreature(),w=battle.wild;overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>${battle.boss?"👑 Boss Battle":"⚔️ Creature Battle"}</h2><div class="grid">
+<div class="tile">${a.spark?"✨":""}${a.name}<br>HP ${Math.max(0,Math.round(a.hp))}/${a.hpMax}</div>
+<div class="tile">${w.spark?"✨":""}${w.name}<br>HP ${Math.max(0,Math.round(w.hp))}/${w.hpMax}</div>
+</div><p>${w.spark?"✨ A rare Sparkle Variant appeared! ":""}${battle.msg}</p>
+<div class="row"><button onclick="battleAttack(false)">Attack</button><button class="pink" onclick="battleAttack(true)">Special</button><button class="green" onclick="tryCatch(false)">Capture</button><button class="blue" onclick="tryCatch(true)">Better Orb</button><button onclick="useHeal()">Item</button><button class="blue" onclick="runBattle()">Run</button></div></div>`}
+function battleAttack(special){let a=activeCreature(),w=battle.wild;let dmg=(special?a.atk*1.45:a.atk)*(0.8+Math.random()*0.4);w.hp-=Math.round(dmg);battle.msg=(special?"Special hit ":"Attack hit ")+"for "+Math.round(dmg)+"!";if(w.hp<=0){winBattle(false);return}wildTurn();renderBattle()}
+window.battleAttack=battleAttack;
+function wildTurn(){let a=activeCreature(),w=battle.wild;let dmg=Math.max(2,Math.round(w.atk*(0.65+Math.random()*0.45)));a.hp-=dmg;battle.msg+=" "+w.name+" hit back for "+dmg+".";if(a.hp<=0){a.hp=0;faint()}}
+function tryCatch(better){let w=battle.wild;if(battle.boss){battle.msg="Bosses cannot be caught. Defeat them!";renderBattle();return}let item=better?"betterOrbs":"orbs";if(save[item]<=0){battle.msg="No "+(better?"Better ":"")+"Capture Orbs left!";renderBattle();return}save[item]--;let hpFactor=1-(w.hp/w.hpMax);let chance=.22+hpFactor*.58+(better?.18:0);if(activeCreature().spark)chance+=.03;if(Math.random()<chance){save.collection.push(w);if(save.team.length<4)save.team.push(w);save.coins+=20;saveGame();showBanner("Caught!");overlay.innerHTML=`<div class="panel"><h2>Caught!</h2><p>${w.spark?"✨ Sparkle ":""}${w.name} joined your collection.</p><button onclick="endBattle()">Back to Map</button></div>`}else{battle.msg="It escaped!";wildTurn();saveGame();renderBattle()}}
+window.tryCatch=tryCatch;
+function useHeal(){let a=activeCreature();if(save.heals<=0){battle.msg="No Healing Snacks.";renderBattle();return}save.heals--;a.hp=Math.min(a.hpMax,a.hp+35);battle.msg="Healing Snack restored HP.";wildTurn();saveGame();renderBattle()}
+window.useHeal=useHeal;
+function runBattle(){endBattle();showToast("You ran away safely.")}
+window.runBattle=runBattle;
+function winBattle(caught){let a=activeCreature(),w=battle.wild;let xp=battle.boss?45:18,coin=battle.boss?150:35;save.coins+=coin;a.exp+=xp;if(a.exp>=50){a.exp-=50;a.level++;a.hpMax+=6;a.atk+=3;a.hp=a.hpMax;if(a.level>=8&&!a.evo){a.evo=true;a.name=dex[a.dex].evo;a.hpMax+=20;a.atk+=8;showBanner(a.name+" evolved!")}}if(battle.boss){if(!save.defeatedBosses.includes(save.area))save.defeatedBosses.push(save.area);if(save.area<areas.length-1&&!save.unlockedAreas.includes(save.area+1))save.unlockedAreas.push(save.area+1);if(save.area<areas.length-1)save.area++;else save.won=true}saveGame();overlay.innerHTML=`<div class="panel"><h2>${battle.boss?"Boss Defeated!":"Victory!"}</h2><p>Earned ${coin} coins and ${xp} experience.</p><div class="row"><button onclick="endBattle()">Back to Map</button><button class="green" onclick="showShop()">Shop</button></div></div>`}
+function faint(){save.coins=Math.max(0,save.coins-20);save.team.forEach(c=>c.hp=c.hpMax);saveGame();overlay.innerHTML=`<div class="panel"><h2>Your team fainted!</h2><p>You returned to a safe area. Keep training!</p><button onclick="endBattle()">Back to Map</button></div>`}
+function endBattle(){overlay.style.display="none";mode="map";spawnWilds();updateHud()}
+window.endBattle=endBattle;
+function draw(){ctx.clearRect(0,0,W,H);if(mode==="map")drawMap();drawParticles();drawTexts();requestAnimationFrame(draw)}
+function drawMap(){let a=areas[save.area];let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#92e6ff");g.addColorStop(.42,"#dffcff");g.addColorStop(.43,a.theme);g.addColorStop(1,"#326b36");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.fillStyle="#d7bd82";ctx.fillRect(0,H*.77,W,H*.09);ctx.fillStyle="#fff";ctx.font=`${17*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText(a.name,W/2,28*dpr);drawShop(W*.83,H*.30);drawTrade(W*.17,H*.31);drawBossGate(W*.82,H*.66);wilds.forEach(drawWild);drawPlayer();let helper=activeCreature();drawCreatureIcon(helper,player.x-24*dpr,player.y+28*dpr,13*dpr)}
+function drawShop(x,y){ctx.fillStyle="#ffd866";round(x-32*dpr,y-22*dpr,64*dpr,44*dpr,8*dpr);ctx.fill();ctx.fillStyle="#8b4b25";ctx.fillRect(x-38*dpr,y-30*dpr,76*dpr,12*dpr);ctx.fillStyle="#5a2a00";ctx.font=`${13*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText("SHOP",x,y+5*dpr)}
+function drawTrade(x,y){ctx.fillStyle="#c99cff";round(x-32*dpr,y-22*dpr,64*dpr,44*dpr,8*dpr);ctx.fill();ctx.fillStyle="#5a2a00";ctx.font=`${13*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText("TRADE",x,y+5*dpr)}
+function drawBossGate(x,y){ctx.fillStyle="#ff6a3d";round(x-40*dpr,y-30*dpr,80*dpr,60*dpr,12*dpr);ctx.fill();ctx.fillStyle="#fff";ctx.font=`${13*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText("BOSS",x,y+4*dpr)}
+function drawWild(w){w.x+=w.dx;w.y+=w.dy;if(w.x<40*dpr||w.x>W-40*dpr)w.dx*=-1;if(w.y<80*dpr||w.y>H-70*dpr)w.dy*=-1;drawCreatureIcon(w.creature,w.x,w.y,20*dpr)}
+function drawCreatureIcon(c,x,y,r){let d=dex[c.dex];ctx.save();ctx.translate(x,y);if(c.spark){ctx.fillStyle=d.spark;ctx.beginPath();ctx.arc(0,0,r*1.55,0,Math.PI*2);ctx.fill();ctx.fillStyle="#fff";for(let i=0;i<5;i++)ctx.fillText("✨",Math.cos(i)*r*1.5,Math.sin(i)*r*1.5)}ctx.fillStyle=c.spark?d.spark:d.color;ctx.beginPath();ctx.arc(0,0,r,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#001225";ctx.lineWidth=2*dpr;ctx.stroke();ctx.font=`${r}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(d.emoji,0,1*dpr);ctx.restore()}
+function drawPlayer(){ctx.save();ctx.translate(player.x,player.y);ctx.fillStyle="#ffdfbd";ctx.beginPath();ctx.arc(0,-14*dpr,13*dpr,0,Math.PI*2);ctx.fill();ctx.fillStyle="#2b82ff";round(-11*dpr,0,22*dpr,28*dpr,6*dpr);ctx.fill();ctx.fillStyle="#fff";ctx.font=`${17*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText("🙂",0,-14*dpr);ctx.restore()}
+function round(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function drawParticles(){}
+function drawTexts(){}
+function loop(){if(mode==="map"&&running){let dx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0),dy=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);if(dx||dy)move(dx,dy)}requestAnimationFrame(loop)}
+function touchMove(dx,dy){move(dx,dy)}
+document.getElementById("upBtn").onclick=()=>touchMove(0,-1);document.getElementById("downBtn").onclick=()=>touchMove(0,1);document.getElementById("leftBtn").onclick=()=>touchMove(-1,0);document.getElementById("rightBtn").onclick=()=>touchMove(1,0);
+document.getElementById("menuBtn").onclick=showMenu;document.getElementById("teamBtn").onclick=showTeam;document.getElementById("bagBtn").onclick=showCollection;document.getElementById("shopBtn").onclick=showShop;
+document.addEventListener("keydown",e=>{keys[e.key]=true;if(e.key==="Enter"||e.key===" ")showMenu()});document.addEventListener("keyup",e=>keys[e.key]=false);
+resize();updateHud();requestAnimationFrame(draw);requestAnimationFrame(loop);
+</script>
+</body>
+</html>
