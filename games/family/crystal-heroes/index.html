@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Crystal Heroes v1.4.2 Mechanics</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#06111f;color:#fff;font-family:system-ui,Arial}
+#app{height:100%;display:flex;flex-direction:column}
+header{padding:calc(7px + env(safe-area-inset-top)) 10px 7px;background:linear-gradient(#2347b8,#07163b);border-bottom:3px solid #e8d45c;box-shadow:0 8px 24px #0008}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}h1{font-size:19px;margin:0;text-shadow:2px 2px #000}.pill{background:#ffe66d;color:#3b2100;border:2px solid #fff;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:1000}
+#hud{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:7px}.hud{background:#ffffff1f;border:1.5px solid #7be7ff;border-radius:12px;text-align:center;padding:5px 2px}.hud b{display:block;font-size:9px;color:#dff8ff}.hud span{font-size:13px;font-weight:1000}
+#stage{position:relative;flex:1;overflow:hidden;touch-action:none;background:#13244b}canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;touch-action:none}
+#toast,#banner{position:absolute;z-index:9;text-align:center;font-weight:1000;pointer-events:none}#toast{left:12px;right:12px;top:12px;background:#06111fee;color:#ffe66d;border:2px solid #ffe66d;border-radius:16px;padding:10px;opacity:0;transform:translateY(-8px);transition:.18s}#toast.show{opacity:1;transform:translateY(0)}
+#banner{left:50%;top:34%;transform:translate(-50%,-50%) scale(.85);background:linear-gradient(#fff18a,#ffb23f);color:#5a2a00;border:4px solid #fff6b8;border-radius:22px;padding:13px 18px;font-size:24px;opacity:0;transition:.2s;box-shadow:0 12px 32px #0008}#banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#overlay{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;background:#06111fee}.panel{width:min(880px,100%);max-height:96%;overflow:auto;text-align:center;background:linear-gradient(#2347b8,#07163b);border:4px solid #7be7ff;border-radius:28px;padding:16px;box-shadow:0 22px 55px #000b;color:white}.logo{font-size:clamp(34px,9vw,62px);line-height:.93;font-weight:1000;text-transform:uppercase;text-shadow:3px 3px #000,5px 5px #7d4bcb,-3px -2px #7be7ff}.panel h2{color:#fff38b;text-shadow:2px 2px #000}.panel p,.panel li{font-size:15px;font-weight:800;line-height:1.35}.panel ul{text-align:left}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}@media(min-width:640px){.grid{grid-template-columns:repeat(4,1fr)}.row{grid-template-columns:1fr 1fr}}.tile,.card{background:#ffffff1f;border:2px solid #7be7ff;border-radius:16px;padding:9px 6px;font-size:13px;font-weight:1000}.card{text-align:left;margin:8px 0}.row{display:grid;gap:10px;margin-top:10px}
+button{width:100%;min-height:56px;border:3px solid #fff2a8;border-radius:18px;background:linear-gradient(#ffec82,#ffb23f 60%,#b36d16);color:#5a2a00;font-size:17px;font-weight:1000;box-shadow:0 7px 0 #7e4d13;text-shadow:1px 1px #fff8bf}button.blue{background:linear-gradient(#75fbff,#2b82ff);border-color:#c8ffff;color:#00182c}button.green{background:linear-gradient(#9cffab,#29c957);border-color:#d6ffdd;color:#06230c}button.pink{background:linear-gradient(#ff79e1,#d33ab7);border-color:#ffc9f1;color:white;text-shadow:1px 2px #000}
+#controls{z-index:6;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:8px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(#07163b,#06111f);border-top:3px solid #7be7ff}.ctrl{min-height:56px;border:3px solid #7be7ff;border-radius:18px;background:linear-gradient(#2b82ff,#1751bd);color:white;font-size:13px;font-weight:1000;display:flex;align-items:center;justify-content:center;text-align:center;box-shadow:0 6px 0 #001225;text-shadow:1px 2px #000;padding:5px}#dpad{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.dpadBtn{min-height:36px;border-radius:12px}.gold{background:linear-gradient(#ffec82,#ffb23f)!important;color:#5a2a00!important;text-shadow:1px 1px #fff8bf!important}.green{background:linear-gradient(#9cffab,#29c957)!important;color:#06230c!important}.pink{background:linear-gradient(#ff79e1,#d33ab7)!important;color:white!important}
+#battleBtns{display:none;position:absolute;left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));z-index:30;grid-template-columns:repeat(4,1fr);gap:8px}
+
+/* v1.4.2 classic command screen template */
+.panel.classic{
+  background:#0c168a;
+  border:4px solid #f5f5ff;
+  border-radius:8px;
+  box-shadow:0 0 0 4px #000,0 18px 44px #000c;
+  color:#fff;
+  text-align:left;
+}
+.classic h2,.classic h3{
+  color:#fff;
+  text-shadow:2px 2px #000;
+  margin:4px 0 8px;
+}
+.classic .commandBox{
+  background:#101c9b;
+  border:3px solid #f5f5ff;
+  border-radius:4px;
+  box-shadow:0 0 0 3px #000;
+  padding:10px;
+  margin:8px 0;
+}
+.classic .commandGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.classic .menuBtn{
+  min-height:48px;
+  background:#101c9b;
+  color:white;
+  border:3px solid #f5f5ff;
+  border-radius:4px;
+  box-shadow:0 0 0 2px #000;
+  text-shadow:2px 2px #000;
+  text-align:left;
+  padding-left:18px;
+}
+.classic .menuBtn:before{content:"▶ "; color:#fff}
+.classic .statLine{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  border-bottom:1px solid #ffffff38;
+  padding:3px 0;
+  font-weight:800;
+}
+.classic .heroMini{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center}
+.classic .sprite{
+  font-size:40px;
+  text-align:center;
+  background:#081064;
+  border:2px solid #fff;
+  box-shadow:0 0 0 2px #000;
+  padding:6px 0;
+}
+
+
+/* v1.4.2 compact FF-style inventory/shop lists */
+.classic .tabBar{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin-bottom:8px;
+}
+.classic .tabBtn{
+  min-height:38px;
+  background:#101c9b;
+  color:white;
+  border:2px solid #f5f5ff;
+  border-radius:3px;
+  box-shadow:0 0 0 2px #000;
+  font-size:13px;
+  text-align:center;
+  padding:3px;
+}
+.classic .tabBtn.active{
+  background:#2734c7;
+  color:#fff38b;
+}
+.classic .listGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px 10px;
+}
+.classic .itemRow{
+  min-height:34px;
+  width:100%;
+  background:#101c9b;
+  color:white;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  text-shadow:2px 2px #000;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+  text-align:left;
+  padding:3px 6px;
+  font-size:13px;
+}
+.classic .itemRow:before{content:""; display:none;}
+.classic .itemRow.selected{
+  outline:2px solid #fff38b;
+  color:#fff38b;
+}
+.classic .detailBox{
+  min-height:72px;
+  background:#101c9b;
+  border:3px solid #f5f5ff;
+  box-shadow:0 0 0 3px #000;
+  margin-top:8px;
+  padding:8px;
+  font-weight:800;
+}
+.classic .twoPane{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:10px;
+}
+@media(max-width:650px){
+  .classic .twoPane{grid-template-columns:1fr;}
+  .classic .itemRow{font-size:12px;}
+  .classic .tabBtn{font-size:12px;}
+}
+.classic .miniCmd{
+  min-height:38px;
+  font-size:13px;
+  padding:4px 8px;
+}
+
+
+/* v1.4.2 targeted item, magic, and equipment windows */
+.classic .characterList{
+  display:grid;
+  gap:8px;
+}
+.classic .equipWindow{
+  display:grid;
+  grid-template-columns:.85fr 1.15fr;
+  gap:10px;
+}
+.classic .namePlate{
+  background:#101c9b;
+  border:3px solid #f5f5ff;
+  box-shadow:0 0 0 3px #000;
+  padding:8px;
+  text-align:center;
+  font-weight:1000;
+}
+.classic .gearSlot{
+  background:#101c9b;
+  border:3px solid #f5f5ff;
+  box-shadow:0 0 0 3px #000;
+  padding:8px;
+  margin-bottom:8px;
+}
+.classic .gearSlot .slotName{
+  display:inline-block;
+  min-width:88px;
+  color:#fff38b;
+}
+.classic .sideMenu{
+  background:#101c9b;
+  border:3px solid #f5f5ff;
+  box-shadow:0 0 0 3px #000;
+  padding:8px;
+}
+.classic .targetBtn{
+  min-height:58px;
+  display:grid;
+  grid-template-columns:54px 1fr;
+  gap:8px;
+  align-items:center;
+  width:100%;
+  background:#101c9b;
+  color:#fff;
+  border:3px solid #f5f5ff;
+  border-radius:3px;
+  box-shadow:0 0 0 2px #000;
+  margin-bottom:8px;
+  text-align:left;
+  padding:6px;
+}
+.classic .targetBtn:before{content:"";display:none}
+.classic .targetBtn.selected{outline:3px solid #fff38b;color:#fff38b}
+.classic .smallCmdGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+@media(max-width:650px){
+  .classic .equipWindow{grid-template-columns:1fr;}
+  .classic .smallCmdGrid{grid-template-columns:1fr;}
+}
+
+
+/* v1.4.2 rounded classic menu borders */
+.panel.classic{
+  border-radius:18px !important;
+}
+.classic .commandBox,
+.classic .detailBox,
+.classic .sideMenu,
+.classic .namePlate,
+.classic .gearSlot,
+.classic .sprite{
+  border-radius:14px !important;
+}
+.classic .menuBtn,
+.classic .tabBtn,
+.classic .itemRow,
+.classic .targetBtn,
+.classic .miniCmd{
+  border-radius:12px !important;
+}
+.classic .listGrid .itemRow{
+  border-radius:10px !important;
+}
+
+
+/* v1.4.2 remove top info HUD to give the game more screen space */
+header{
+  padding:calc(4px + env(safe-area-inset-top)) 8px 5px !important;
+  border-bottom:2px solid #e8d45c !important;
+}
+header .top{
+  min-height:34px;
+}
+header h1{
+  font-size:18px !important;
+}
+header .pill{
+  font-size:12px !important;
+  padding:5px 10px !important;
+}
+#hud{
+  display:none !important;
+}
+
+</style>
+</head>
+<body><div id="app">
+<header><div class="top"><h1>💎 Crystal Heroes</h1><div class="pill" id="placePill">Meadowvale</div></div><div id="hud"><div class="hud"><b>Location</b><span id="goldHud">World Map</span></div>
+<div class="hud"><b>Place</b><span id="stepHud">Meadowvale</span></div>
+<div class="hud"><b>Context</b><span id="areaHud">Explore</span></div>
+<div class="hud"><b>Goal</b><span id="itemHud">Find Crystal</span></div>
+<div class="hud"><b>Save</b><span id="saveHud">Auto</span></div></div></header>
+<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.4.2 Mechanics</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
+<div id="controls"><div id="dpad"><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="upBtn">⬆️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="leftBtn">⬅️</button><button class="dpadBtn ctrl" id="okBtn">OK</button><button class="dpadBtn ctrl gold" id="rightBtn">➡️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="downBtn">⬇️</button><button class="dpadBtn ctrl" disabled></button></div><div class="ctrl pink" id="partyBtn">👥 Party</div><div class="ctrl green" id="bagBtn">🎒 Bag</div><div class="ctrl" id="menuBtn">☰ Menu</div></div>
+</div>
+<script>
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d"),overlay=document.getElementById("overlay"),toast=document.getElementById("toast"),banner=document.getElementById("banner"),battleBtns=document.getElementById("battleBtns");
+const ui={gold:goldHud,steps:stepHud,area:areaHud,item:itemHud,save:saveHud,place:placePill};let dpr=1,W=0,H=0,tile=32,mode="menu",running=false,keys={},touch={x:0,y:0},cam={x:0,y:0},battle=null,last=0,moveLock=0,particles=[];
+const saveKey="family_crystal_heroes_v12";
+const cls={Fighter:["🛡️","#e84f4f","Knight"],"Dark Mage":["🌑","#7b42ff","Battle Wizard"],Cleric:["🙏","#fff38b","Priest"],Tinkerer:["⚙️","#56d7ff","War Engineer"]};
+const classInfo=cls;
+const gear={
+"Iron Sword":{slot:"weapon",class:["Fighter"],atk:4,def:0,cost:0},"Bronze Sword":{slot:"weapon",class:["Fighter"],atk:8,def:0,cost:60},"Spark Blade":{slot:"weapon",class:["Fighter"],atk:13,def:0,cost:140,effect:"Shock"},
+"Old Staff":{slot:"weapon",class:["Dark Mage"],atk:3,matk:3,cost:0},"Hex Wand":{slot:"weapon",class:["Dark Mage"],atk:5,matk:9,cost:90},"Night Staff":{slot:"weapon",class:["Dark Mage"],atk:7,matk:14,cost:160,effect:"Curse"},
+"Oak Club":{slot:"weapon",class:["Cleric"],atk:5,matk:2,cost:0},"Blessed Mace":{slot:"weapon",class:["Cleric"],atk:9,matk:7,cost:95},"Sun Relic":{slot:"weapon",class:["Cleric"],atk:7,matk:13,cost:170,effect:"Holy"},
+"Slingshot":{slot:"weapon",class:["Tinkerer"],atk:6,cost:0},"Crossbow":{slot:"weapon",class:["Tinkerer"],atk:11,cost:100},"Steam Blaster":{slot:"weapon",class:["Tinkerer"],atk:16,cost:190,effect:"Blast"},
+"Cloth Tunic":{slot:"armor",class:["Fighter","Dark Mage","Cleric","Tinkerer"],def:2,cost:0},"Leather Vest":{slot:"armor",class:["Fighter","Cleric","Tinkerer"],def:5,cost:55},"Chain Mail":{slot:"armor",class:["Fighter","Cleric"],def:9,cost:125},"Gear Coat":{slot:"armor",class:["Tinkerer"],def:8,cost:115},"Mage Robe":{slot:"armor",class:["Dark Mage","Cleric"],def:5,matk:3,cost:90}
+};
+const spells={"Shadow Spark":{class:"Dark Mage",mp:1,pow:22,type:"dmg",desc:"Dark damage"},"Poison Puff":{class:"Dark Mage",mp:2,pow:12,type:"dmg",desc:"Damage plus poison"},"Sleep Hex":{class:"Dark Mage",mp:2,pow:0,type:"sleep",desc:"May skip enemy turn"},"Night Bolt":{class:"Dark Mage",mp:3,pow:38,type:"dmg",desc:"Heavy shadow damage"},"Heal":{class:"Cleric",mp:1,pow:34,type:"heal",desc:"Restore HP"},"Bless":{class:"Cleric",mp:2,pow:3,type:"buff",desc:"Raise attack"},"Guard Prayer":{class:"Cleric",mp:2,pow:3,type:"guard",desc:"Raise defense"},"Life":{class:"Cleric",mp:4,pow:25,type:"life",desc:"Revive ally"},"Power Slash":{class:"Fighter",mp:0,pow:10,type:"skill",desc:"Strong sword hit"},"Gear Shot":{class:"Tinkerer",mp:0,pow:12,type:"skill",desc:"Mechanical shot"},"Smoke Bomb":{class:"Tinkerer",mp:0,pow:0,type:"smoke",desc:"Escape attempt"}};
+const enemies=[["Slimelet","🟢",24,7,8,6],["Cave Bat","🦇",28,8,10,8],["Thorn Beast","🌿",38,10,14,12],["Bone Rattler","💀",45,12,18,15],["Crystal Mimic","💎",55,15,25,25]],bossDef=["Thornroot Guardian","🌳",180,18,85,120,true];
+const worldMap=["wwwwwwwwwwwwwwwwwwwwwwwwwwww","wggggggggggggggggggggggggggw","wgggggffffgggggggggggggggggw","wgggggffffggggggggggmmmggggw","wgggggggggggggggggggmmmggggw","wggggggggggggggggggggggggggw","wggggggggggggggggggggggggggw","wgggtttggggggggggggggggggggw","wgggtttggggggggggggggggggggw","wgggtttggggggggggggggggggggw","wgggggggggggggwwwwgggggggggw","wgggggggggggggwwwwgggggggggw","wggggggggggggggggggggccggggw","wggggggggggggggggggggccggggw","wggggggggggggggggggggggggggw","wggggggggggggggggggggggggggw","wggggggggggggggggggggggggggw","wggggggggggggggggggggggggggw","wggggggggggggggggggggggggggw","wggggggggggggggggggggggggggw","wggggggggggggggggggggggggggw","wwwwwwwwwwwwwwwwwwwwwwwwwwww"];
+const townMap=["############################","############################","####............############","####..I..S..W..A############","####............############","####............############","####............############","####............############","####............############","####.....E......############","####............############","############################","############################","############################","############################","############################","############################","############################","############################","############################","############################","############################"];
+const caveMap=["############################","###.............############","###.#####.#####.############","###.....#.....#.############","#######.#####.#.############","###.....#.....#.############","###.#####.#####.############","###.............############","###.###########.############","###.............############","###E.......B....############","############################","############################","############################","############################","############################","############################","############################","############################","############################","############################","############################"];
+function defGame(){return{gold:120,steps:0,area:"overworld",x:8,y:8,items:{Potion:5,Ether:1,"Smoke Bomb":1},inventory:["Iron Sword","Old Staff","Oak Club","Slingshot","Cloth Tunic","Cloth Tunic","Cloth Tunic","Cloth Tunic"],bossDead:false,crystal:false,party:[
+{name:"Arin",class:"Fighter",level:1,xp:0,next:30,baseHP:56,hp:56,baseMP:0,mp:0,baseAtk:12,baseDef:5,weapon:"Iron Sword",armor:"Cloth Tunic",spells:["Power Slash"]},
+{name:"Nyx",class:"Dark Mage",level:1,xp:0,next:30,baseHP:34,hp:34,baseMP:5,mp:5,baseAtk:5,baseDef:2,weapon:"Old Staff",armor:"Cloth Tunic",spells:["Shadow Spark","Poison Puff"]},
+{name:"Luma",class:"Cleric",level:1,xp:0,next:30,baseHP:42,hp:42,baseMP:5,mp:5,baseAtk:6,baseDef:4,weapon:"Oak Club",armor:"Cloth Tunic",spells:["Heal","Bless"]},
+{name:"Cog",class:"Tinkerer",level:1,xp:0,next:30,baseHP:46,hp:46,baseMP:0,mp:0,baseAtk:8,baseDef:4,weapon:"Slingshot",armor:"Cloth Tunic",spells:["Gear Shot","Smoke Bomb"]}]}}
+function stat(h,k){let w=gear[h.weapon]||{},a=gear[h.armor]||{};if(k==="atk")return h.baseAtk+(w.atk||0)+(a.atk||0);if(k==="def")return h.baseDef+(w.def||0)+(a.def||0);if(k==="matk")return (w.matk||0)+(a.matk||0)+Math.floor(h.level/2);if(k==="maxHP")return h.baseHP;if(k==="maxMP")return h.baseMP}
+function load(){try{return JSON.parse(localStorage.getItem(saveKey))||defGame()}catch(e){return defGame()}}let game=load();
+function normalizeGame(){
+  if(!game||!game.party){game=defGame()}
+  // Convert any older array-based party save into the current object format.
+  if(Array.isArray(game.party[0])){
+    let old=game.party, fresh=defGame();
+    game=fresh;
+  }
+  game.party.forEach((h,i)=>{
+    const defaults=defGame().party[i];
+    if(!h.name)h.name=defaults.name;
+    if(!h.class)h.class=defaults.class;
+    if(!h.weapon)h.weapon=defaults.weapon;
+    if(!h.armor)h.armor=defaults.armor;
+    if(!Array.isArray(h.spells))h.spells=defaults.spells.slice();
+    ["level","xp","next","baseHP","hp","baseMP","mp","baseAtk","baseDef"].forEach(k=>{if(typeof h[k]!=="number")h[k]=defaults[k]});
+  });
+  if(!game.items)game.items={Potion:5,Ether:1,"Smoke Bomb":1};
+  if(!game.inventory)game.inventory=["Iron Sword","Old Staff","Oak Club","Slingshot","Cloth Tunic","Cloth Tunic","Cloth Tunic","Cloth Tunic"];
+  if(typeof game.gold!=="number")game.gold=120;
+}
+
+normalizeGame();
+function saveGame(){localStorage.setItem(saveKey,JSON.stringify(game));ui.save.textContent="Saved";setTimeout(()=>ui.save.textContent="Auto",900)}
+function resize(){let r=canvas.getBoundingClientRect();dpr=Math.min(2,Math.max(1,devicePixelRatio||1));W=r.width*dpr;H=r.height*dpr;canvas.width=W;canvas.height=H}addEventListener("resize",resize);resize();
+function toastMsg(m){toast.textContent=m;toast.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>toast.classList.remove("show"),1500)}function ban(m){banner.textContent=m;banner.classList.add("show");clearTimeout(banner.t);banner.t=setTimeout(()=>banner.classList.remove("show"),1300)}
+
+function currentGoal(){
+  if(game.bossDead||game.crystal)return "Crystal Restored";
+  if(game.area==="town")return "Prepare Party";
+  if(game.area==="dungeon")return "Defeat Boss";
+  return "Find Cave";
+}
+function currentTileName(){
+  let t=terrain(game.x,game.y);
+  if(game.area==="overworld")return t==="t"?"Town":t==="c"?"Cave":"Explore";
+  if(game.area==="dungeon")return t==="B"?"Boss":t==="E"?"Exit":"Cave";
+  if(game.area==="town"){
+    if(t==="I")return "Inn";
+    if(t==="S")return "Item Shop";
+    if(t==="W")return "Weapon Shop";
+    if(t==="A")return "Armor Shop";
+    if(t==="E")return "Town Gate";
+    return "Town";
+  }
+  return "Explore";
+}
+function placeName(){
+  if(game.area==="overworld")return "Meadowvale";
+  if(game.area==="town")return "Starbrook";
+  if(game.area==="dungeon")return "Thorn Cave";
+  return "Unknown";
+}
+
+function hud(){
+  ui.gold.textContent=game.area==="overworld"?"World Map":game.area==="town"?"Town":game.area==="dungeon"?"Dungeon":"Map";
+  ui.steps.textContent=placeName();
+  ui.area.textContent=currentTileName();
+  ui.item.textContent=currentGoal();
+  ui.place.textContent=currentTileName()==="Town"||currentTileName()==="Explore"||currentTileName()==="Cave"?placeName():currentTileName();
+}
+function newGame(){game=defGame();normalizeGame();startMap("overworld");saveGame();toastMsg("New adventure started.");}function continueGame(){normalizeGame();startMap(game.area||"overworld")}window.newGame=newGame;window.continueGame=continueGame;
+function startMap(area){mode="map";running=true;overlay.style.display="none";battleBtns.style.display="none";game.area=area;if(area==="town"){game.x=5;game.y=7}else if(area==="dungeon"){game.x=3;game.y=10}ban(area==="town"?"Starbrook Town":area==="dungeon"?"Thorn Cave":"Meadowvale");hud()}
+function showHow(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Instructions</h2><ul><li>Town shops now open menus. Press OK on Inn, Item Shop, Weapon Shop, or Armor Shop.</li><li>Equipment changes ATK, DEF, and magic power. Open Party / Equip.</li><li>Magic opens a spell list in battle. Dark Mage harms; Cleric heals and buffs.</li><li>Inventory can use Potions and Ethers outside battle.</li><li>Future promotions: Fighter→Knight, Dark Mage→Battle Wizard, Cleric→Priest, Tinkerer→War Engineer.</li></ul><button onclick="continueGame()">Back</button></div>`}window.showHow=showHow;
+function showMenu(){
+  normalizeGame();
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic">
+    <h2>Command</h2>
+    <div class="row">
+      <div class="commandBox">
+        <div class="commandGrid">
+          <button class="menuBtn" onclick="showBag()">Item</button>
+          <button class="menuBtn" onclick="showMagicMenu()">Magic</button>
+          <button class="menuBtn" onclick="showParty()">Equipment</button>
+          <button class="menuBtn" onclick="showStatus()">Status</button>
+          <button class="menuBtn" onclick="showFormation()">Formation</button>
+          <button class="menuBtn" onclick="saveGame();toastMsg('Game saved!')">Save</button>
+          <button class="menuBtn" onclick="showConfig()">Config</button>
+          <button class="menuBtn" onclick="closeOverlay()">Close</button>
+        </div>
+      </div>
+      <div class="commandBox">
+        <h3>${placeName()}</h3>
+        <div class="statLine"><span>Gold</span><span>${game.gold} G</span></div>
+        <div class="statLine"><span>Steps</span><span>${game.steps}</span></div>
+        <div class="statLine"><span>Goal</span><span>${currentGoal()}</span></div>
+        <div class="statLine"><span>Crystal</span><span>${game.crystal?"Restored":"Missing"}</span></div>
+      </div>
+    </div>
+    <div class="commandBox">
+      ${game.party.map((h,i)=>`<div class="heroMini"><div class="sprite">${classInfo[h.class][0]}</div><div><strong>${h.name}</strong> ${h.class} Lv ${h.level}<br>HP ${h.hp}/${stat(h,"maxHP")} MP ${h.mp}/${stat(h,"maxMP")}</div></div>`).join("<hr>")}
+    </div>
+  </div>`;
+}
+function closeOverlay(){overlay.style.display="none"}window.closeOverlay=closeOverlay;window.showMenu=showMenu;
+
+function equippedBy(item){
+  let names=[];
+  game.party.forEach(h=>{
+    if(h.weapon===item)names.push(h.name+" weapon");
+    if(h.armor===item)names.push(h.name+" armor");
+  });
+  return names.join(", ");
+}
+function statBlock(h){
+  return `HP ${h.hp}/${stat(h,"maxHP")} • MP ${h.mp}/${stat(h,"maxMP")} • ATK ${stat(h,"atk")} • DEF ${stat(h,"def")} • MAG ${stat(h,"matk")}`;
+}
+function previewStats(h,item){
+  let oldW=h.weapon,oldA=h.armor,g=gear[item];
+  if(!g)return statBlock(h);
+  if(g.slot==="weapon")h.weapon=item;
+  if(g.slot==="armor")h.armor=item;
+  let out=statBlock(h);
+  h.weapon=oldW;h.armor=oldA;
+  return out;
+}
+function deltaText(h,item){
+  let g=gear[item]; if(!g)return "";
+  let before={atk:stat(h,"atk"),def:stat(h,"def"),matk:stat(h,"matk")};
+  let oldW=h.weapon,oldA=h.armor;
+  if(g.slot==="weapon")h.weapon=item;
+  if(g.slot==="armor")h.armor=item;
+  let after={atk:stat(h,"atk"),def:stat(h,"def"),matk:stat(h,"matk")};
+  h.weapon=oldW; h.armor=oldA;
+  let magDelta=after.matk-before.matk;
+  let fmt=(label,d)=>`${label} ${d>0?"+":""}${d}`;
+  return `${fmt("ATK",after.atk-before.atk)} • ${fmt("DEF",after.def-before.def)} • ${fmt("MAG",magDelta)}`;
+}
+function openPartySafe(){
+  try{normalizeGame();showParty();}
+  catch(err){toastMsg("Party screen error fixed in this version. Start New Adventure if old save is bad.");console.error(err);}
+}
+
+function showStatus(){
+  normalizeGame();
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic">
+    <h2>Status</h2>
+    <div class="commandBox">
+      <div class="statLine"><span>Gold</span><span>${game.gold} G</span></div>
+      <div class="statLine"><span>Steps</span><span>${game.steps}</span></div>
+      <div class="statLine"><span>Location</span><span>${placeName()}</span></div>
+      <div class="statLine"><span>Crystal</span><span>${game.crystal?"Restored":"Missing"}</span></div>
+    </div>
+    ${game.party.map((h,i)=>`<div class="commandBox heroMini">
+      <div class="sprite">${classInfo[h.class][0]}</div>
+      <div>
+        <h3>${h.name} — ${h.class}</h3>
+        <div class="statLine"><span>Level</span><span>${h.level}</span></div>
+        <div class="statLine"><span>HP</span><span>${h.hp}/${stat(h,"maxHP")}</span></div>
+        <div class="statLine"><span>MP</span><span>${h.mp}/${stat(h,"maxMP")}</span></div>
+        <div class="statLine"><span>XP</span><span>${h.xp}/${h.next}</span></div>
+        <div class="statLine"><span>Attack</span><span>${stat(h,"atk")}</span></div>
+        <div class="statLine"><span>Defense</span><span>${stat(h,"def")}</span></div>
+        <div class="statLine"><span>Magic</span><span>${stat(h,"matk")}</span></div>
+        <div class="statLine"><span>Weapon</span><span>${h.weapon}</span></div>
+        <div class="statLine"><span>Armor</span><span>${h.armor}</span></div>
+      </div>
+    </div>`).join("")}
+    <button class="menuBtn" onclick="showMenu()">Back</button>
+  </div>`;
+}
+window.showStatus=showStatus;
+
+function showMagicMenu(selected=0){
+  normalizeGame();
+  let h=game.party[selected]||game.party[0];
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic">
+    <h2>Magic</h2>
+    <div class="equipWindow">
+      <div>
+        <h3>Choose Hero</h3>
+        ${targetHeroList("selectMagicHero",selected)}
+      </div>
+      <div>
+        <div class="commandBox">
+          <div class="heroMini"><div class="sprite">${classInfo[h.class][0]}</div><div><strong>${h.name}</strong> ${h.class}<br>MP ${h.mp}/${stat(h,"maxMP")}</div></div>
+        </div>
+        <h3>Spells / Skills</h3>
+        <div class="commandBox">
+          <div class="listGrid">${h.spells.map(s=>`<button class="itemRow" onclick="showMagicDetail(${selected},'${s}')"><span>${s}</span><span>MP ${spells[s].mp}</span></button>`).join("")}</div>
+        </div>
+      </div>
+    </div>
+    <button class="menuBtn" onclick="showMenu()">Back</button>
+  </div>`;
+}
+window.showMagicMenu=showMagicMenu;
+function showMagicDetail(i,s){
+  let h=game.party[i],sp=spells[s];
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic"><h2>${s}</h2>
+    <div class="commandBox"><strong>${h.name}</strong> — ${h.class}<br>MP ${h.mp}/${stat(h,"maxMP")}<br>${sp.desc}<br>Cost: ${sp.mp} MP</div>
+    <div class="commandBox">${sp.type==="heal"||sp.type==="life"?targetHeroList(`castOutsideMagic('${s}',`,0).replaceAll("onclick=\"castOutsideMagic('"+s+"',","onclick=\"castOutsideMagic('"+s+"',"):`<p>This spell is mainly for battle.</p>`}</div>
+    <button class="menuBtn" onclick="showMagicMenu(${i})">Back</button></div>`;
+}
+window.showMagicDetail=showMagicDetail;
+function castOutsideMagic(s,i){
+  let caster=game.party.find(h=>h.spells.includes(s));
+  let target=game.party[i],sp=spells[s];
+  if(!caster||!target||!sp){toastMsg("Cannot cast.");return}
+  if(caster.mp<sp.mp){toastMsg("Not enough MP.");return}
+  if(sp.type==="heal"){caster.mp-=sp.mp;target.hp=Math.min(stat(target,"maxHP"),target.hp+sp.pow+stat(caster,"matk"));toastMsg(`${caster.name} healed ${target.name}.`);saveGame();showMagicMenu(game.party.indexOf(caster));}
+  else if(sp.type==="life"){if(target.hp>0){toastMsg(`${target.name} is not fallen.`);return}caster.mp-=sp.mp;target.hp=sp.pow;toastMsg(`${caster.name} revived ${target.name}.`);saveGame();showMagicMenu(game.party.indexOf(caster));}
+  else toastMsg("Battle spell.");
+}
+window.castOutsideMagic=castOutsideMagic;
+
+function showFormation(){
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic"><h2>Formation</h2><div class="commandBox"><p>Formation screen placeholder. Current order is fixed for now:</p>${game.party.map((h,i)=>`<div class="statLine"><span>${i+1}. ${h.name}</span><span>${h.class}</span></div>`).join("")}</div><button class="menuBtn" onclick="showMenu()">Back</button></div>`;
+}
+window.showFormation=showFormation;
+
+function showConfig(){
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic"><h2>Config</h2><div class="commandBox"><p>Config placeholder for future options like text speed, button layout, and reset save.</p></div><button class="menuBtn" onclick="showMenu()">Back</button></div>`;
+}
+window.showConfig=showConfig;
+
+
+function heroCard(h,i){
+  return `<div class="commandBox"><div class="heroMini"><div class="sprite">${classInfo[h.class][0]}</div><div><strong>${h.name} — ${h.class}</strong><br>Lv ${h.level} • XP ${h.xp}/${h.next}<br>HP ${h.hp}/${stat(h,"maxHP")} • MP ${h.mp}/${stat(h,"maxMP")}<br>ATK ${stat(h,"atk")} • DEF ${stat(h,"def")} • MAG ${stat(h,"matk")}<br><span class="small">Weapon: ${h.weapon}<br>Armor: ${h.armor}<br>Future: ${classInfo[h.class][2]}</span><div class="row"><button class="menuBtn" onclick="showEquip(${i})" data-show-equip="${i}">Equip</button><button class="menuBtn" onclick="showSpells(${i})" data-show-spells="${i}">Spells</button></div></div></div></div>`;
+}
+function showParty(){
+  normalizeGame();
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic"><h2>Equipment</h2>${game.party.map(heroCard).join("")}<button class="menuBtn" onclick="showMenu()">Back</button></div>`;
+}
+window.showParty=showParty;
+function showEquip(i){showEquipWindow(i,"weapon")}
+function showEquipWindow(i,slot="weapon",selectedEnc=null){
+  normalizeGame();
+  let h=game.party[i];
+  if(!h){toastMsg("Hero not found.");return}
+  let selected=selectedEnc?decodeURIComponent(selectedEnc):h[slot];
+  let g=gear[selected];
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic">
+    <h2>${slot==="weapon"?"Weapon":"Armor"}</h2>
+    <div class="equipWindow">
+      <div>
+        <div class="namePlate">${h.name}</div>
+        <div class="commandBox heroMini"><div class="sprite">${classInfo[h.class][0]}</div><div><strong>${h.class}</strong><br>${statBlock(h)}</div></div>
+        ${equipmentSlotsHtml(h)}
+        <div class="smallCmdGrid">
+          <button class="menuBtn miniCmd ${slot==="weapon"?"selected":""}" onclick="showEquipWindow(${i},'weapon')">Weapon</button>
+          <button class="menuBtn miniCmd ${slot==="armor"?"selected":""}" onclick="showEquipWindow(${i},'armor')">Armor</button>
+          <button class="menuBtn miniCmd" onclick="showParty()">Back</button>
+        </div>
+      </div>
+      <div>
+        <h3>${slot==="weapon"?"Weapons":"Armor"}</h3>
+        ${equipListForHero(i,slot)}
+        <div class="detailBox">
+          <strong>${selected||"No Selection"}</strong><br>
+          ${g?`Before: ${statBlock(h)}<br>After: ${previewStats(h,selected)}<br>Change: ${deltaText(h,selected)}<br>${g.effect?`Effect: ${g.effect}<br>`:""}`:"Choose gear."}
+          ${g&&h[slot]!==selected?`<button class="menuBtn miniCmd" onclick="equipItem(${i},'${encodeURIComponent(selected)}')">Equip</button>`:""}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+window.showEquip=showEquip;window.showEquipWindow=showEquipWindow;
+function equipItem(i,it){
+  try{it=decodeURIComponent(it)}catch(e){}
+  normalizeGame();
+  let h=game.party[i],g=gear[it];
+  if(!h||!g){toastMsg("Gear not found.");return}
+  if(!g.class.includes(h.class)){toastMsg("Cannot equip.");return}
+  h[g.slot]=it;
+  saveGame();
+  toastMsg(`${h.name} equipped ${it}.`);
+  showEquipWindow(i,g.slot,encodeURIComponent(it));
+}
+window.equipItem=equipItem;
+function showSpells(i){let h=game.party[i];overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>${h.name}'s Spells / Skills</h2>${h.spells.map(s=>`<div class="card"><strong>${s}</strong><br>MP ${spells[s].mp} • ${spells[s].desc}</div>`).join("")}<button onclick="showParty()">Back</button></div>`}window.showSpells=showSpells;
+
+
+
+function itemTargetButtons(k,where){
+  return game.party.map((h,i)=>`<button class="targetBtn" onclick="applyTargetItem('${k}',${i},'${where}')"><span class="sprite">${classInfo[h.class][0]}</span><span><strong>${h.name}</strong> ${h.class} Lv ${h.level}<br>HP ${h.hp}/${stat(h,"maxHP")} MP ${h.mp}/${stat(h,"maxMP")}</span></button>`).join("");
+}
+
+function targetHeroList(action,selected=0){
+  return `<div class="characterList">${game.party.map((h,i)=>`<button class="targetBtn ${i===selected?"selected":""}" onclick="${action}(${i})"><span class="sprite">${classInfo[h.class][0]}</span><span><strong>${h.name}</strong> ${h.class} Lv ${h.level}<br>HP ${h.hp}/${stat(h,"maxHP")} MP ${h.mp}/${stat(h,"maxMP")}<br>ATK ${stat(h,"atk")} DEF ${stat(h,"def")} MAG ${stat(h,"matk")}</span></button>`).join("")}</div>`;
+}
+function equipmentSlotsHtml(h){
+  return `<div class="gearSlot"><span class="slotName">Weapon</span> ${h.weapon}<br><span class="small">${gear[h.weapon]?`ATK ${gear[h.weapon].atk||0} DEF ${gear[h.weapon].def||0} MAG ${gear[h.weapon].matk||0}`:""}</span></div>
+  <div class="gearSlot"><span class="slotName">Armor</span> ${h.armor}<br><span class="small">${gear[h.armor]?`ATK ${gear[h.armor].atk||0} DEF ${gear[h.armor].def||0} MAG ${gear[h.armor].matk||0}`:""}</span></div>`;
+}
+function equipListForHero(i,slot){
+  let h=game.party[i];
+  let items=game.inventory.filter(it=>gear[it]&&gear[it].slot===slot&&gear[it].class.includes(h.class));
+  let counts=invCounts(items);
+  let unique=Object.keys(counts);
+  if(!unique.length)return `<div class="commandBox">No usable ${slot}s.</div>`;
+  return `<div class="commandBox"><div class="listGrid">${unique.map(it=>`<button class="itemRow ${h[slot]===it?"selected":""}" onclick="showEquipWindow(${i},'${slot}','${encodeURIComponent(it)}')"><span>${h[slot]===it?"E-":""}${it}</span><span>${counts[it]}</span></button>`).join("")}</div></div>`;
+}
+function equippedSlotForItem(item){
+  let g=gear[item];
+  return g?g.slot:"";
+}
+function selectMagicHero(i){showMagicMenu(i)}
+window.selectMagicHero=selectMagicHero;
+
+function invCounts(list){
+  const out={};
+  list.forEach(x=>out[x]=(out[x]||0)+1);
+  return out;
+}
+function inventoryRows(cat){
+  if(cat==="items")return Object.entries(game.items).filter(([k,v])=>v>0).map(([name,count])=>({name,count,type:"item"}));
+  let counts=invCounts(game.inventory);
+  if(cat==="weapons")return Object.entries(counts).filter(([n,c])=>gear[n]&&gear[n].slot==="weapon").map(([name,count])=>({name,count,type:"weapon"}));
+  if(cat==="armor")return Object.entries(counts).filter(([n,c])=>gear[n]&&gear[n].slot==="armor").map(([name,count])=>({name,count,type:"armor"}));
+  return Object.entries(game.items).filter(([k,v])=>v>0&&!["Potion","Ether","Smoke Bomb"].includes(k)).map(([name,count])=>({name,count,type:"key"}));
+}
+function catTitle(cat){
+  return cat==="items"?"Items":cat==="weapons"?"Weapons":cat==="armor"?"Armor":"Key Items";
+}
+function invDescription(cat,name){
+  if(!name)return "Choose an entry from the list.";
+  if(cat==="items"){
+    if(name==="Potion")return "Restore 35 HP. Choose a hero after selecting.";
+    if(name==="Ether")return "Restore 3 MP. Choose a hero after selecting.";
+    if(name==="Smoke Bomb")return "Battle escape item. Best used during combat.";
+    return "Special item.";
+  }
+  let g=gear[name];
+  if(!g)return "Unknown item.";
+  let equipped=equippedBy(name);
+  let lines=[`Slot: ${g.slot}`,`Base: ATK ${g.atk||0} DEF ${g.def||0} MAG ${g.matk||0}`,`Usable: ${g.class.join(", ")}`];
+  if(g.effect)lines.push(`Effect: ${g.effect}`);
+  if(equipped)lines.push(`Equipped by: ${equipped}`);
+  return lines.join("<br>");
+}
+function invAction(cat,name){
+  if(!name)return "";
+  if(cat==="items"){
+    if(name==="Potion"||name==="Ether")return `<button class="menuBtn miniCmd" onclick="chooseItemTarget('${name}','outside')">Use</button>`;
+    if(name==="Smoke Bomb")return `<button class="menuBtn miniCmd" onclick="toastMsg('Smoke Bomb is for battle escape.')">Use in Battle</button>`;
+    return "";
+  }
+  if(cat==="weapons"||cat==="armor"){
+    return `<button class="menuBtn miniCmd" onclick="chooseEquipTarget('${name}')">Equip</button>`;
+  }
+  return "";
+}
+function chooseEquipTarget(item){
+  const g=gear[item];
+  if(!g){toastMsg("Gear not found.");return}
+  let heroes=game.party.filter(h=>g.class.includes(h.class));
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic"><h2>Equip ${item}</h2>
+    <div class="commandBox"><strong>${item}</strong><br>${invDescription(g.slot==="weapon"?"weapons":"armor",item)}</div>
+    ${heroes.map((h)=>{let i=game.party.indexOf(h);return `<div class="commandBox heroMini"><div class="sprite">${classInfo[h.class][0]}</div><div><strong>${h.name}</strong> ${h.class}<br><strong>Before:</strong> ${statBlock(h)}<br><strong>After:</strong> ${previewStats(h,item)}<br><strong>Change:</strong> ${deltaText(h,item)}<button class="menuBtn miniCmd" onclick="equipItem(${i},'${encodeURIComponent(item)}')">Equip to ${h.name}</button></div></div>`}).join("")||"<p>No hero can use this.</p>"}
+    <button class="menuBtn" onclick="showBag('${g.slot==="weapon"?"weapons":"armor"}','${item}')">Back</button></div>`;
+}
+window.chooseEquipTarget=chooseEquipTarget;
+function compactListHtml(rows,cat,selected,handler){
+  if(!rows.length)return `<div class="commandBox">Nothing here.</div>`;
+  return `<div class="commandBox"><div class="listGrid">${rows.map(r=>`<button class="itemRow ${r.name===selected?"selected":""}" onclick="${handler}('${cat}','${r.name.replace(/'/g,"\\'")}')"><span>${r.name}</span><span>${r.count}</span></button>`).join("")}</div></div>`;
+}
+function selectInventoryItem(cat,name){showBag(cat,name)}
+window.selectInventoryItem=selectInventoryItem;
+
+function showBag(cat='items',selected=null){
+  normalizeGame();
+  let rows=inventoryRows(cat);
+  if(!selected&&rows.length)selected=rows[0].name;
+  const tabs=["items","weapons","armor","key"];
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic">
+    <h2>Item</h2>
+    <div class="tabBar">${tabs.map(t=>`<button class="tabBtn ${cat===t?"active":""}" onclick="showBag('${t}')">${catTitle(t)}</button>`).join("")}</div>
+    <div class="twoPane">
+      <div>
+        <h3>${catTitle(cat)}</h3>
+        ${compactListHtml(rows,cat,selected,"selectInventoryItem")}
+      </div>
+      <div class="detailBox">
+        <strong>${selected||"No Selection"}</strong><br>
+        ${invDescription(cat,selected)}
+        <div style="margin-top:8px">${invAction(cat,selected)}</div>
+      </div>
+    </div>
+    <button class="menuBtn" onclick="showMenu()">Back</button>
+  </div>`;
+}
+window.showBag=showBag;
+function useItemOutside(k){if(!game.items[k]){toastMsg("None left.");return}if(k==="Potion"){let h=game.party.slice().sort((a,b)=>a.hp/stat(a,"maxHP")-b.hp/stat(b,"maxHP"))[0];h.hp=Math.min(stat(h,"maxHP"),h.hp+35);game.items[k]--;toastMsg(`Potion used on ${h.name}.`)}else if(k==="Ether"){let h=game.party.find(h=>stat(h,"maxMP")>0&&h.mp<stat(h,"maxMP"))||game.party[1];h.mp=Math.min(stat(h,"maxMP"),h.mp+3);game.items[k]--;toastMsg(`Ether used on ${h.name}.`)}else toastMsg("Save this for battle.");saveGame();showBag()}window.useItemOutside=useItemOutside;
+function terrain(x,y){if(x<0||y<0||x>=28||y>=22)return "w"; if(game.area==="town")return townMap[y]?.[x]||"#"; if(game.area==="dungeon")return caveMap[y]?.[x]||"#"; return worldMap[y]?.[x]||"g"}function pass(t){return !["w","#"].includes(t)}
+function move(dx,dy){if(mode!=="map"||overlay.style.display==="flex"||moveLock>0)return;
+if(game.area==="town"&&((game.x<=4&&dx<0)||(game.x>=15&&dx>0)||(game.y<=2&&dy<0)||(game.y>=10&&dy>0))){game.x=5;game.y=10;startMap("overworld");toastMsg("Returned to Meadowvale.");saveGame();return}
+let nx=game.x+dx,ny=game.y+dy,t=terrain(nx,ny);if(!pass(t)){toastMsg("Blocked.");return}game.x=nx;game.y=ny;game.steps++;moveLock=8;if(game.area==="overworld"){if(t==="t"){startMap("town");return} if(t==="c"){startMap("dungeon");return} if((t==="g"||t==="f"||t==="m")&&Math.random()<.13)startRandomBattle(t)}else if(game.area==="town"){townHint(t)}else if(game.area==="dungeon"){if(t==="B"){toastMsg(game.bossDead?"The crystal roots are calm.":"Boss roots: press OK to fight.");return} if(t==="E"){toastMsg("Cave exit: press OK to leave.");return} if(t==="."&&Math.random()<.18)startRandomBattle("cave")}hud();saveGame()}
+function townHint(t){hud();if(t==="I")toastMsg("Inn: press OK.");if(t==="S")toastMsg("Item shop: press OK.");if(t==="W")toastMsg("Weapon shop: press OK.");if(t==="A")toastMsg("Armor shop: press OK.");if(t==="E")toastMsg("Town gate: press OK.")}
+
+function itemCount(name){
+  return game.inventory.filter(x=>x===name).length;
+}
+function shopPreviewForItem(type,n){
+  if(type==="item")return "Consumable item";
+  let g=gear[n]; if(!g)return "";
+  let users=game.party.filter(h=>g.class.includes(h.class));
+  if(!users.length)return `No one can use this.`;
+  return users.map(h=>{
+    let marker=(h[g.slot]===n)?"✅ equipped":"";
+    return `${h.name}: ${deltaText(h,n)} ${marker}`;
+  }).join("<br>");
+}
+
+
+function shopRows(type){
+  if(type==="item")return [["Potion",10],["Ether",25],["Smoke Bomb",18]].map(([name,cost])=>({name,cost,count:game.items[name]||0}));
+  return Object.entries(gear).filter(([n,g])=>g.slot===type&&g.cost>0).map(([name,g])=>({name,cost:g.cost,count:itemCount(name)}));
+}
+function selectShopItem(type,name){shop(type,name)}
+function shopDetail(type,name){
+  if(!name)return "Choose an item.";
+  if(type==="item")return invDescription("items",name);
+  let cat=type==="weapon"?"weapons":"armor";
+  return `${invDescription(cat,name)}<br><br><strong>Preview by hero:</strong><br>${shopPreviewForItem(type,name)}`;
+}
+function shopBuyButton(type,name){
+  if(!name)return "";
+  let rows=shopRows(type),r=rows.find(x=>x.name===name);
+  if(!r)return "";
+  return `<button class="menuBtn miniCmd" onclick="buyShop('${type}','${name}',${r.cost})">Buy — ${r.cost} G</button>`;
+}
+window.selectShopItem=selectShopItem;
+
+function shop(type,selected=null){
+  let title=type==="item"?"Item Shop":type==="weapon"?"Weapon Shop":type==="armor"?"Armor Shop":"Inn";
+  ui.place.textContent=title;
+  ui.item.textContent="Shopping";
+  if(type==="inn"){
+    overlay.style.display="flex";
+    overlay.innerHTML=`<div class="panel classic"><h2>Starbrook Inn</h2><div class="commandBox">Restores all HP/MP for 25 gold.<br>Gold: ${game.gold} G</div><button class="menuBtn" onclick="buyInn()">Rest - 25 G</button><button class="menuBtn" onclick="closeOverlay();hud()">Leave</button></div>`;
+    return;
+  }
+  let rows=shopRows(type);
+  if(!selected&&rows.length)selected=rows[0].name;
+  let cat=type==="item"?"items":type==="weapon"?"weapons":"armor";
+  overlay.style.display="flex";
+  overlay.innerHTML=`<div class="panel classic">
+    <h2>${title}</h2>
+    <div class="commandBox"><div class="statLine"><span>Gold</span><span>${game.gold} G</span></div></div>
+    <div class="twoPane">
+      <div>${compactListHtml(rows.map(r=>({name:r.name,count:r.cost,type})),cat,selected,"selectShopItem")}</div>
+      <div class="detailBox"><strong>${selected||"No Selection"}</strong><br>${shopDetail(type,selected)}<div style="margin-top:8px">${shopBuyButton(type,selected)}</div></div>
+    </div>
+    <button class="menuBtn" onclick="closeOverlay();hud()">Leave</button>
+  </div>`;
+}
+function buyInn(){if(game.gold>=25){game.gold-=25;game.party.forEach(h=>{h.hp=stat(h,"maxHP");h.mp=stat(h,"maxMP")});toastMsg("Rested at the inn.");saveGame();shop("inn")}else toastMsg("Need 25 gold.")}window.buyInn=buyInn;
+function buyShop(type,n,cost){if(game.gold<cost){toastMsg("Need more gold.");return}game.gold-=cost;if(type==="item")game.items[n]=(game.items[n]||0)+1;else game.inventory.push(n);saveGame();shop(type,n);toastMsg("Bought "+n)}window.shop=shop;window.buyShop=buyShop;
+function townAction(t){if(t==="E"){game.x=8;game.y=8;startMap("overworld");return}if(t==="I")shop("inn");else if(t==="S")shop("item");else if(t==="W")shop("weapon");else if(t==="A")shop("armor");else toastMsg("Nothing to use here.")}
+function caveAction(t){if(t==="E"){game.x=22;game.y=13;startMap("overworld");return}if(t==="B"){game.bossDead?toastMsg("The crystal roots are calm."):startBattle([bossDef.slice()],true);return}toastMsg("The cave echoes...")}
+function startRandomBattle(t){let pool=t==="cave"?[1,2,3,4]:t==="m"?[2,3]:[0,1,2],n=t==="cave"?2:Math.random()<.5?1:2,foes=[];for(let i=0;i<n;i++)foes.push(enemies[pool[Math.floor(Math.random()*pool.length)]].slice());startBattle(foes,false)}
+function startBattle(foes,boss){mode="battle";battle={foes,boss,msg:boss?"The Thornroot Guardian blocks the crystal!":"Monsters appeared!",turn:0};battleBtns.style.display="grid";overlay.style.display="none";ban(boss?"Boss Battle!":"Battle!")}
+function livingHeroes(){return game.party.filter(h=>h.hp>0)}function livingFoes(){return battle.foes.filter(e=>e[2]>0)}function hero(){let l=game.party.filter(h=>h.hp>0);return l[battle.turn%l.length]}
+function battleAction(action){if(mode!=="battle")return;let h=hero(),f=livingFoes()[0];if(!h){loseBattle();return}if(!f){winBattle();return}let msg="";if(action==="attack"){let d=Math.max(1,Math.round(stat(h,"atk")+(battle.buffs?.[h.name]?.atk||0)+rand(-3,4)-2));f[2]-=d;msg=`${h.name} attacks ${f[0]} for ${d}.`;burst(W*.63,H*.38,"#ffe66d",16)}if(action==="magic"){showBattleSpells(h);return}if(action==="item"){showBattleItems(h);return}if(action==="run"){if(!battle.boss&&Math.random()<.55){endBattle("Ran away!");return}else msg="Could not run!"}finishHeroAction(msg,f)}window.battleAction=battleAction;
+function finishHeroAction(msg,f){battle.msg=msg;if(f&&f[2]<=0){battle.msg+=` ${f[0]} falls!`;if(!livingFoes().length){setTimeout(winBattle,450);return}}battle.turn++;if(battle.turn>=livingHeroes().length){battle.turn=0;enemyTurn()}hud()}
+function showBattleSpells(h){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>${h.name}'s Magic / Skills</h2><p>MP ${h.mp}/${stat(h,"maxMP")}</p>${h.spells.map(s=>`<div class="card"><strong>${s}</strong> MP ${spells[s].mp}<br>${spells[s].desc}<button onclick="castBattleSpell('${s}')">Use</button></div>`).join("")}<button onclick="closeOverlay()">Back</button></div>`}window.showBattleSpells=showBattleSpells;
+function castBattleSpell(s){let h=hero(),f=livingFoes()[0],sp=spells[s];overlay.style.display="none";if(!h||!sp)return;if(h.mp<sp.mp){finishHeroAction("Not enough MP!",f);return}h.mp-=sp.mp;let msg="";if(sp.type==="dmg"||sp.type==="skill"){let d=sp.pow+stat(h,"matk")+Math.floor(h.level*2);f[2]-=d;msg=`${h.name} uses ${s} for ${d}.`;burst(W*.63,H*.38,cls[h.class][1],24)}else if(sp.type==="heal"){let t=game.party.slice().sort((a,b)=>a.hp/stat(a,"maxHP")-b.hp/stat(b,"maxHP"))[0];t.hp=Math.min(stat(t,"maxHP"),t.hp+sp.pow+stat(h,"matk"));msg=`${h.name} casts Heal on ${t.name}.`;burst(W*.28,H*.48,"#fff38b",24)}else if(sp.type==="life"){let t=game.party.find(x=>x.hp<=0);if(t){t.hp=sp.pow;msg=`${h.name} revives ${t.name}!`}else msg="No fallen hero.";burst(W*.28,H*.48,"#fff38b",24)}else if(sp.type==="buff"){battle.buffs=battle.buffs||{};battle.buffs[h.name]=battle.buffs[h.name]||{};battle.buffs[h.name].atk=(battle.buffs[h.name].atk||0)+sp.pow;msg=`${h.name} is blessed with +ATK.`}else if(sp.type==="guard"){battle.buffs=battle.buffs||{};battle.buffs[h.name]=battle.buffs[h.name]||{};battle.buffs[h.name].def=(battle.buffs[h.name].def||0)+sp.pow;msg=`${h.name} gains +DEF.`}else if(sp.type==="sleep"){if(Math.random()<.5){battle.sleep=true;msg=`${h.name} casts Sleep Hex!`}else msg="Sleep Hex failed."}else if(sp.type==="smoke"){if(!battle.boss&&Math.random()<.75){endBattle("Smoke Bomb escape!");return}else msg="Smoke failed!"}finishHeroAction(msg,f)}window.castBattleSpell=castBattleSpell;
+function showBattleItems(h){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Use Item</h2>${Object.entries(game.items).map(([k,v])=>`<div class="card"><strong>${k}</strong> x${v}<button onclick="useBattleItem('${k}')">Use</button></div>`).join("")}<button onclick="closeOverlay()">Back</button></div>`}window.showBattleItems=showBattleItems;
+function useBattleItem(k){overlay.style.display="none";let h=hero(),f=livingFoes()[0],msg="";if(!game.items[k])msg="None left.";else if(k==="Potion"){h.hp=Math.min(stat(h,"maxHP"),h.hp+35);game.items[k]--;msg=`${h.name} uses Potion.`}else if(k==="Ether"){h.mp=Math.min(stat(h,"maxMP"),h.mp+3);game.items[k]--;msg=`${h.name} uses Ether.`}else if(k==="Smoke Bomb"){game.items[k]--;if(!battle.boss&&Math.random()<.75){endBattle("Smoke Bomb escape!");return}else msg="Smoke Bomb failed!"}finishHeroAction(msg,f)}window.useBattleItem=useBattleItem;
+function enemyTurn(){if(battle.sleep){battle.msg+=" Enemies are asleep!";battle.sleep=false;return}for(let e of livingFoes()){let hs=livingHeroes(),t=hs[Math.floor(Math.random()*hs.length)];if(!t)break;let bd=battle.buffs?.[t.name]?.def||0,d=Math.max(1,Math.round(e[3]-(stat(t,"def")+bd)/2+rand(-2,3)));t.hp=Math.max(0,t.hp-d);battle.msg+=` ${e[0]} hits ${t.name} for ${d}.`;burst(W*.28,H*.48,"#ff5b6d",10)}if(!livingHeroes().length)loseBattle()}
+function winBattle(){let xp=0,g=0;for(let e of battle.foes){xp+=e[4];g+=e[5]}game.gold+=g;game.party.forEach(h=>{if(h.hp>0){h.xp+=xp;while(h.xp>=h.next){h.xp-=h.next;h.level++;h.next=Math.round(h.next*1.55);h.baseHP+=9+Math.floor(Math.random()*4);h.hp=stat(h,"maxHP");h.baseAtk+=2;h.baseDef+=1;if(h.baseMP>0){h.baseMP++;h.mp=stat(h,"maxMP")}if(h.level===2&&h.class==="Dark Mage"&&!h.spells.includes("Sleep Hex"))h.spells.push("Sleep Hex");if(h.level===2&&h.class==="Cleric"&&!h.spells.includes("Guard Prayer"))h.spells.push("Guard Prayer");if(h.level===3&&h.class==="Dark Mage"&&!h.spells.includes("Night Bolt"))h.spells.push("Night Bolt");if(h.level===3&&h.class==="Cleric"&&!h.spells.includes("Life"))h.spells.push("Life");ban(`${h.name} leveled up!`)}}});battle.boss?(game.bossDead=true,game.crystal=true,game.items["Star Crystal"]=1,endBattle(`Victory! Meadow Crystal restored. +${xp} XP +${g} gold.`)):endBattle(`Victory! +${xp} XP +${g} gold.`)}
+function loseBattle(){running=false;mode="menu";battleBtns.style.display="none";overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>The party fell!</h2><p>The heroes wake at Starbrook Inn. Half your gold is lost.</p><button onclick="reviveAtTown()">Continue</button></div>`}
+function reviveAtTown(){game.gold=Math.floor(game.gold/2);game.party.forEach(h=>{h.hp=Math.max(1,Math.floor(stat(h,"maxHP")*.65));h.mp=stat(h,"maxMP")});startMap("town");saveGame()}function endBattle(msg){battle=null;mode="map";battleBtns.style.display="none";ban(msg);saveGame();hud()}
+function draw(){ctx.clearRect(0,0,W,H);mode==="battle"?drawBattle():drawMap();drawFX();requestAnimationFrame(draw)}
+function drawMap(){let s=tile*dpr,vw=Math.ceil(W/s)+2,vh=Math.ceil(H/s)+2;cam.x=Math.max(0,Math.min(28-vw,game.x-Math.floor(vw/2)));cam.y=Math.max(0,Math.min(22-vh,game.y-Math.floor(vh/2)));for(let y=0;y<vh;y++)for(let x=0;x<vw;x++){let mx=x+cam.x,my=y+cam.y,t=terrain(mx,my),px=x*s,py=y*s;drawTile(px,py,s,t)}let px=(game.x-cam.x)*s,py=(game.y-cam.y)*s;ctx.font=`${s*.58}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText("🧙‍♂️",px+s/2,py+s/2)}
+function drawTile(x,y,s,t){
+  let base=t==="w"?"#256fc7":t==="f"?"#1e8d44":t==="m"?"#7d6d62":t==="t"?"#d9b16f":t==="c"?"#57506f":t==="#"?"#22263c":t==="B"?"#2f9e55":t==="I"?"#ff86d9":t==="S"?"#47d66c":t==="W"?"#ffb23f":t==="A"?"#9ad0ff":t==="E"?"#e8d45c":"#4dbb4b";
+  ctx.fillStyle=base;ctx.fillRect(x,y,s,s);
+  // richer 8-bit texture
+  if(t==="w"){ctx.strokeStyle="#7be7ff66";ctx.lineWidth=2*dpr;ctx.beginPath();ctx.moveTo(x+s*.15,y+s*.35);ctx.quadraticCurveTo(x+s*.5,y+s*.2,x+s*.85,y+s*.35);ctx.stroke();ctx.beginPath();ctx.moveTo(x+s*.1,y+s*.7);ctx.quadraticCurveTo(x+s*.5,y+s*.55,x+s*.9,y+s*.7);ctx.stroke();}
+  if(t==="g"||t==="f"){ctx.fillStyle=t==="f"?"#0d642d":"#2e9632";for(let i=0;i<4;i++){let gx=x+((i*13+game.steps*3)%Math.max(1,s));let gy=y+((i*17+7)%Math.max(1,s));ctx.fillRect(gx,gy,3*dpr,8*dpr)}}
+  if(t==="m"){ctx.fillStyle="#9a897a";ctx.beginPath();ctx.moveTo(x+s*.18,y+s*.72);ctx.lineTo(x+s*.45,y+s*.25);ctx.lineTo(x+s*.72,y+s*.72);ctx.fill();}
+  if(t==="#"){ctx.fillStyle="#394063";ctx.fillRect(x+s*.08,y+s*.15,s*.84,s*.18);ctx.fillRect(x+s*.08,y+s*.55,s*.84,s*.18)}
+  ctx.strokeStyle="#0005";ctx.strokeRect(x,y,s,s);
+  let icon=t==="t"?"🏘️":t==="c"?"🕳️":t==="I"?"🏨":t==="S"?"🧪":t==="W"?"⚔️":t==="A"?"🛡️":t==="B"?"🌳":t==="E"?"🚪":"";
+  if(icon){ctx.font=`${s*.52}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(icon,x+s/2,y+s/2)}
+}
+function drawBattle(){let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#172766");g.addColorStop(.55,"#101535");g.addColorStop(1,"#07111f");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);ctx.fillStyle="#fff";ctx.font=`${17*dpr}px system-ui`;ctx.textAlign="center";ctx.fillText(battle?.msg||"",W/2,36*dpr);livingFoes().forEach((e,i)=>{let x=W*(.62+i*.12),y=H*.34;ctx.font=`${54*dpr}px system-ui`;ctx.fillText(e[1],x,y);ctx.font=`${15*dpr}px system-ui`;ctx.fillText(`${e[0]} HP ${Math.max(0,e[2])}`,x,y+44*dpr)});game.party.forEach((h,i)=>{let x=W*(.16+(i%2)*.23),y=H*(.58+Math.floor(i/2)*.13);ctx.fillStyle=cls[h.class][1];ctx.fillRect(x-58*dpr,y-24*dpr,116*dpr,48*dpr);ctx.strokeStyle="#fff";ctx.lineWidth=3*dpr;ctx.strokeRect(x-58*dpr,y-24*dpr,116*dpr,48*dpr);ctx.fillStyle="#fff";ctx.font=`${15*dpr}px system-ui`;ctx.fillText(`${cls[h.class][0]} ${h.name}`,x,y-7*dpr);ctx.font=`${11*dpr}px system-ui`;ctx.fillText(`HP ${h.hp}/${stat(h,"maxHP")} MP ${h.mp}/${stat(h,"maxMP")}`,x,y+13*dpr)});if(hero()){ctx.fillStyle="#ffe66d";ctx.font=`${17*dpr}px system-ui`;ctx.fillText(`Turn: ${hero().name}`,W/2,H*.88)}}
+function rand(a,b){return a+Math.random()*(b-a)}function burst(x,y,c,n){for(let i=0;i<n;i++){let a=Math.random()*7,s=rand(1,5)*dpr;particles.push({x,y,dx:Math.cos(a)*s,dy:Math.sin(a)*s,r:rand(2,5)*dpr,c,life:rand(18,36)})}}function drawFX(){particles.forEach(p=>{ctx.globalAlpha=Math.max(0,p.life/36);ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();ctx.globalAlpha=1;p.x+=p.dx;p.y+=p.dy;p.life--});particles=particles.filter(p=>p.life>0)}
+function update(){if(moveLock>0)moveLock--;let dx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0)+touch.x,dy=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0)+touch.y;if(Math.abs(dx)>Math.abs(dy)&&dx)move(dx>0?1:-1,0);else if(dy)move(0,dy>0?1:-1)}
+function loop(now){let dt=Math.min(35,now-last||16);last=now;if(running)update(dt);requestAnimationFrame(loop)}
+function setDir(x,y){touch={x,y}}function bind(id,x,y){let el=document.getElementById(id);el.addEventListener("touchstart",e=>{e.preventDefault();setDir(x,y)},{passive:false});el.addEventListener("touchend",e=>{e.preventDefault();setDir(0,0)},{passive:false});el.addEventListener("mousedown",e=>{e.preventDefault();setDir(x,y)});addEventListener("mouseup",()=>setDir(0,0))}
+bind("upBtn",0,-1);bind("downBtn",0,1);bind("leftBtn",-1,0);bind("rightBtn",1,0);okBtn.onclick=()=>{let t=terrain(game.x,game.y);if(game.area==="overworld"){if(t==="t")startMap("town");else if(t==="c")startMap("dungeon");else toastMsg("Nothing here.");}else if(game.area==="town")townAction(t);else if(game.area==="dungeon")caveAction(t);};document.getElementById("partyBtn").onclick=openPartySafe;document.getElementById("bagBtn").onclick=showBag;document.getElementById("menuBtn").onclick=showMenu;document.addEventListener("keydown",e=>{keys[e.key]=true;if(e.key==="Escape")showMenu()});document.addEventListener("keyup",e=>keys[e.key]=false);
+window.newGame = newGame;
+window.continueGame = continueGame;
+window.showHow = showHow;
+window.showParty = showParty;
+window.showBag = showBag;
+window.showMenu = showMenu;
+
+
+window.showEquip = showEquip;
+window.showSpells = showSpells;
+window.equipItem = equipItem;
+
+
+function handleEquipTapTarget(target,ev){
+  const btn=target.closest&&target.closest("[data-equip-hero]");
+  if(!btn)return false;
+  ev.preventDefault();
+  equipItem(Number(btn.dataset.equipHero), btn.dataset.equipItem);
+  return true;
+}
+document.addEventListener("touchend",e=>{handleEquipTapTarget(e.target,e)},{passive:false});
+document.addEventListener("click",e=>{handleEquipTapTarget(e.target,e)});
+
+
+window.openPartySafe = openPartySafe;
+window.newGame = newGame;
+window.continueGame = continueGame;
+window.showHow = showHow;
+window.showParty = showParty;
+window.showEquip = showEquip;
+window.showSpells = showSpells;
+window.equipItem = equipItem;
+window.showBag = showBag;
+window.showMenu = showMenu;
+
+resize();hud();requestAnimationFrame(draw);requestAnimationFrame(loop);
+</script>
+</body></html>
