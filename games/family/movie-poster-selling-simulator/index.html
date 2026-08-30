@@ -189,7 +189,7 @@ function renderComputer(){
  let wrong=movies.filter(m=>m[0]!==current.title).sort(()=>Math.random()-.5).slice(0,3).map(x=>x[0]),titles=[current.title,...wrong].sort(()=>Math.random()-.5);
  titles.forEach(x=>mkOpt(title,x,chosenTitle===x,()=>{chosenTitle=x;renderComputer()}));
  [current.condition,...conditions.filter(x=>x!==current.condition).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5).forEach(x=>mkOpt(cond,x,chosenCondition===x,()=>{chosenCondition=x;renderComputer()}));
- const base=current.value,[Math.round(base*.8),base,Math.round(base*1.35)].forEach((x,i)=>{const b=document.createElement("button");b.className="price"+(chosenPrice===x?" active":"");b.textContent=(i===0?"FAST ":"")+("$"+x)+(i===2?" MAX":"");b.onclick=()=>{chosenPrice=x;renderComputer()};price.appendChild(b)});
+ const base=current.value;[Math.round(base*.8),base,Math.round(base*1.35)].forEach((x,i)=>{const b=document.createElement("button");b.className="price"+(chosenPrice===x?" active":"");b.textContent=(i===0?"FAST ":"")+("$"+x)+(i===2?" MAX":"");b.onclick=()=>{chosenPrice=x;renderComputer()};price.appendChild(b)});
  $("#photoStatus").textContent=photoTaken?"📷 Photo ready":"📷 No photo";
 }
 function mkOpt(parent,label,active,fn){const b=document.createElement("button");b.className="opt"+(active?" active":"");b.textContent=label;b.onclick=fn;parent.appendChild(b)}
