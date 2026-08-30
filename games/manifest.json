@@ -1,17 +1,153 @@
 {
-  "updated": "2026-05-13",
+  "updated": "2026-08-30",
   "games": {
+    "quinton": [
+      {
+        "title": "Brawl Stars 3",
+        "slug": "brawl-stars-3",
+        "path": "games/quinton/brawl-stars-3/",
+        "index_html": "games/quinton/brawl-stars-3/index.html"
+      },
+      {
+        "title": "Fun Game",
+        "slug": "fun-game",
+        "path": "games/quinton/fun-game/",
+        "index_html": "games/quinton/fun-game/index.html"
+      }
+    ],
+    "lincoln": [
+      {
+        "title": "Archery Class",
+        "slug": "archery-class",
+        "path": "games/lincoln/archery-class/",
+        "index_html": "games/lincoln/archery-class/index.html"
+      },
+      {
+        "title": "My Awesome Game",
+        "slug": "my-awesome-game",
+        "path": "games/lincoln/my-awesome-game/",
+        "index_html": "games/lincoln/my-awesome-game/index.html"
+      }
+    ],
     "adella": [
+      {
+        "title": "Colortopia",
+        "slug": "colortopia",
+        "path": "games/adella/colortopia/",
+        "index_html": "games/adella/colortopia/index.html"
+      },
+      {
+        "title": "Learning About Eeveelousons",
+        "slug": "learning-about-eeveelousons",
+        "path": "games/adella/learning-about-eeveelousons/",
+        "index_html": "games/adella/learning-about-eeveelousons/index.html"
+      },
+      {
+        "title": "Line It Up",
+        "slug": "line-it-up",
+        "path": "games/adella/line-it-up/",
+        "index_html": "games/adella/line-it-up/index.html"
+      },
+      {
+        "title": "Nail Salon",
+        "slug": "nail-salon",
+        "path": "games/adella/nail-salon/",
+        "index_html": "games/adella/nail-salon/index.html"
+      },
+      {
+        "title": "School Time",
+        "slug": "school-time",
+        "path": "games/adella/school-time/",
+        "index_html": "games/adella/school-time/index.html"
+      },
+      {
+        "title": "Space Star Shooter Galaxy Quest Ultra",
+        "slug": "space-star-shooter-galaxy-quest-ultra",
+        "path": "games/adella/space-star-shooter-galaxy-quest-ultra/",
+        "index_html": "games/adella/space-star-shooter-galaxy-quest-ultra/index.html"
+      },
+      {
+        "title": "Space Star Shooter Galaxy Quest",
+        "slug": "space-star-shooter-galaxy-quest",
+        "path": "games/adella/space-star-shooter-galaxy-quest/",
+        "index_html": "games/adella/space-star-shooter-galaxy-quest/index.html"
+      },
+      {
+        "title": "Space Star Shooter Ultra Mobilefix",
+        "slug": "space-star-shooter-ultra-mobilefix",
+        "path": "games/adella/space-star-shooter-ultra-mobilefix/",
+        "index_html": "games/adella/space-star-shooter-ultra-mobilefix/index.html"
+      },
+      {
+        "title": "Space Star Shooter V2",
+        "slug": "space-star-shooter-v2",
+        "path": "games/adella/space-star-shooter-v2/",
+        "index_html": "games/adella/space-star-shooter-v2/index.html"
+      },
       {
         "title": "Space Star Shooter",
         "slug": "space-star-shooter",
         "path": "games/adella/space-star-shooter/",
-        "index_html": "games/adella/space-star-shooter/index.html",
-        "public_url": "https://bugginfelix-star.github.io/daddys-game-workshop/games/adella/space-star-shooter/"
+        "index_html": "games/adella/space-star-shooter/index.html"
       }
     ],
-    "quinton": [],
-    "lincoln": [],
-    "gemma": []
+    "gemma": [
+      {
+        "title": "Dance Contest",
+        "slug": "dance-contest",
+        "path": "games/gemma/dance-contest/",
+        "index_html": "games/gemma/dance-contest/index.html"
+      },
+      {
+        "title": "Fruit Ninja Class",
+        "slug": "fruit-ninja-class",
+        "path": "games/gemma/fruit-ninja-class/",
+        "index_html": "games/gemma/fruit-ninja-class/index.html"
+      },
+      {
+        "title": "Princess Tea Party",
+        "slug": "princess-tea-party",
+        "path": "games/gemma/princess-tea-party/",
+        "index_html": "games/gemma/princess-tea-party/index.html"
+      },
+      {
+        "title": "Thief Puzzle 2",
+        "slug": "thief-puzzle-2",
+        "path": "games/gemma/thief-puzzle-2/",
+        "index_html": "games/gemma/thief-puzzle-2/index.html"
+      }
+    ],
+    "family": [
+      {
+        "title": "Balloon Rescue",
+        "slug": "balloon-rescue",
+        "path": "games/family/balloon-rescue/",
+        "index_html": "games/family/balloon-rescue/index.html"
+      },
+      {
+        "title": "Brawl Stars 3 1",
+        "slug": "brawl-stars-3-1",
+        "path": "games/family/brawl-stars-3-1/",
+        "index_html": "games/family/brawl-stars-3-1/index.html"
+      },
+      {
+        "title": "Brawl Stars 3 2",
+        "slug": "brawl-stars-3-2",
+        "path": "games/family/brawl-stars-3-2/",
+        "index_html": "games/family/brawl-stars-3-2/index.html"
+      },
+      {
+        "title": "Crystal Heroes",
+        "slug": "crystal-heroes",
+        "path": "games/family/crystal-heroes/",
+        "index_html": "games/family/crystal-heroes/index.html"
+      },
+      {
+        "title": "Movie Poster Selling Simulator",
+        "slug": "movie-poster-selling-simulator",
+        "path": "games/family/movie-poster-selling-simulator/",
+        "index_html": "games/family/movie-poster-selling-simulator/index.html"
+      }
+    ]
   }
 }
