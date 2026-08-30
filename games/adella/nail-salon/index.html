@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#f8d7ef">
+<title>Adella's Nail Salon</title>
+<style>
+:root{
+  --ink:#583e56;--pink:#f6c7df;--rose:#e58bb7;--cream:#fff9f4;--lav:#e8dcfb;
+  --mint:#d9f2e7;--gold:#f5cc70;--glass:rgba(255,255,255,.88);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8d8ea;font-family:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold",system-ui,sans-serif;color:var(--ink);touch-action:none;overscroll-behavior:none}
+button{font:inherit;color:inherit}
+#app{position:relative;width:100vw;height:100dvh;max-width:1100px;margin:auto;overflow:hidden;background:
+radial-gradient(circle at 15% 12%,rgba(255,255,255,.8),transparent 22%),
+linear-gradient(#f8d6ea 0 30%,#f4cbdc 30% 31%,#f2e7de 31% 100%)}
+#bgDecor{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.shelf{position:absolute;top:19%;left:7%;right:7%;height:8px;border-radius:10px;background:#c58b9f;box-shadow:0 5px 0 rgba(96,57,76,.14)}
+.bottle{position:absolute;bottom:8px;width:24px;height:45px;border-radius:8px 8px 5px 5px;background:var(--c);box-shadow:inset 0 6px 0 rgba(255,255,255,.3)}
+.bottle:before{content:"";position:absolute;left:5px;right:5px;top:-17px;height:18px;border-radius:4px 4px 2px 2px;background:#6c5368}
+.flower{position:absolute;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#fff8b8 0 13%,#fff 14% 23%,#f6a8cd 24% 45%,transparent 46%);opacity:.7}
+#hud{position:absolute;left:0;right:0;top:0;z-index:6;display:flex;justify-content:space-between;gap:7px;padding:max(8px,env(safe-area-inset-top)) 9px 0;pointer-events:none}
+.hudPill{min-height:38px;padding:6px 10px;border-radius:16px;background:var(--glass);border:1px solid rgba(90,62,86,.13);box-shadow:0 4px 0 rgba(90,62,86,.09);display:flex;align-items:center;gap:6px;font-weight:950;font-size:12px;backdrop-filter:blur(7px)}
+.hudPill b{font-size:18px}.hudPill button{pointer-events:auto}
+#topButtons{display:flex;gap:6px}
+.iconBtn{border:0;min-width:38px;justify-content:center;cursor:pointer}
+#stage{position:absolute;left:0;right:0;top:52px;bottom:166px;display:flex;align-items:center;justify-content:center;padding:8px}
+#workmat{position:relative;width:min(96%,760px);height:min(100%,560px);border-radius:38px;background:
+linear-gradient(145deg,rgba(255,255,255,.95),rgba(255,246,250,.88));border:3px solid rgba(255,255,255,.85);box-shadow:0 16px 0 rgba(125,80,103,.09),0 24px 50px rgba(100,65,85,.12);overflow:hidden}
+#workmat:before{content:"";position:absolute;inset:18px;border:2px dashed rgba(215,158,187,.22);border-radius:28px;pointer-events:none}
+#customerTag{position:absolute;top:14px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-start;z-index:3;pointer-events:none}
+#customerInfo{background:rgba(255,255,255,.85);padding:8px 11px;border-radius:14px;font-size:12px;font-weight:900;box-shadow:0 3px 0 rgba(90,62,86,.08)}
+#request{font-size:11px;opacity:.7;margin-top:2px}
+#stepBadge{background:#fff3bd;border:1px solid #efd174;padding:8px 10px;border-radius:14px;font-size:11px;font-weight:950}
+#nailArea{position:absolute;inset:58px 20px 20px;display:flex;align-items:center;justify-content:center}
+.hand,.foot{position:relative;width:min(94%,620px);height:min(92%,390px);filter:drop-shadow(0 13px 12px rgba(90,54,70,.12))}
+.hand .palm,.foot .sole{position:absolute;background:var(--skin,#efbd9f);border:3px solid rgba(96,62,72,.14);box-shadow:inset 0 0 25px rgba(255,255,255,.18)}
+.hand .palm{left:22%;right:22%;bottom:2%;height:59%;border-radius:42% 42% 34% 34%}
+.finger{position:absolute;bottom:45%;width:15%;background:var(--skin,#efbd9f);border:3px solid rgba(96,62,72,.12);border-bottom:0;border-radius:44% 44% 18% 18%}
+.f1{left:12%;height:43%}.f2{left:28%;height:53%}.f3{left:44%;height:58%}.f4{left:60%;height:51%}.f5{left:76%;height:39%}
+.foot .sole{left:20%;right:14%;bottom:5%;height:70%;border-radius:45% 52% 38% 38%;transform:rotate(-3deg)}
+.toe{position:absolute;background:var(--skin,#efbd9f);border:3px solid rgba(96,62,72,.12);border-bottom:0;border-radius:50% 50% 30% 30%;bottom:66%}
+.t1{left:18%;width:18%;height:29%}.t2{left:34%;width:15%;height:24%}.t3{left:48%;width:14%;height:21%}.t4{left:61%;width:13%;height:18%}.t5{left:73%;width:12%;height:15%}
+.nail{position:absolute;left:50%;top:6%;transform:translateX(-50%);width:64%;height:31%;min-height:26px;border-radius:48% 48% 38% 38%;background:linear-gradient(#fffaf8,#f6dfdc);border:2px solid rgba(110,71,88,.18);box-shadow:inset 0 5px 7px rgba(255,255,255,.65),0 2px 2px rgba(90,50,70,.08);overflow:hidden;cursor:pointer;touch-action:none}
+.toe .nail{top:10%;height:36%}
+.nail.selected{outline:4px solid rgba(247,193,83,.6);outline-offset:3px}
+.polishFill{position:absolute;inset:0;background:var(--polish,transparent);opacity:var(--paint,0);transition:opacity .18s,transform .15s}
+.nail.painting .polishFill{transform:scale(1.03)}
+.shine{position:absolute;left:18%;top:10%;width:20%;height:67%;border-radius:50%;background:linear-gradient(rgba(255,255,255,.62),rgba(255,255,255,0));transform:rotate(12deg);opacity:0}
+.nail.gloss .shine{opacity:.8}.nail.matte .shine{opacity:.12}
+.glitterLayer,.artLayer{position:absolute;inset:0;pointer-events:none}
+.glitterLayer:before{content:"✦ · ✧ · ✦";position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(8px,2.2vw,15px);color:#fff6b0;text-shadow:0 0 3px #fff;opacity:0}
+.nail.glitter .glitterLayer:before{opacity:1;animation:twinkle 1.4s infinite alternate}
+@keyframes twinkle{to{filter:brightness(1.45);transform:scale(1.05)}}
+.artLayer{display:grid;place-items:center;font-size:clamp(12px,3vw,22px);font-weight:1000;color:white;text-shadow:0 1px 2px rgba(80,40,60,.35)}
+#brush{position:absolute;width:26px;height:110px;border-radius:9px;background:linear-gradient(90deg,#675365,#a68aa0,#675365);box-shadow:0 6px 14px rgba(70,40,60,.18);pointer-events:none;display:none;z-index:5;transform-origin:50% 88%;transform:translate(-50%,-82%) rotate(-18deg)}
+#brush:before{content:"";position:absolute;left:5px;right:5px;bottom:-22px;height:30px;border-radius:5px 5px 12px 12px;background:var(--brushColor,#ee6fa8)}
+#bottom{position:absolute;left:0;right:0;bottom:0;height:166px;padding:10px max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));background:rgba(255,250,252,.93);border-top:1px solid rgba(97,63,82,.12);backdrop-filter:blur(12px);z-index:7}
+#tabs{display:flex;gap:5px;margin-bottom:7px;overflow-x:auto;scrollbar-width:none}
+#tabs::-webkit-scrollbar,#tray::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:0;border-radius:12px;padding:7px 10px;background:#f2e6ed;font-size:11px;font-weight:950}
+.tab.active{background:#6e5369;color:#fff}
+#tray{height:87px;display:flex;gap:8px;overflow-x:auto;align-items:center;padding:3px 3px 7px;scrollbar-width:none}
+.swatch,.toolCard{flex:0 0 62px;height:67px;border-radius:17px;border:2px solid transparent;background:#fff;box-shadow:0 4px 0 rgba(80,50,70,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:900;position:relative}
+.swatch .dot{width:35px;height:35px;border-radius:50%;background:var(--c);border:3px solid white;box-shadow:0 0 0 1px rgba(80,50,70,.15)}
+.swatch.locked,.toolCard.locked{filter:grayscale(.55);opacity:.62}
+.swatch.active,.toolCard.active{border-color:#efb43e;transform:translateY(-2px)}
+.lock{position:absolute;right:3px;top:2px;font-size:12px}
+#actionRow{position:absolute;right:10px;top:-48px;display:flex;gap:7px}
+.actionBtn{border:0;border-radius:15px;padding:9px 12px;background:#fff;box-shadow:0 4px 0 rgba(90,60,75,.1);font-size:11px;font-weight:950}
+#doneBtn{background:linear-gradient(#fff2a7,#f6cd55);color:#765400}
+#hint{position:absolute;left:50%;bottom:174px;transform:translateX(-50%) translateY(8px);padding:7px 11px;border-radius:14px;background:rgba(88,62,86,.88);color:white;font-size:11px;font-weight:900;opacity:0;transition:.2s;pointer-events:none;z-index:9;white-space:nowrap}
+#hint.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.overlay{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:18px;background:linear-gradient(rgba(244,206,227,.76),rgba(223,197,238,.72));backdrop-filter:blur(4px)}
+.panel{width:min(94vw,540px);max-height:88dvh;overflow:auto;background:rgba(255,255,255,.97);border-radius:30px;padding:22px;border:3px solid rgba(255,255,255,.8);box-shadow:0 14px 0 rgba(100,65,85,.11),0 24px 55px rgba(80,50,70,.17);text-align:center}
+.logo{margin:0;font-size:clamp(38px,10vw,62px);line-height:.92;color:#8d4f77;text-shadow:0 3px 0 white}
+.subtitle{font-weight:800;line-height:1.35;color:#765d72;margin:12px auto 16px}
+.primary{width:100%;min-height:58px;border:0;border-radius:19px;background:linear-gradient(#f6a9cf,#e987b7);color:white;font-size:19px;font-weight:1000;box-shadow:0 7px 0 #c76795}
+.primary:active{transform:translateY(4px);box-shadow:0 3px 0 #c76795}
+.choiceGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.choice{border:2px solid #ecd6e2;border-radius:20px;padding:16px 8px;background:#fff9fc;font-weight:950}
+.choice .big{font-size:38px;display:block;margin-bottom:5px}
+.shopGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:13px}
+.shopItem{border:1px solid #ead9e3;border-radius:17px;padding:10px;background:#fff;text-align:left}
+.shopItem strong{display:block}.price{font-size:12px;color:#9b6e86}
+.buy{width:100%;margin-top:7px;border:0;border-radius:10px;padding:7px;background:#f5d8e9;font-size:11px;font-weight:950}
+#resultPreview{height:220px;border-radius:22px;background:linear-gradient(#fff7fb,#f3e7ef);margin:13px 0;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+#resultPreview .miniNail{width:38px;height:75px;margin:5px;border-radius:45% 45% 35% 35%;background:var(--c);border:2px solid rgba(80,50,70,.15);box-shadow:inset 8px 4px 10px rgba(255,255,255,.3);position:relative}
+.spark{position:absolute;width:8px;height:8px;background:#fff6a0;transform:rotate(45deg);animation:floatSpark 1.4s ease-out forwards}
+@keyframes floatSpark{to{transform:translate(var(--dx),var(--dy)) rotate(200deg) scale(.2);opacity:0}}
+.smallNote{font-size:12px;opacity:.72;font-weight:800}
+.hidden{display:none!important}
+@media(max-width:520px){
+  #stage{bottom:162px;padding:4px}
+  #workmat{border-radius:25px}
+  #nailArea{inset:58px 5px 10px}
+  .hand,.foot{width:98%;height:92%}
+  #bottom{height:162px}
+  .swatch,.toolCard{flex-basis:57px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="bgDecor">
+    <div class="shelf">
+      <div class="bottle" style="left:6%;--c:#f28fb9"></div>
+      <div class="bottle" style="left:14%;--c:#8c72d9"></div>
+      <div class="bottle" style="left:22%;--c:#79c9df"></div>
+      <div class="bottle" style="right:20%;--c:#f0c85c"></div>
+      <div class="bottle" style="right:12%;--c:#e76e88"></div>
+    </div>
+    <div class="flower" style="left:-10px;top:27%"></div>
+    <div class="flower" style="right:-18px;top:25%;transform:scale(.7)"></div>
+  </div>
+
+  <div id="hud">
+    <div class="hudPill">⭐ Stage <b id="stageNum">1</b></div>
+    <div id="topButtons">
+      <div class="hudPill">🪙 <b id="coins">0</b></div>
+      <button class="hudPill iconBtn" id="shopBtn" aria-label="Open shop">🛍️</button>
+      <button class="hudPill iconBtn" id="soundBtn" aria-label="Mute sound">🔊</button>
+    </div>
+  </div>
+
+  <div id="stage">
+    <div id="workmat">
+      <div id="customerTag">
+        <div id="customerInfo"><span id="customerName">Mia</span><div id="request">“Something cheerful!”</div></div>
+        <div id="stepBadge">STEP: CLEAN</div>
+      </div>
+      <div id="nailArea"></div>
+      <div id="brush"></div>
+    </div>
+  </div>
+
+  <div id="hint">Tap each nail to clean it.</div>
+
+  <div id="bottom">
+    <div id="actionRow">
+      <button class="actionBtn" id="undoBtn">↶ Undo Nail</button>
+      <button class="actionBtn" id="doneBtn">Finish Set ✨</button>
+    </div>
+    <div id="tabs"></div>
+    <div id="tray"></div>
+  </div>
+
+  <div class="overlay" id="startScreen">
+    <div class="panel">
+      <h1 class="logo">Adella's<br>Nail Salon</h1>
+      <p class="subtitle">Pick a client, prepare every nail, then paint and decorate a beautiful set. Fingers and toes are both full appointments!</p>
+      <button class="primary" id="startBtn">Start First Appointment</button>
+      <p class="smallNote">Your unlocked colors, decorations, rewards, and stage are saved automatically.</p>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="typeScreen">
+    <div class="panel">
+      <h2 class="logo" style="font-size:42px">Choose Appointment</h2>
+      <p class="subtitle" id="appointmentText">What would you like to do next?</p>
+      <div class="choiceGrid">
+        <button class="choice" data-type="hand"><span class="big">🖐️</span>Fingernails</button>
+        <button class="choice" data-type="foot"><span class="big">🦶</span>Toenails</button>
+      </div>
+      <button class="actionBtn" id="closeType">Back</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="shopScreen">
+    <div class="panel">
+      <h2 class="logo" style="font-size:42px">Salon Shop</h2>
+      <p class="subtitle">Use appointment rewards to unlock more creative choices.</p>
+      <div class="hudPill" style="display:inline-flex;margin:auto">🪙 <b id="shopCoins">0</b></div>
+      <div id="shopGrid" class="shopGrid"></div>
+      <button class="actionBtn" style="margin-top:14px" id="closeShop">Back to Salon</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="resultScreen">
+    <div class="panel">
+      <h2 class="logo" style="font-size:42px">Beautiful Set!</h2>
+      <div id="resultPreview"></div>
+      <div id="resultText" class="subtitle">Appointment complete!</div>
+      <div class="hudPill" style="display:inline-flex">🪙 +<b id="earned">20</b></div>
+      <p class="smallNote" id="unlockNote"></p>
+      <button class="primary" id="nextBtn" style="margin-top:14px">Next Appointment</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const nailArea=$("#nailArea"), tray=$("#tray"), tabs=$("#tabs"), brush=$("#brush");
+const coinsEl=$("#coins"), stageEl=$("#stageNum"), stepBadge=$("#stepBadge"), hint=$("#hint");
+const resultScreen=$("#resultScreen"), typeScreen=$("#typeScreen"), shopScreen=$("#shopScreen");
+const colors=[
+ {id:"blush",name:"Blush",c:"#ec8fb2",cost:0,stage:1},
+ {id:"berry",name:"Berry",c:"#c94f82",cost:0,stage:1},
+ {id:"lilac",name:"Lilac",c:"#9a83d8",cost:0,stage:1},
+ {id:"sky",name:"Sky",c:"#79c8df",cost:40,stage:2},
+ {id:"mint",name:"Mint",c:"#75c9ad",cost:45,stage:3},
+ {id:"sunny",name:"Sunny",c:"#efc94c",cost:50,stage:4},
+ {id:"coral",name:"Coral",c:"#f47f6b",cost:55,stage:5},
+ {id:"midnight",name:"Midnight",c:"#4f537e",cost:65,stage:6}
+];
+const art=[
+ {id:"heart",name:"Heart",mark:"♥",cost:35,stage:2},
+ {id:"flower",name:"Flower",mark:"✿",cost:45,stage:3},
+ {id:"star",name:"Star",mark:"★",cost:50,stage:4},
+ {id:"moon",name:"Moon",mark:"☾",cost:60,stage:5},
+ {id:"swirl",name:"Swirl",mark:"〰",cost:65,stage:6}
+];
+const extras=[
+ {id:"glitter",name:"Glitter",kind:"effect",cost:50,stage:3},
+ {id:"gloss",name:"Gloss",kind:"finish",cost:35,stage:2},
+ {id:"matte",name:"Matte",kind:"finish",cost:45,stage:4}
+];
+const decor=[
+ {id:"lamp",name:"Heart Lamp",cost:70,stage:3},
+ {id:"plant",name:"Flower Plant",cost:85,stage:5},
+ {id:"mirror",name:"Gold Mirror",cost:100,stage:7}
+];
+const customers=[
+ ["Mia","Something cheerful!","#efbd9f"],
+ ["Zoe","I love soft colors.","#c8896b"],
+ ["Lila","Make it sparkly!","#9b654f"],
+ ["Sofia","Surprise me!","#e0a982"],
+ ["Ava","Pretty and polished.","#f1c7aa"]
+];
+let audio=null,audioOn=true,appointmentType="hand",step="clean",selectedColor="blush",selectedArt=null,selectedExtra=null;
+let nails=[],lastEdited=0,painting=false,currentPaintNail=null;
+let save=loadSave();
+
+function defaultSave(){return{stage:1,coins:0,unlocked:["blush","berry","lilac"],decor:[],appointments:0}}
+function loadSave(){try{const v=JSON.parse(localStorage.getItem("adellaNailSalonSave"));return Object.assign(defaultSave(),v||{})}catch(e){return defaultSave()}}
+function persist(){try{localStorage.setItem("adellaNailSalonSave",JSON.stringify(save))}catch(e){} updateHud()}
+function updateHud(){coinsEl.textContent=save.coins;$("#shopCoins").textContent=save.coins;stageEl.textContent=save.stage}
+
+function ensureAudio(){if(!audioOn)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==="suspended")audio.resume()}catch(e){}}
+function tone(f,d=.08,type="sine",v=.035){if(!audioOn||!audio)return;const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+d)}
+function softChime(){tone(620,.08,"sine",.03);setTimeout(()=>tone(820,.11,"triangle",.028),70)}
+function sparkleSound(){tone(780,.06,"sine",.025);setTimeout(()=>tone(1100,.09,"sine",.02),45)}
+function finishSound(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.16,"triangle",.035),i*90))}
+
+function showHint(t,ms=1400){hint.textContent=t;hint.classList.add("show");clearTimeout(showHint.t);showHint.t=setTimeout(()=>hint.classList.remove("show"),ms)}
+function currentCustomer(){return customers[(save.appointments)%customers.length]}
+
+function beginAppointment(type){
+ appointmentType=type;step="clean";selectedArt=null;selectedExtra=null;
+ const [name,request,skin]=currentCustomer();$("#customerName").textContent=name;$("#request").textContent="“"+request+"”";
+ buildHand(type,skin);renderStep();typeScreen.classList.add("hidden");shopScreen.classList.add("hidden");resultScreen.classList.add("hidden");
+ showHint("Tap each nail to clean it ✨",1500);
+}
+function nailHTML(i){return '<div class="nail" data-i="'+i+'"><div class="polishFill"></div><div class="glitterLayer"></div><div class="artLayer"></div><div class="shine"></div></div>'}
+function buildHand(type,skin){
+ nails=Array.from({length:5},()=>({clean:false,shaped:false,painted:false,color:null,art:null,glitter:false,finish:null}));
+ if(type==="hand"){
+   nailArea.innerHTML='<div class="hand" style="--skin:'+skin+'"><div class="palm"></div>'+
+   [1,2,3,4,5].map((n,i)=>'<div class="finger f'+n+'">'+nailHTML(i)+'</div>').join("")+'</div>';
+ }else{
+   nailArea.innerHTML='<div class="foot" style="--skin:'+skin+'"><div class="sole"></div>'+
+   [1,2,3,4,5].map((n,i)=>'<div class="toe t'+n+'">'+nailHTML(i)+'</div>').join("")+'</div>';
+ }
+ $$(".nail").forEach(el=>{
+   el.addEventListener("pointerdown",e=>handleNailDown(e,el));
+   el.addEventListener("pointerenter",e=>{if(painting&&step==="polish")applyPolish(el)});
+   el.addEventListener("pointermove",e=>{if(painting&&step==="polish")moveBrush(e)});
+ });
+}
+function renderNail(i){
+ const n=nails[i],el=$('.nail[data-i="'+i+'"]');if(!el)return;
+ el.style.setProperty("--polish",n.color||"transparent");
+ el.style.setProperty("--paint",n.painted?1:0);
+ el.classList.toggle("glitter",n.glitter);el.classList.toggle("gloss",n.finish==="gloss");el.classList.toggle("matte",n.finish==="matte");
+ el.querySelector(".artLayer").textContent=n.art?art.find(a=>a.id===n.art)?.mark||"": "";
+}
+function all(prop){return nails.every(n=>n[prop])}
+function handleNailDown(e,el){
+ ensureAudio();const i=+el.dataset.i;lastEdited=i;
+ if(step==="clean"){nails[i].clean=true;el.animate([{filter:"brightness(1)"},{filter:"brightness(1.35)"},{filter:"brightness(1)"}],{duration:280});tone(520,.05,"sine",.018);if(all("clean")){step="shape";setTimeout(renderStep,180)}}
+ else if(step==="shape"){nails[i].shaped=true;el.animate([{transform:"translateX(-50%) scale(1)"},{transform:"translateX(-50%) scale(.92)"},{transform:"translateX(-50%) scale(1)"}],{duration:260});tone(360,.05,"triangle",.018);if(all("shaped")){step="polish";setTimeout(renderStep,180)}}
+ else if(step==="polish"){painting=true;currentPaintNail=el;applyPolish(el);moveBrush(e);brush.style.display="block";el.setPointerCapture?.(e.pointerId)}
+ else if(step==="art"){applyArt(i)}
+ else if(step==="finish"){applyExtra(i)}
+}
+function moveBrush(e){const r=$("#workmat").getBoundingClientRect();brush.style.left=(e.clientX-r.left)+"px";brush.style.top=(e.clientY-r.top)+"px"}
+addEventListener("pointerup",()=>{painting=false;currentPaintNail=null;brush.style.display="none";$$(".nail").forEach(n=>n.classList.remove("painting"))});
+function applyPolish(el){
+ const i=+el.dataset.i,n=nails[i],col=colors.find(c=>c.id===selectedColor);if(!col)return;
+ n.painted=true;n.color=col.c;el.classList.add("painting");renderNail(i);brush.style.setProperty("--brushColor",col.c);tone(690,.025,"sine",.008);
+ if(all("painted"))showHint("Beautiful! Add art or finishes, or finish the set.",1500);
+}
+function applyArt(i){
+ if(!selectedArt){showHint("Choose a nail art design below.");return}
+ nails[i].art=selectedArt;renderNail(i);sparkleSound();
+}
+function applyExtra(i){
+ if(!selectedExtra){showHint("Choose Glitter, Gloss, or Matte below.");return}
+ if(selectedExtra==="glitter")nails[i].glitter=!nails[i].glitter;
+ if(selectedExtra==="gloss"||selectedExtra==="matte")nails[i].finish=selectedExtra;
+ renderNail(i);sparkleSound();
+}
+
+function renderStep(){
+ stepBadge.textContent="STEP: "+step.toUpperCase();
+ tabs.innerHTML="";tray.innerHTML="";
+ if(step==="clean"){
+   makeTab("Clean",true);makeTool("🫧","Tap nails","clean",false);
+   showHint("Tap every nail to gently clean it.");
+ }else if(step==="shape"){
+   makeTab("Shape",true);makeTool("▰","Tap nails","shape",false);
+   showHint("Tap every nail to smooth and shape it.");
+ }else{
+   ["polish","art","finish"].forEach(s=>makeTab(s[0].toUpperCase()+s.slice(1),step===s,s));
+   if(step==="polish")renderColors();
+   if(step==="art")renderArt();
+   if(step==="finish")renderExtras();
+ }
+}
+function makeTab(label,active,switchTo){
+ const b=document.createElement("button");b.className="tab"+(active?" active":"");b.textContent=label;
+ if(switchTo)b.onclick=()=>{step=switchTo;renderStep()};tabs.appendChild(b);
+}
+function makeTool(icon,label,id,locked,onClick){
+ const b=document.createElement("button");b.className="toolCard"+(locked?" locked":"");b.innerHTML='<div style="font-size:25px">'+icon+'</div><span>'+label+'</span>'+(locked?'<span class="lock">🔒</span>':'');
+ if(!locked&&onClick)b.onclick=onClick;tray.appendChild(b);return b;
+}
+function renderColors(){
+ colors.forEach(x=>{
+   const locked=!save.unlocked.includes(x.id),b=document.createElement("button");
+   b.className="swatch"+(locked?" locked":"")+(selectedColor===x.id?" active":"");
+   b.style.setProperty("--c",x.c);b.innerHTML='<div class="dot"></div><span>'+x.name+'</span>'+(locked?'<span class="lock">🔒</span>':'');
+   b.onclick=()=>{if(locked){showHint("Unlock this color in the Shop.");return}selectedColor=x.id;renderStep();};
+   tray.appendChild(b);
+ });
+}
+function renderArt(){
+ art.forEach(x=>{
+   const locked=!save.unlocked.includes(x.id);
+   const b=makeTool(x.mark,x.name,x.id,locked,()=>{selectedArt=x.id;renderStep()});
+   if(selectedArt===x.id)b.classList.add("active");
+ });
+}
+function renderExtras(){
+ extras.forEach(x=>{
+   const locked=!save.unlocked.includes(x.id),icon=x.id==="glitter"?"✦":x.id==="gloss"?"💧":"◐";
+   const b=makeTool(icon,x.name,x.id,locked,()=>{selectedExtra=x.id;renderStep()});
+   if(selectedExtra===x.id)b.classList.add("active");
+ });
+}
+
+function finishSet(){
+ if(!all("painted")){showHint("Paint all five nails before finishing.");return}
+ let variety=new Set(nails.map(n=>n.color)).size,decorated=nails.filter(n=>n.art||n.glitter||n.finish).length;
+ let earned=22+Math.min(10,(variety-1)*3)+Math.min(12,decorated*2);
+ const request=currentCustomer()[1].toLowerCase();
+ if(request.includes("sparkly")&&nails.some(n=>n.glitter))earned+=8;
+ if(request.includes("soft")&&nails.some(n=>["#ec8fb2","#9a83d8","#79c8df"].includes(n.color)))earned+=5;
+ save.coins+=earned;save.appointments++;save.stage=Math.max(save.stage,save.appointments+1);persist();
+ $("#earned").textContent=earned;$("#resultText").textContent=(decorated>=3?"Extra stylish! ":"")+"Appointment complete.";
+ const prev=$("#resultPreview");prev.innerHTML="";
+ nails.forEach(n=>{const d=document.createElement("div");d.className="miniNail";d.style.setProperty("--c",n.color);if(n.art)d.textContent=art.find(a=>a.id===n.art)?.mark||"";d.style.color="white";d.style.display="grid";d.style.placeItems="center";prev.appendChild(d)});
+ for(let i=0;i<18;i++){const s=document.createElement("i");s.className="spark";s.style.left=(10+Math.random()*80)+"%";s.style.top=(15+Math.random()*70)+"%";s.style.setProperty("--dx",(Math.random()-.5)*100+"px");s.style.setProperty("--dy",-40-Math.random()*80+"px");prev.appendChild(s)}
+ const auto=autoUnlock();$("#unlockNote").textContent=auto?("New option unlocked: "+auto+"! 🎁"):"Visit the Shop to spend rewards on more nail choices.";
+ finishSound();resultScreen.classList.remove("hidden");
+}
+function autoUnlock(){
+ const eligible=[...colors,...art,...extras].filter(x=>x.stage<=save.stage&&!save.unlocked.includes(x.id));
+ if(save.stage%2===0&&eligible.length){save.unlocked.push(eligible[0].id);persist();return eligible[0].name}
+ return "";
+}
+
+function renderShop(){
+ $("#shopGrid").innerHTML="";$("#shopCoins").textContent=save.coins;
+ const items=[...colors,...art,...extras,...decor];
+ items.filter(x=>x.cost>0).forEach(x=>{
+   const owned=save.unlocked.includes(x.id)||save.decor.includes(x.id),available=save.stage>=x.stage;
+   const d=document.createElement("div");d.className="shopItem";
+   d.innerHTML='<strong>'+x.name+'</strong><span class="price">'+(owned?"Owned":available?"🪙 "+x.cost:"Unlocks at Stage "+x.stage)+'</span>';
+   const b=document.createElement("button");b.className="buy";b.textContent=owned?"Unlocked ✓":available?"Unlock":"Not yet";
+   b.disabled=owned||!available;b.onclick=()=>buyItem(x);d.appendChild(b);$("#shopGrid").appendChild(d);
+ });
+}
+function buyItem(x){
+ if(save.coins<x.cost){showHint("You need more salon coins.");return}
+ save.coins-=x.cost;if(decor.some(d=>d.id===x.id))save.decor.push(x.id);else save.unlocked.push(x.id);persist();softChime();renderShop();applyDecor();
+}
+function applyDecor(){
+ $("#bgDecor").querySelectorAll(".earnedDecor").forEach(e=>e.remove());
+ if(save.decor.includes("lamp"))addDecor("earnedDecor","position:absolute;right:9%;top:8%;width:48px;height:48px;border-radius:50%;background:#ffd1e5;box-shadow:0 0 24px #ffb8d8");
+ if(save.decor.includes("plant"))addDecor("earnedDecor","position:absolute;left:11%;bottom:18%;width:34px;height:60px;background:linear-gradient(90deg,transparent 45%,#6aaa7c 46% 54%,transparent 55%)");
+ if(save.decor.includes("mirror"))addDecor("earnedDecor","position:absolute;left:50%;top:4%;width:90px;height:56px;transform:translateX(-50%);border:7px solid #e5bd66;border-radius:50%;background:linear-gradient(135deg,#eefaff,#fff)");
+}
+function addDecor(cls,style){const d=document.createElement("div");d.className=cls;d.style.cssText=style;$("#bgDecor").appendChild(d)}
+
+$("#startBtn").onclick=()=>{ensureAudio();softChime();$("#startScreen").classList.add("hidden");beginAppointment("hand")};
+$("#nextBtn").onclick=()=>{resultScreen.classList.add("hidden");$("#appointmentText").textContent="Stage "+save.stage+" — choose fingers or toes.";typeScreen.classList.remove("hidden")};
+$$(".choice[data-type]").forEach(b=>b.onclick=()=>beginAppointment(b.dataset.type));
+$("#closeType").onclick=()=>typeScreen.classList.add("hidden");
+$("#shopBtn").onclick=()=>{renderShop();shopScreen.classList.remove("hidden")};
+$("#closeShop").onclick=()=>shopScreen.classList.add("hidden");
+$("#doneBtn").onclick=finishSet;
+$("#undoBtn").onclick=()=>{const n=nails[lastEdited];if(!n)return;if(step==="polish"){n.painted=false;n.color=null}else if(step==="art")n.art=null;else if(step==="finish"){n.glitter=false;n.finish=null}renderNail(lastEdited)};
+$("#soundBtn").onclick=()=>{audioOn=!audioOn;$("#soundBtn").textContent=audioOn?"🔊":"🔇";$("#soundBtn").setAttribute("aria-label",audioOn?"Mute sound":"Unmute sound");if(audioOn){ensureAudio();softChime()}};
+
+updateHud();applyDecor();
+})();
+</script>
+</body>
+</html>
