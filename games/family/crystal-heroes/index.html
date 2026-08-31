@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Crystal Heroes v1.5.48 Fighter Lab-Matched Weapon Renderer</title>
+<title>Crystal Heroes v1.5.48 Phase 2 Battle Presentation</title>
 <!-- Phase 1B: battle facing / lane / weapon-attachment correction -->
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
@@ -1844,6 +1844,67 @@ body.battleMode #battleCmdPanel .targetHint{
   body.battleMode #battleCmdPanel.allyMode{width:40vw !important;top:53% !important;}
 }
 
+
+
+/* Phase 2: battle presentation polish only */
+body.battleMode #battleCmdPanel{
+  width:min(46vw,220px) !important;
+  max-height:48vh !important;
+  top:55% !important;
+  padding:8px !important;
+  border-radius:12px !important;
+  border-width:3px !important;
+  background:linear-gradient(180deg,rgba(22,35,166,.97),rgba(9,17,105,.97)) !important;
+  box-shadow:0 0 0 3px #02030d,0 12px 28px rgba(0,0,0,.5) !important;
+  opacity:.98 !important;
+}
+body.battleMode #battleCmdPanel.targetMode,
+body.battleMode #battleCmdPanel.allyMode{
+  width:min(54vw,260px) !important;
+  top:53% !important;
+}
+body.battleMode #battleCmdPanel .battleCmd{
+  min-height:36px !important;
+  font-size:13px !important;
+  line-height:1.05 !important;
+  padding:6px 9px !important;
+  margin:4px 0 !important;
+  border-radius:8px !important;
+  background:linear-gradient(180deg,#1526b7,#0d188c) !important;
+}
+body.battleMode #battleCmdPanel .battleCmd:active{
+  background:#2639d0 !important;
+  color:#fff38b !important;
+}
+body.battleMode #battleCmdPanel .turnName{
+  font-size:13px !important;
+  letter-spacing:.2px !important;
+  margin-bottom:6px !important;
+}
+body.battleMode #battleCmdPanel .queuedLine,
+body.battleMode #battleCmdPanel .targetHint{
+  font-size:10px !important;
+  opacity:.95;
+}
+@media(max-width:640px){
+  body.battleMode #battleCmdPanel{
+    width:min(48vw,205px) !important;
+    top:55% !important;
+    padding:7px !important;
+  }
+  body.battleMode #battleCmdPanel.targetMode,
+  body.battleMode #battleCmdPanel.allyMode{
+    width:min(58vw,245px) !important;
+    top:52% !important;
+  }
+  body.battleMode #battleCmdPanel .battleCmd{
+    min-height:38px !important;
+    font-size:13px !important;
+    padding:7px 8px !important;
+  }
+  body.battleMode #battleCmdPanel .turnName{font-size:12px !important}
+}
+
 </style>
 </head>
 <body><div id="app">
@@ -1852,12 +1913,12 @@ body.battleMode #battleCmdPanel .targetHint{
 <div class="hud"><b>Context</b><span id="areaHud">Explore</span></div>
 <div class="hud"><b>Goal</b><span id="itemHud">Find Crystal</span></div>
 <div class="hud"><b>Save</b><span id="saveHud">Auto</span></div></div></header>
-<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Fighter Lab-Matched Weapon Renderer</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
+<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Phase 2 Battle Presentation</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
 <div id="controls"><div id="dpad"><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="upBtn">⬆️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="leftBtn">⬅️</button><button class="dpadBtn ctrl" id="okBtn">OK</button><button class="dpadBtn ctrl gold" id="rightBtn">➡️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="downBtn">⬇️</button><button class="dpadBtn ctrl" disabled></button></div><div class="ctrl pink" id="partyBtn">👥 Party</div><div class="ctrl green" id="bagBtn">🎒 Bag</div><div class="ctrl" id="menuBtn">☰ Menu</div></div>
 </div>
 <script>
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d"),overlay=document.getElementById("overlay"),toast=document.getElementById("toast"),banner=document.getElementById("banner"),battleBtns=document.getElementById("battleBtns");
-const ui={gold:goldHud,steps:stepHud,area:areaHud,item:itemHud,save:saveHud,place:placePill};let dpr=1,W=0,H=0,tile=32,mode="menu",running=false,keys={},touch={x:0,y:0},touchMove={active:false,startX:0,startY:0,dirX:0,dirY:0,nextStep:0},cam={x:0,y:0},playerDraw={x:8,y:8,ready:false,fromX:8,fromY:8,toX:8,toY:8,start:0,dur:190,moving:false,facingX:0,facingY:1},camDraw={x:0,y:0,ready:false},battle=null,last=0,moveLock=0,particles=[],battleFloatTexts=[];
+const ui={gold:goldHud,steps:stepHud,area:areaHud,item:itemHud,save:saveHud,place:placePill};let dpr=1,W=0,H=0,tile=32,mode="menu",running=false,keys={},touch={x:0,y:0},touchMove={active:false,startX:0,startY:0,dirX:0,dirY:0,nextStep:0},cam={x:0,y:0},playerDraw={x:8,y:8,ready:false,fromX:8,fromY:8,toX:8,toY:8,start:0,dur:190,moving:false,facingX:0,facingY:1},camDraw={x:0,y:0,ready:false},battle=null,last=0,moveLock=0,particles=[],battleFloatTexts=[],battleVfx=[],battleImpact=null,battleShake={start:0,dur:0,mag:0},battleMapFadeStart=0,battleAudioCtx=null,battleAudioPrimed=false;
 
 function rand(min,max){
   min=Math.ceil(min); max=Math.floor(max);
@@ -1876,10 +1937,123 @@ function burst(x,y,c,n=12){
 }
 
 
-function popBattleText(text,x,y,color="#fff38b",size=18){
+
+function battleEnsureAudio(){
+  try{
+    if(!battleAudioCtx)battleAudioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    if(battleAudioCtx.state==="suspended")battleAudioCtx.resume();
+    battleAudioPrimed=true;
+  }catch(e){}
+}
+function battleTone(freq,dur=.08,type="sine",vol=.035,delay=0){
+  if(!battleAudioCtx||battleAudioCtx.state!=="running")return;
+  const t=battleAudioCtx.currentTime+delay;
+  const o=battleAudioCtx.createOscillator(),g=battleAudioCtx.createGain();
+  o.type=type;o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(Math.max(.001,vol),t);
+  g.gain.exponentialRampToValueAtTime(.001,t+dur);
+  o.connect(g);g.connect(battleAudioCtx.destination);o.start(t);o.stop(t+dur+.02);
+}
+function battleSfx(kind,strong=false){
+  if(!battleAudioCtx||battleAudioCtx.state!=="running")return;
+  if(kind==="menu"){battleTone(420,.035,"square",.016);return}
+  if(kind==="swing"){battleTone(strong?210:260,.06,"sawtooth",.028);battleTone(strong?380:440,.05,"triangle",.018,.025);return}
+  if(kind==="hit"){battleTone(strong?105:135,.075,"square",strong?.05:.035);battleTone(strong?70:90,.09,"sine",strong?.045:.025,.018);return}
+  if(kind==="enemyHit"){battleTone(115,.07,"sawtooth",.03);return}
+  if(kind==="cast"){battleTone(520,.12,"sine",.025);battleTone(780,.14,"triangle",.022,.06);return}
+  if(kind==="heal"){battleTone(660,.12,"sine",.025);battleTone(880,.16,"sine",.024,.08);return}
+  if(kind==="dark"){battleTone(170,.15,"sawtooth",.025);battleTone(255,.16,"triangle",.022,.055);return}
+  if(kind==="poison"){battleTone(230,.12,"square",.018);battleTone(190,.15,"triangle",.02,.06);return}
+  if(kind==="gear"){battleTone(330,.045,"square",.025);battleTone(495,.06,"square",.022,.05);return}
+  if(kind==="victory"){[523,659,784,1047].forEach((f,i)=>battleTone(f,.18,"triangle",.035,i*.105));return}
+  if(kind==="start"){battleTone(196,.09,"triangle",.02);battleTone(294,.12,"triangle",.02,.07);return}
+}
+function spellVisualKind(name,sp){
+  const n=String(name||"").toLowerCase();
+  if(n.includes("poison"))return "poison";
+  if(n.includes("sleep"))return "sleep";
+  if(n.includes("night")||n.includes("shadow"))return "shadow";
+  if(n.includes("heal"))return "heal";
+  if(n.includes("life"))return "life";
+  if(n.includes("bless"))return "bless";
+  if(n.includes("guard"))return "guard";
+  if(n.includes("gear"))return "gear";
+  if(n.includes("power slash"))return "slash";
+  return sp&&sp.type==="dmg"?"arcane":"magic";
+}
+function spawnBattleVfx(kind,x,y,color="#fff38b",dur=520,scale=1){
+  battleVfx.push({kind,x,y,color,start:performance.now(),dur,scale});
+  if(battleVfx.length>30)battleVfx.splice(0,battleVfx.length-30);
+}
+function triggerBattleShake(mag=3,dur=120){battleShake={start:performance.now(),dur,mag:mag*dpr};}
+function triggerBattleImpact(side,index,dx,dy,dur=180){battleImpact={side,index,dx:dx*dpr,dy:dy*dpr,start:performance.now(),dur};}
+function battleImpactOffset(side,index){
+  const b=battleImpact;if(!b||b.side!==side||b.index!==index)return {x:0,y:0};
+  const t=(performance.now()-b.start)/b.dur;if(t>=1)return {x:0,y:0};
+  const kick=Math.sin(Math.min(1,t)*Math.PI)*Math.pow(1-Math.min(1,t),.25);
+  return {x:b.dx*kick,y:b.dy*kick};
+}
+function battleShakeOffset(){
+  const s=battleShake,t=(performance.now()-s.start)/Math.max(1,s.dur);
+  if(!s.mag||t>=1)return {x:0,y:0};
+  const m=s.mag*(1-t);return {x:Math.sin(performance.now()*.11)*m,y:Math.cos(performance.now()*.14)*m*.65};
+}
+function drawBattleVfx(){
+  const now=performance.now(),d=dpr;
+  battleVfx=battleVfx.filter(v=>now-v.start<v.dur);
+  battleVfx.forEach(v=>{
+    const t=Math.max(0,Math.min(1,(now-v.start)/v.dur)),a=1-t,s=v.scale||1;
+    ctx.save();ctx.translate(v.x,v.y);ctx.globalAlpha=Math.min(1,a*1.6);
+    if(v.kind==="slash"){
+      ctx.strokeStyle=v.color;ctx.lineCap="round";ctx.lineWidth=(7-4*t)*d*s;ctx.beginPath();ctx.arc(0,0,(18+42*t)*d*s,-2.5,-.35);ctx.stroke();
+      ctx.strokeStyle="#fff";ctx.lineWidth=2*d*s;ctx.beginPath();ctx.arc(0,0,(13+34*t)*d*s,-2.45,-.42);ctx.stroke();
+    }else if(v.kind==="impact"){
+      ctx.strokeStyle=v.color;ctx.lineWidth=4*d*s;ctx.beginPath();ctx.arc(0,0,(8+36*t)*d*s,0,Math.PI*2);ctx.stroke();
+      for(let i=0;i<8;i++){const ang=i*Math.PI/4+.2;ctx.beginPath();ctx.moveTo(Math.cos(ang)*9*d,Math.sin(ang)*9*d);ctx.lineTo(Math.cos(ang)*(25+25*t)*d,Math.sin(ang)*(25+25*t)*d);ctx.stroke()}
+    }else if(v.kind==="shadow"||v.kind==="arcane"){
+      ctx.strokeStyle=v.kind==="shadow"?"#b566ff":v.color;ctx.lineWidth=3*d*s;
+      for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(0,0,(10+i*9+28*t)*d*s,i*.8+t*2.5,i*.8+t*2.5+Math.PI*1.25);ctx.stroke()}
+      ctx.fillStyle=v.kind==="shadow"?"rgba(68,18,100,.32)":"rgba(178,120,255,.24)";ctx.beginPath();ctx.arc(0,0,(28-8*t)*d*s,0,Math.PI*2);ctx.fill();
+    }else if(v.kind==="poison"){
+      ctx.fillStyle="#78ff73";for(let i=0;i<6;i++){const ang=i*1.6;ctx.beginPath();ctx.arc(Math.cos(ang)*(8+14*t)*d,(-12-22*t+Math.sin(ang)*10)*d,(4+i%2*2)*d,0,Math.PI*2);ctx.fill()}
+    }else if(v.kind==="sleep"){
+      ctx.fillStyle="#d9b7ff";ctx.font=`900 ${18*d*s}px system-ui`;ctx.textAlign="center";ctx.fillText("Z",-12*d,-18*d-22*t*d);ctx.font=`900 ${25*d*s}px system-ui`;ctx.fillText("Z",10*d,-34*d-30*t*d);
+    }else if(v.kind==="heal"||v.kind==="life"){
+      ctx.strokeStyle=v.kind==="life"?"#fff5ad":"#83ffad";ctx.lineWidth=3*d*s;ctx.beginPath();ctx.ellipse(0,(14-24*t)*d,30*d*s,10*d*s,0,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle=ctx.strokeStyle;ctx.font=`900 ${22*d*s}px system-ui`;ctx.textAlign="center";ctx.fillText("✦",0,-16*d-25*t*d);
+    }else if(v.kind==="bless"){
+      ctx.strokeStyle="#ffe66d";ctx.lineWidth=3*d;for(let i=0;i<8;i++){const ang=i*Math.PI/4+t;ctx.beginPath();ctx.moveTo(Math.cos(ang)*9*d,Math.sin(ang)*9*d);ctx.lineTo(Math.cos(ang)*34*d,Math.sin(ang)*34*d);ctx.stroke()}
+    }else if(v.kind==="guard"){
+      ctx.strokeStyle="#8fdcff";ctx.lineWidth=4*d;ctx.beginPath();ctx.arc(0,0,(22+12*Math.sin(t*Math.PI))*d,-2.6,-.55);ctx.stroke();ctx.beginPath();ctx.arc(0,0,(22+12*Math.sin(t*Math.PI))*d,.55,2.6);ctx.stroke();
+    }else if(v.kind==="gear"){
+      ctx.strokeStyle="#ffd37a";ctx.lineWidth=4*d;ctx.rotate(t*4);ctx.beginPath();ctx.arc(0,0,24*d,0,Math.PI*2);ctx.stroke();for(let i=0;i<8;i++){const ang=i*Math.PI/4;ctx.beginPath();ctx.moveTo(Math.cos(ang)*19*d,Math.sin(ang)*19*d);ctx.lineTo(Math.cos(ang)*31*d,Math.sin(ang)*31*d);ctx.stroke()}
+    }else{ctx.strokeStyle=v.color;ctx.lineWidth=3*d;ctx.beginPath();ctx.arc(0,0,(12+30*t)*d,0,Math.PI*2);ctx.stroke();}
+    ctx.restore();
+  });
+}
+function drawBattleCastCue(){
+  if(!battle||battle.phase!=="playback"||!battle.activeAction||battle.activeAction.side!=="hero"||battle.activeAction.type!=="magic")return;
+  const a=battle.activeAction,h=game.party[a.heroIndex];if(!h)return;
+  const p=battleHeroSpritePos(a.heroIndex),kind=spellVisualKind(a.spell,spells[a.spell]),t=(performance.now()-(battle.actionStepStarted||performance.now()))/520,pulse=.55+.25*Math.sin(performance.now()*.018);
+  ctx.save();ctx.translate(p.x,p.y-5*dpr);ctx.globalAlpha=Math.max(.22,Math.min(.8,pulse));
+  ctx.strokeStyle=kind==="heal"||kind==="life"?"#a8ffbe":kind==="guard"?"#8fdcff":kind==="bless"?"#ffe66d":kind==="gear"?"#ffd37a":"#c488ff";
+  ctx.lineWidth=3*dpr;ctx.beginPath();ctx.ellipse(0,28*dpr,(22+8*Math.sin(t*Math.PI))*dpr,8*dpr,0,0,Math.PI*2);ctx.stroke();
+  for(let i=0;i<4;i++){const ang=performance.now()*.002+i*Math.PI/2;ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(Math.cos(ang)*25*dpr,Math.sin(ang)*13*dpr-15*dpr,3*dpr,0,Math.PI*2);ctx.fill()}
+  ctx.restore();
+}
+function drawBattleTransitionOverlay(){
+  const now=performance.now();let alpha=0;
+  if(mode==="battle"&&battle&&battle.entryStart)alpha=Math.max(0,1-(now-battle.entryStart)/300);
+  else if(mode==="map"&&battleMapFadeStart){alpha=Math.max(0,.72*(1-(now-battleMapFadeStart)/330));if(alpha<=0)battleMapFadeStart=0;}
+  if(alpha>0){ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle="#020712";ctx.fillRect(0,0,W,H);ctx.restore();}
+}
+document.addEventListener("pointerdown",battleEnsureAudio,{passive:true});
+
+function popBattleText(text,x,y,color="#fff38b",size=18,emphasis=false){
+  const finalSize=Math.max(size,emphasis?25:20);
   battleFloatTexts.push({
-    text:String(text), x:x, y:y, color:color, size:size*dpr,
-    life:58, maxLife:58, dy:-0.55*dpr
+    text:String(text), x:x, y:y, color:color, size:finalSize*dpr,
+    life:emphasis?68:60, maxLife:emphasis?68:60, dy:(emphasis?-.72:-.58)*dpr, emphasis:!!emphasis
   });
 }
 function battleEnemyBasePos(realEnemyIndex){
@@ -1905,13 +2079,12 @@ function battleHeroBasePos(heroIndex){
 function physicalLungeAmount(){
   if(!battle||battle.phase!=="playback"||!battle.activeAction||battle.activeAction.type!=="attack")return 0;
   const elapsed=Math.max(0,performance.now()-(battle.actionStepStarted||performance.now()));
-  const easeOut=t=>1-Math.pow(1-Math.max(0,Math.min(1,t)),2);
-  if(battle.actionStep===1)return .45*easeOut(elapsed/250);
-  if(battle.actionStep===2)return .45+.55*easeOut(elapsed/260);
-  if(battle.actionStep===3){
-    const t=Math.max(0,Math.min(1,elapsed/420));
-    return Math.pow(1-t,2);
-  }
+  const clamp=t=>Math.max(0,Math.min(1,t));
+  const easeOut=t=>1-Math.pow(1-clamp(t),3);
+  const easeInOut=t=>{t=clamp(t);return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2};
+  if(battle.actionStep===1)return -.11*easeOut(elapsed/210);
+  if(battle.actionStep===2)return -.11+1.11*easeInOut(elapsed/290);
+  if(battle.actionStep===3)return 1-easeInOut(elapsed/390);
   return 0;
 }
 function battleActorOffset(side,index){
@@ -1941,12 +2114,12 @@ function battleActorOffset(side,index){
   return {x:vx/len*max*amt,y:vy/len*max*amt};
 }
 function battleEnemySpritePos(realEnemyIndex){
-  const b=battleEnemyBasePos(realEnemyIndex),o=battleActorOffset("enemy",realEnemyIndex);
-  return {x:b.x+o.x,y:b.y+o.y};
+  const b=battleEnemyBasePos(realEnemyIndex),o=battleActorOffset("enemy",realEnemyIndex),r=battleImpactOffset("enemy",realEnemyIndex);
+  return {x:b.x+o.x+r.x,y:b.y+o.y+r.y};
 }
 function battleHeroSpritePos(heroIndex){
-  const b=battleHeroBasePos(heroIndex),o=battleActorOffset("hero",heroIndex);
-  return {x:b.x+o.x,y:b.y+o.y};
+  const b=battleHeroBasePos(heroIndex),o=battleActorOffset("hero",heroIndex),r=battleImpactOffset("hero",heroIndex);
+  return {x:b.x+o.x+r.x,y:b.y+o.y+r.y};
 }
 function battleEnemyScreenPos(realEnemyIndex){
   const p=battleEnemySpritePos(realEnemyIndex);
@@ -3426,14 +3599,13 @@ function startRandomBattle(t){
 function startBattle(foes,boss){
   mode="battle";
   document.body.classList.add("battleMode");
-  battle={foes:foes||[],boss:!!boss,msg:boss?"The Thornroot Guardian blocks the crystal!":"Monsters appeared!",queue:[],selectHero:0,buffs:{},sleep:false,round:1,phase:"select",activeHeroIndex:-1,activeEnemyIndex:-1,activeAction:null,actionStep:0,actionStepStarted:0};
-  battleBtns.style.display="none";
-  overlay.style.display="none";
-  showBattleCommandPanel();
-  ban(boss?"Boss Battle!":"Battle!");
+  battle={foes:foes||[],boss:!!boss,msg:boss?"The Thornroot Guardian blocks the crystal!":"Monsters appeared!",queue:[],selectHero:0,buffs:{},sleep:false,round:1,phase:"intro",activeHeroIndex:-1,activeEnemyIndex:-1,activeAction:null,actionStep:0,actionStepStarted:0,entryStart:performance.now(),victory:null};
+  battleBtns.style.display="none";overlay.style.display="none";battleVfx=[];battleFloatTexts=[];particles=[];battleImpact=null;battleShake={start:0,dur:0,mag:0};hideBattleCommandPanel();battleSfx("start");ban(boss?"Boss Battle!":"Battle!");
+  setTimeout(()=>{if(battle&&mode==="battle"&&!battle.victory)showBattleCommandPanel()},280);
 }
 function battleAction(action){
   if(mode!=="battle"||!battle)return;
+  battleEnsureAudio();battleSfx("menu");
   const idx=nextUnqueuedHeroIndex();
   if(idx<0){executeBattleRound();return}
   const h=game.party[idx];
@@ -3446,6 +3618,7 @@ function battleAction(action){
 window.battleAction=battleAction;
 function queueHeroAction(action){
   if(!battle)return;
+  battleSfx("menu");
   battle.queue=battle.queue||[];
   battle.queue=battle.queue.filter(a=>a.heroIndex!==action.heroIndex);
   battle.queue.push(action);
@@ -3531,41 +3704,25 @@ function resolveSingleBattleAction(a){
   const log=[];
   if(!livingHeroes().length||!livingFoes().length)return log;
   if(a.side==="hero"){
-    const h=game.party[a.heroIndex];
-    if(!h||h.hp<=0)return log;
+    const h=game.party[a.heroIndex];if(!h||h.hp<=0)return log;
     if(a.type==="run"){
-      if(!battle.boss&&Math.random()<.55){log.push(`${h.name} led the party away!`);battle._endAfterAction="run"}
-      else log.push(`${h.name} tried to flee.`);
+      if(!battle.boss&&Math.random()<.55){log.push(`${h.name} led the party away!`);battle._endAfterAction="run"}else log.push(`${h.name} tried to flee.`);
     }else if(a.type==="attack"){
-      let f=battle.foes[a.targetIndex];
-      if(!f||f[2]<=0)f=livingFoes()[0];
-      if(!f)return log;
+      let f=battle.foes[a.targetIndex];if(!f||f[2]<=0)f=livingFoes()[0];if(!f)return log;
       const d=Math.max(1,Math.round(stat(h,"atk")+(battle.buffs&&battle.buffs[h.name]&&battle.buffs[h.name].atk||0)+rand(-3,4)-2));
-      f[2]-=d;
-      log.push(`${h.name} attacks ${f[0]} for ${d}.`);
-      const ep=battleEnemyScreenPos(battle.foes.indexOf(f));
-      popBattleText(`-${d}`,ep.x,ep.y,"#fff38b",20);
-      burst(ep.x,ep.y,"#ffe66d",16);
-      if(f[2]<=0){log.push(`${f[0]} falls!`);popBattleText("DOWN",ep.x,ep.y-18*dpr,"#ff5b6d",18);}
-    }else if(a.type==="magic"){
-      resolveQueuedSpell(a,log);
-    }else if(a.type==="item"){
-      resolveQueuedItem(a,log);
-    }
+      f[2]-=d;log.push(`${h.name} attacks ${f[0]} for ${d}.`);
+      const fi=battle.foes.indexOf(f),ep=battleEnemyScreenPos(fi),strong=d>=Math.max(10,Math.round(stat(h,"atk")*1.08));
+      popBattleText(`-${d}`,ep.x,ep.y,strong?"#fff4a8":"#fff38b",strong?25:22,strong);if(strong)popBattleText("HEAVY HIT!",ep.x,ep.y-26*dpr,"#ffd36b",14,true);
+      burst(ep.x,ep.y,strong?"#fff0a0":"#ffe66d",strong?26:18);spawnBattleVfx("slash",ep.x,ep.y,"#fff38b",360,strong?1.25:1);spawnBattleVfx("impact",ep.x,ep.y,strong?"#ffd36b":"#fff",320,strong?1.2:1);
+      triggerBattleImpact("enemy",fi,-(strong?13:8),0,strong?230:170);triggerBattleShake(strong?5:3,strong?170:110);battleSfx("hit",strong);
+      if(f[2]<=0){log.push(`${f[0]} falls!`);popBattleText("DOWN",ep.x,ep.y-32*dpr,"#ff6d7a",20,true);}
+    }else if(a.type==="magic")resolveQueuedSpell(a,log);else if(a.type==="item")resolveQueuedItem(a,log);
   }else{
-    const e=battle.foes[a.enemyIndex];
-    if(!e||e[2]<=0)return log;
-    const hs=livingHeroes();
-    let t=(Number.isInteger(a.targetHeroIndex)&&game.party[a.targetHeroIndex]&&game.party[a.targetHeroIndex].hp>0)?game.party[a.targetHeroIndex]:null;
-    if(!t)t=hs[Math.floor(Math.random()*hs.length)];
-    if(!t)return log;
-    const bd=battle.buffs&&battle.buffs[t.name]&&battle.buffs[t.name].def||0;
-    const d=Math.max(1,Math.round(e[3]-(stat(t,"def")+bd)/2+rand(-2,3)));
-    t.hp=Math.max(0,t.hp-d);
-    log.push(`${e[0]} hits ${t.name} for ${d}.`);
-    const hi=game.party.indexOf(t), hp=battleHeroScreenPos(hi);
-    popBattleText(`-${d}`,hp.x,hp.y,"#ff7070",20);
-    burst(hp.x,hp.y,"#ff5b6d",10);
+    const e=battle.foes[a.enemyIndex];if(!e||e[2]<=0)return log;const hs=livingHeroes();
+    let t=(Number.isInteger(a.targetHeroIndex)&&game.party[a.targetHeroIndex]&&game.party[a.targetHeroIndex].hp>0)?game.party[a.targetHeroIndex]:null;if(!t)t=hs[Math.floor(Math.random()*hs.length)];if(!t)return log;
+    const bd=battle.buffs&&battle.buffs[t.name]&&battle.buffs[t.name].def||0,d=Math.max(1,Math.round(e[3]-(stat(t,"def")+bd)/2+rand(-2,3)));
+    t.hp=Math.max(0,t.hp-d);log.push(`${e[0]} hits ${t.name} for ${d}.`);const hi=game.party.indexOf(t),hp=battleHeroScreenPos(hi);
+    popBattleText(`-${d}`,hp.x,hp.y,"#ff7a7a",22,false);burst(hp.x,hp.y,"#ff6b70",14);spawnBattleVfx("impact",hp.x,hp.y,"#ff9b92",280,.85);triggerBattleImpact("hero",hi,9,0,170);triggerBattleShake(2.4,100);battleSfx("enemyHit");
   }
   return log;
 }
@@ -3585,55 +3742,21 @@ function finishBattleRound(log){
   setTimeout(showBattleCommandPanel,350);
 }
 function playBattleActions(actions,index=0,log=[]){
-  if(!battle||mode!=="battle")return;
-  if(index>=actions.length){finishBattleRound(log);return}
-  const a=actions[index];
-  if(!livingHeroes().length||!livingFoes().length){finishBattleRound(log);return}
-  battle.phase="playback";
-  battle.activeHeroIndex=a.side==="hero"?a.heroIndex:-1;
-  battle.activeEnemyIndex=a.side==="enemy"?a.enemyIndex:-1;
-  battle.activeAction=a;
-  battle.actionStep=1;
-  battle.actionStepStarted=performance.now();
-  battle.msg="";
-  hideBattleCommandPanel();
-
+  if(!battle||mode!=="battle")return;if(index>=actions.length){finishBattleRound(log);return}const a=actions[index];if(!livingHeroes().length||!livingFoes().length){finishBattleRound(log);return}
+  battle.phase="playback";battle.activeHeroIndex=a.side==="hero"?a.heroIndex:-1;battle.activeEnemyIndex=a.side==="enemy"?a.enemyIndex:-1;battle.activeAction=a;battle.actionStep=1;battle.actionStepStarted=performance.now();battle.msg="";hideBattleCommandPanel();
   const isPhysical=a.type==="attack";
   if(isPhysical){
-    setTimeout(()=>{if(battle&&mode==="battle"){battle.actionStep=2;battle.actionStepStarted=performance.now();}},250);
-    setTimeout(()=>{
-      if(!battle||mode!=="battle")return;
-      const newLog=resolveSingleBattleAction(a);
-      log.push(...newLog);
-      battle.msg="";
-      hud();
-      battle.actionStep=3;
-      battle.actionStepStarted=performance.now();
-    },510);
-    setTimeout(()=>{
-      if(!battle||mode!=="battle")return;
-      battle.activeHeroIndex=-1;
-      battle.activeEnemyIndex=-1;
-      battle.activeAction=null;
-      battle.actionStep=0;
-      playBattleActions(actions,index+1,log);
-    },930);
+    battleSfx("swing");
+    setTimeout(()=>{if(battle&&mode==="battle"){battle.actionStep=2;battle.actionStepStarted=performance.now();battleSfx("swing");}},210);
+    setTimeout(()=>{if(!battle||mode!=="battle")return;const newLog=resolveSingleBattleAction(a);log.push(...newLog);battle.msg="";hud();},500);
+    setTimeout(()=>{if(battle&&mode==="battle"){battle.actionStep=3;battle.actionStepStarted=performance.now();}},540);
+    setTimeout(()=>{if(!battle||mode!=="battle")return;battle.activeHeroIndex=-1;battle.activeEnemyIndex=-1;battle.activeAction=null;battle.actionStep=0;playBattleActions(actions,index+1,log);},950);
+  }else if(a.type==="magic"){
+    battleSfx("cast");setTimeout(()=>{if(battle&&mode==="battle"){battle.actionStep=2;battle.actionStepStarted=performance.now();}},330);
+    setTimeout(()=>{if(!battle||mode!=="battle")return;const newLog=resolveSingleBattleAction(a);log.push(...newLog);battle.msg="";hud();battle.actionStep=3;battle.actionStepStarted=performance.now();},540);
+    setTimeout(()=>{if(!battle||mode!=="battle")return;battle.activeHeroIndex=-1;battle.activeEnemyIndex=-1;battle.activeAction=null;battle.actionStep=0;playBattleActions(actions,index+1,log);},1120);
   }else{
-    setTimeout(()=>{
-      if(!battle||mode!=="battle")return;
-      const newLog=resolveSingleBattleAction(a);
-      log.push(...newLog);
-      battle.msg="";
-      hud();
-      setTimeout(()=>{
-        if(!battle||mode!=="battle")return;
-        battle.activeHeroIndex=-1;
-        battle.activeEnemyIndex=-1;
-        battle.activeAction=null;
-        battle.actionStep=0;
-        playBattleActions(actions,index+1,log);
-      },650);
-    },520);
+    setTimeout(()=>{if(!battle||mode!=="battle")return;const newLog=resolveSingleBattleAction(a);log.push(...newLog);battle.msg="";hud();setTimeout(()=>{if(!battle||mode!=="battle")return;battle.activeHeroIndex=-1;battle.activeEnemyIndex=-1;battle.activeAction=null;battle.actionStep=0;playBattleActions(actions,index+1,log);},520);},430);
   }
 }
 function executeBattleRound(){
@@ -3690,60 +3813,26 @@ function queueBattleSpell(s,heroIndex){
 }
 window.queueBattleSpell=queueBattleSpell;
 function resolveQueuedSpell(a,log){
-  const h=game.party[a.heroIndex],sp=spells[a.spell];
-  if(!h||!sp)return;
-  if(h.mp<sp.mp){log.push(`${h.name} lacks MP for ${a.spell}.`);return}
-  h.mp-=sp.mp;
+  const h=game.party[a.heroIndex],sp=spells[a.spell];if(!h||!sp)return;if(h.mp<sp.mp){log.push(`${h.name} lacks MP for ${a.spell}.`);return}h.mp-=sp.mp;
+  const kind=spellVisualKind(a.spell,sp);
   if(sp.type==="dmg"||sp.type==="skill"){
-    let f=battle.foes[a.targetIndex];
-    if(!f||f[2]<=0)f=livingFoes()[0];
-    if(!f)return;
-    const d=sp.pow+stat(h,"matk")+Math.floor(h.level*2);
-    f[2]-=d;
-    log.push(`${h.name} casts ${a.spell} on ${f[0]} for ${d}.`);
-    const ep=battleEnemyScreenPos(battle.foes.indexOf(f));
-    const sColor=a.spell&&a.spell.toLowerCase().includes("fire")?"#ff8a2a":a.spell&&a.spell.toLowerCase().includes("ice")?"#9ee8ff":"#c488ff";
-    popBattleText(`-${d}`,ep.x,ep.y,sColor,20);
-    burst(ep.x,ep.y,sColor,24);
-    if(f[2]<=0){log.push(`${f[0]} falls!`);popBattleText("DOWN",ep.x,ep.y-18*dpr,"#ff5b6d",18);}
+    let f=battle.foes[a.targetIndex];if(!f||f[2]<=0)f=livingFoes()[0];if(!f)return;const d=sp.pow+stat(h,"matk")+Math.floor(h.level*2);f[2]-=d;log.push(`${h.name} casts ${a.spell} on ${f[0]} for ${d}.`);
+    const fi=battle.foes.indexOf(f),ep=battleEnemyScreenPos(fi),sColor=kind==="poison"?"#79ff76":kind==="gear"?"#ffd37a":kind==="slash"?"#fff38b":"#c488ff";
+    popBattleText(`-${d}`,ep.x,ep.y,sColor,24,true);spawnBattleVfx(kind,ep.x,ep.y,sColor,kind==="slash"?420:620,kind==="slash"?1.3:1.1);spawnBattleVfx("impact",ep.x,ep.y,sColor,330,1.05);burst(ep.x,ep.y,sColor,28);
+    triggerBattleImpact("enemy",fi,-12,0,230);triggerBattleShake(kind==="slash"?5:3.5,150);battleSfx(kind==="gear"?"gear":kind==="poison"?"poison":kind==="shadow"?"dark":kind==="slash"?"hit":"cast",kind==="slash");
+    if(f[2]<=0){log.push(`${f[0]} falls!`);popBattleText("DOWN",ep.x,ep.y-28*dpr,"#ff5b6d",20,true);}
   }else if(sp.type==="heal"){
-    const t=game.party[a.targetHeroIndex]||game.party.slice().sort((a,b)=>a.hp/stat(a,"maxHP")-b.hp/stat(b,"maxHP"))[0];
-    const before=t.hp;
-    t.hp=Math.min(stat(t,"maxHP"),t.hp+sp.pow+stat(h,"matk"));
-    const amt=Math.max(0,t.hp-before);
-    log.push(`${h.name} casts ${a.spell} on ${t.name}.`);
-    const hp=battleHeroScreenPos(game.party.indexOf(t));
-    popBattleText(`+${amt}`,hp.x,hp.y,"#7dff9b",20);
-    burst(hp.x,hp.y,"#fff38b",24);
+    const t=game.party[a.targetHeroIndex]||game.party.slice().sort((a,b)=>a.hp/stat(a,"maxHP")-b.hp/stat(b,"maxHP"))[0],before=t.hp;t.hp=Math.min(stat(t,"maxHP"),t.hp+sp.pow+stat(h,"matk"));const amt=Math.max(0,t.hp-before);log.push(`${h.name} casts ${a.spell} on ${t.name}.`);const hp=battleHeroScreenPos(game.party.indexOf(t));
+    popBattleText(`+${amt}`,hp.x,hp.y,"#8cffaa",24,true);burst(hp.x,hp.y,"#fff38b",22);spawnBattleVfx("heal",hp.x,hp.y,"#8cffaa",650,1.1);battleSfx("heal");
   }else if(sp.type==="life"){
-    const t=game.party[a.targetHeroIndex];
-    if(t&&t.hp<=0){t.hp=sp.pow;log.push(`${h.name} revives ${t.name}!`);const hp=battleHeroScreenPos(game.party.indexOf(t));popBattleText("LIFE",hp.x,hp.y,"#fff38b",20);burst(hp.x,hp.y,"#fff38b",24);}
-    else if(t){log.push(`${t.name} is not fallen.`);const hp=battleHeroScreenPos(game.party.indexOf(t));popBattleText("OK",hp.x,hp.y,"#dff8ff",16);}
-    else log.push("No ally selected.");
+    const t=game.party[a.targetHeroIndex];if(t&&t.hp<=0){t.hp=sp.pow;log.push(`${h.name} revives ${t.name}!`);const hp=battleHeroScreenPos(game.party.indexOf(t));popBattleText("LIFE",hp.x,hp.y,"#fff38b",22,true);burst(hp.x,hp.y,"#fff38b",30);spawnBattleVfx("life",hp.x,hp.y,"#fff38b",800,1.2);battleSfx("heal");}else if(t){log.push(`${t.name} is not fallen.`);const hp=battleHeroScreenPos(game.party.indexOf(t));popBattleText("OK",hp.x,hp.y,"#dff8ff",18);}else log.push("No ally selected.");
   }else if(sp.type==="buff"){
-    const t=game.party[a.targetHeroIndex]||h;
-    battle.buffs=battle.buffs||{};
-    battle.buffs[t.name]=battle.buffs[t.name]||{};
-    battle.buffs[t.name].atk=(battle.buffs[t.name].atk||0)+sp.pow;
-    log.push(`${h.name} blesses ${t.name}.`);
-    const hp=battleHeroScreenPos(game.party.indexOf(t));
-    popBattleText("BLESS",hp.x,hp.y,"#fff38b",18);
-    burst(hp.x,hp.y,"#fff38b",18);
+    const t=game.party[a.targetHeroIndex]||h;battle.buffs=battle.buffs||{};battle.buffs[t.name]=battle.buffs[t.name]||{};battle.buffs[t.name].atk=(battle.buffs[t.name].atk||0)+sp.pow;log.push(`${h.name} blesses ${t.name}.`);const hp=battleHeroScreenPos(game.party.indexOf(t));popBattleText("BLESS",hp.x,hp.y,"#fff38b",19,true);burst(hp.x,hp.y,"#fff38b",18);spawnBattleVfx("bless",hp.x,hp.y,"#fff38b",600,1);battleSfx("heal");
   }else if(sp.type==="guard"){
-    const t=game.party[a.targetHeroIndex]||h;
-    battle.buffs=battle.buffs||{};
-    battle.buffs[t.name]=battle.buffs[t.name]||{};
-    battle.buffs[t.name].def=(battle.buffs[t.name].def||0)+sp.pow;
-    log.push(`${h.name} guards ${t.name}.`);
-    const hp=battleHeroScreenPos(game.party.indexOf(t));
-    popBattleText("GUARD",hp.x,hp.y,"#9ee8ff",18);
-    burst(hp.x,hp.y,"#9ee8ff",18);
+    const t=game.party[a.targetHeroIndex]||h;battle.buffs=battle.buffs||{};battle.buffs[t.name]=battle.buffs[t.name]||{};battle.buffs[t.name].def=(battle.buffs[t.name].def||0)+sp.pow;log.push(`${h.name} guards ${t.name}.`);const hp=battleHeroScreenPos(game.party.indexOf(t));popBattleText("GUARD",hp.x,hp.y,"#9ee8ff",19,true);burst(hp.x,hp.y,"#9ee8ff",18);spawnBattleVfx("guard",hp.x,hp.y,"#9ee8ff",650,1);battleSfx("cast");
   }else if(sp.type==="sleep"){
-    let f=battle.foes[a.targetIndex]||livingFoes()[0];
-    if(Math.random()<.5){battle.sleep=true;log.push(`${h.name} hexes ${f?f[0]:"enemies"} to sleep!`);const ep=battleEnemyScreenPos(f?battle.foes.indexOf(f):0);popBattleText("SLEEP",ep.x,ep.y,"#c488ff",18);}else {log.push("Sleep Hex failed.");const ep=battleEnemyScreenPos(f?battle.foes.indexOf(f):0);popBattleText("MISS",ep.x,ep.y,"#ddd",16);}
-  }else if(sp.type==="smoke"){
-    log.push(`${h.name} prepares smoke.`);
-  }
+    let f=battle.foes[a.targetIndex]||livingFoes()[0];if(Math.random()<.5){battle.sleep=true;log.push(`${h.name} hexes ${f?f[0]:"enemies"} to sleep!`);const ep=battleEnemyScreenPos(f?battle.foes.indexOf(f):0);popBattleText("SLEEP",ep.x,ep.y,"#d0a6ff",20,true);spawnBattleVfx("sleep",ep.x,ep.y,"#d0a6ff",900,1.1);battleSfx("dark");}else{log.push("Sleep Hex failed.");const ep=battleEnemyScreenPos(f?battle.foes.indexOf(f):0);popBattleText("MISS",ep.x,ep.y,"#ddd",18);spawnBattleVfx("shadow",ep.x,ep.y,"#8a58b8",400,.7);battleSfx("dark");}
+  }else if(sp.type==="smoke")log.push(`${h.name} prepares smoke.`);
 }
 function castBattleSpell(s){
   const idx=nextUnqueuedHeroIndex();
@@ -3795,10 +3884,17 @@ window.useBattleItem=useBattleItem;
 function enemyTurn(){
   executeBattleRound();
 }
-function winBattle(){let xp=0,g=0;for(let e of battle.foes){xp+=e[4];g+=e[5]}game.gold+=g;game.party.forEach(h=>{if(h.hp>0){h.xp+=xp;while(h.xp>=h.next){h.xp-=h.next;h.level++;h.next=Math.round(h.next*1.55);h.baseHP+=9+Math.floor(Math.random()*4);h.hp=stat(h,"maxHP");h.baseAtk+=2;h.baseDef+=1;if(h.baseMP>0){h.baseMP++;h.mp=stat(h,"maxMP")}if(h.level===2&&h.class==="Dark Mage"&&!h.spells.includes("Sleep Hex"))h.spells.push("Sleep Hex");if(h.level===2&&h.class==="Cleric"&&!h.spells.includes("Guard Prayer"))h.spells.push("Guard Prayer");if(h.level===3&&h.class==="Dark Mage"&&!h.spells.includes("Night Bolt"))h.spells.push("Night Bolt");if(h.level===3&&h.class==="Cleric"&&!h.spells.includes("Life"))h.spells.push("Life");ban(`${h.name} leveled up!`)}}});battle.boss?(game.bossDead=true,game.crystal=true,game.items["Star Crystal"]=1,endBattle(`Victory! Meadow Crystal restored. +${xp} XP +${g} gold.`)):endBattle(`Victory! +${xp} XP +${g} gold.`)}
+function winBattle(){
+  if(!battle||battle.victory)return;let xp=0,g=0;for(let e of battle.foes){xp+=e[4];g+=e[5]}const levelUps=[];game.gold+=g;
+  game.party.forEach(h=>{if(h.hp>0){h.xp+=xp;while(h.xp>=h.next){h.xp-=h.next;h.level++;h.next=Math.round(h.next*1.55);h.baseHP+=9+Math.floor(Math.random()*4);h.hp=stat(h,"maxHP");h.baseAtk+=2;h.baseDef+=1;if(h.baseMP>0){h.baseMP++;h.mp=stat(h,"maxMP")}if(h.level===2&&h.class==="Dark Mage"&&!h.spells.includes("Sleep Hex"))h.spells.push("Sleep Hex");if(h.level===2&&h.class==="Cleric"&&!h.spells.includes("Guard Prayer"))h.spells.push("Guard Prayer");if(h.level===3&&h.class==="Dark Mage"&&!h.spells.includes("Night Bolt"))h.spells.push("Night Bolt");if(h.level===3&&h.class==="Cleric"&&!h.spells.includes("Life"))h.spells.push("Life");levelUps.push(`${h.name} Lv.${h.level}`);}}});
+  const wasBoss=!!battle.boss;if(wasBoss){game.bossDead=true;game.crystal=true;game.items["Star Crystal"]=1;}
+  battle.phase="victory";battle.activeHeroIndex=-1;battle.activeEnemyIndex=-1;battle.activeAction=null;hideBattleCommandPanel();battle.victory={start:performance.now(),xp,gold:g,levelUps,boss:wasBoss};battleSfx("victory");
+  game.party.forEach((h,i)=>{if(h.hp>0){const p=battleHeroBasePos(i);burst(p.x,p.y-18*dpr,"#fff38b",16)}});spawnBattleVfx("bless",W*.5,H*.39,"#fff38b",950,1.5);saveGame();
+  setTimeout(()=>{if(!battle||!battle.victory)return;endBattle(wasBoss?`Victory! Meadow Crystal restored. +${xp} XP +${g} gold.`:`Victory! +${xp} XP +${g} gold.`)},wasBoss?1800:1550);
+}
 function loseBattle(){running=false;mode="menu";document.body.classList.remove("battleMode");hideBattleCommandPanel&&hideBattleCommandPanel();battleBtns.style.display="none";overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>The party fell!</h2><p>The heroes wake at Starbrook Inn. Half your gold is lost.</p><button onclick="reviveAtTown()">Continue</button></div>`}
-function reviveAtTown(){game.gold=Math.floor(game.gold/2);game.party.forEach(h=>{h.hp=Math.max(1,Math.floor(stat(h,"maxHP")*.65));h.mp=stat(h,"maxMP")});startMap("town");saveGame()}function endBattle(msg){battle=null;mode="map";document.body.classList.remove("battleMode");hideBattleCommandPanel&&hideBattleCommandPanel();battleBtns.style.display="none";ban(msg);saveGame();hud()}
-function draw(){ctx.clearRect(0,0,W,H);mode==="battle"?drawBattle():drawMap();drawFX();requestAnimationFrame(draw)}
+function reviveAtTown(){game.gold=Math.floor(game.gold/2);game.party.forEach(h=>{h.hp=Math.max(1,Math.floor(stat(h,"maxHP")*.65));h.mp=stat(h,"maxMP")});startMap("town");saveGame()}function endBattle(msg){battleMapFadeStart=performance.now();battle=null;mode="map";document.body.classList.remove("battleMode");hideBattleCommandPanel&&hideBattleCommandPanel();battleBtns.style.display="none";battleVfx=[];battleImpact=null;battleShake={start:0,dur:0,mag:0};particles=[];battleFloatTexts=[];ban(msg);saveGame();hud()}
+function draw(){ctx.clearRect(0,0,W,H);mode==="battle"?drawBattle():drawMap();drawFX();drawBattleTransitionOverlay();requestAnimationFrame(draw)}
 function drawMap(){
   let s=tile*dpr;
   let vw=Math.ceil(W/s)+3;
@@ -3955,13 +4051,14 @@ function drawBattle(){
   const party = (game && game.party) ? game.party : [];
   const foes = (battle && battle.foes) ? battle.foes.filter(e=>e && e[2]>0) : [];
 
-  // Safe full redraw.
-  ctx.fillStyle="#111827";
-  ctx.fillRect(0,0,W,H);
+  // Safe full redraw with battle-only depth.
+  const shake=battleShakeOffset();
+  ctx.save();ctx.translate(shake.x,shake.y);
+  const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#111c2c");bg.addColorStop(.48,"#1c2830");bg.addColorStop(1,"#0b1018");ctx.fillStyle=bg;ctx.fillRect(-8*d,-8*d,W+16*d,H+16*d);
 
   // Back wall.
   const wallH=H*.28;
-  ctx.fillStyle="#263436";
+  const wallGrad=ctx.createLinearGradient(0,0,0,wallH);wallGrad.addColorStop(0,"#31454c");wallGrad.addColorStop(1,"#202d31");ctx.fillStyle=wallGrad;
   ctx.fillRect(0,0,W,wallH);
   ctx.strokeStyle="rgba(0,0,0,.22)";
   ctx.lineWidth=2*d;
@@ -3972,6 +4069,12 @@ function drawBattle(){
   [W*.20,W*.50,W*.80].forEach(x=>{
     ctx.fillStyle="#8d8d79";ctx.fillRect(x-9*d,10*d,18*d,wallH-8*d);
     ctx.fillStyle="#d8d3b6";ctx.fillRect(x-14*d,8*d,28*d,8*d);ctx.fillRect(x-15*d,wallH-8*d,30*d,8*d);
+  });
+
+  [W*.08,W*.92].forEach((tx,idx)=>{
+    const ty=H*.15,flick=.92+.08*Math.sin(performance.now()*.012+idx*2),glow=ctx.createRadialGradient(tx,ty,2*d,tx,ty,54*d);
+    glow.addColorStop(0,`rgba(255,205,92,${.25*flick})`);glow.addColorStop(1,"rgba(255,170,60,0)");ctx.fillStyle=glow;ctx.beginPath();ctx.arc(tx,ty,54*d,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#f6c45b";ctx.beginPath();ctx.moveTo(tx,ty-11*d);ctx.quadraticCurveTo(tx+8*d,ty,tx,ty+10*d);ctx.quadraticCurveTo(tx-8*d,ty,tx,ty-11*d);ctx.fill();
   });
 
   // Floor.
@@ -3986,12 +4089,9 @@ function drawBattle(){
   for(let y=floorY;y<H*.76;y+=28*d){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y+8*d);ctx.stroke();}
   for(let x=-30*d;x<W+80*d;x+=48*d){ctx.beginPath();ctx.moveTo(x,floorY);ctx.lineTo(x-70*d,H*.76);ctx.stroke();}
 
-  // Phase 1 renderer correction: during a physical attack, draw only a
-  // short directional strike guide so attacker, weapon, and selected target
-  // visibly agree. It disappears outside the attack animation.
+  // Phase 2: keep target direction readable without a debug-looking guide.
   if(battle&&battle.phase==="playback"&&battle.activeAction&&battle.activeAction.type==="attack"){
-    const a=battle.activeAction;
-    let from=null,to=null;
+    const a=battle.activeAction;let from=null,to=null;
     if(a.side==="hero"){
       from=battleHeroSpritePos(a.heroIndex);
       const ti=(battle.foes&&battle.foes[a.targetIndex])?a.targetIndex:(battle.foes||[]).findIndex(e=>e&&e[2]>0);
@@ -4002,13 +4102,9 @@ function drawBattle(){
       if(hi>=0)to=battleHeroBasePos(hi);
     }
     if(from&&to){
-      ctx.save();
-      ctx.globalAlpha=battle.actionStep===2?.42:.22;
-      ctx.strokeStyle=a.side==="hero"?"#fff38b":"#ff8a8a";
-      ctx.lineWidth=2*d;
-      ctx.setLineDash([7*d,7*d]);
-      ctx.beginPath();ctx.moveTo(from.x,from.y);ctx.lineTo(to.x,to.y);ctx.stroke();
-      ctx.setLineDash([]);
+      ctx.save();const pulse=.55+.25*Math.sin(performance.now()*.018);ctx.globalAlpha=.18+pulse*.18;ctx.strokeStyle=a.side==="hero"?"#fff38b":"#ff9b92";ctx.lineWidth=2*d;
+      ctx.beginPath();ctx.ellipse(to.x,to.y+30*d,31*d,10*d,0,0,Math.PI*2);ctx.stroke();
+      if(battle.actionStep===2){const g=ctx.createLinearGradient(from.x,from.y,to.x,to.y);g.addColorStop(0,"rgba(255,255,255,0)");g.addColorStop(.6,a.side==="hero"?"rgba(255,243,139,.36)":"rgba(255,120,120,.3)");g.addColorStop(1,"rgba(255,255,255,0)");ctx.strokeStyle=g;ctx.lineWidth=3*d;ctx.beginPath();ctx.moveTo(from.x,from.y);ctx.lineTo(to.x,to.y);ctx.stroke();}
       ctx.restore();
     }
   }
@@ -4042,7 +4138,7 @@ function drawBattle(){
   const heroBaseX=W*.79;
   const heroStartY=H*.24;
   const heroGap=(H*.62-H*.24)/Math.max(1,party.length-1);
-  const currentHero = (typeof hero==="function" && battle && battle.phase!=="playback") ? hero() : null;
+  const currentHero = (typeof hero==="function" && battle && battle.phase==="select") ? hero() : null;
   party.forEach((h,i)=>{
     const hp=battleHeroSpritePos(i);
     const y=hp.y;
@@ -4059,6 +4155,8 @@ function drawBattle(){
     drawBattleStatusIcon(h,heroX,y-1*d);
   });
 
+  drawBattleCastCue();
+
   // Bottom panels.
   const panelY=H*.715, panelH=H*.215;
   chBattlePanel(8*d,panelY,W*.40,panelH);
@@ -4067,7 +4165,10 @@ function drawBattle(){
   // Enemy info left.
   ctx.textAlign="left";ctx.textBaseline="top";
   ctx.font=`${16*d}px system-ui`;
-  foes.forEach((e,i)=>{
+  if(battle&&battle.victory){
+    ctx.fillStyle="#fff38b";ctx.font=`900 ${16*d}px system-ui`;ctx.textAlign="center";ctx.fillText("BATTLE CLEAR",W*.205,panelY+18*d);
+    ctx.fillStyle="#dff8ff";ctx.font=`800 ${11*d}px system-ui`;ctx.fillText(`EXP +${battle.victory.xp}`,W*.205,panelY+47*d);ctx.fillText(`GOLD +${battle.victory.gold}`,W*.205,panelY+67*d);
+  }else foes.forEach((e,i)=>{
     const yy=panelY+12*d+i*25*d;
     ctx.fillStyle="#fff";
     ctx.fillText(e[0]||"Enemy",20*d,yy);
@@ -4096,19 +4197,27 @@ function drawBattle(){
       ctx.fillStyle="#9ee8ff";
       const mpText=`MP ${Math.max(0,h.mp)}/${stat(h,"maxMP")}`;
       ctx.fillText(mpText,W*.755,rowY+13*d);
-      chHPBar(W*.78,rowY+17*d,W*.17,6*d,h.mp,stat(h,"maxMP"),"#9ee8ff");
+      chHPBar(W*.78,rowY+17*d,W*.17,6*d,h.mp,stat(h,"maxMP"),"#4fc7ff");
     }
+    const status=String(h.status||"").trim();
+    if(status){ctx.textAlign="left";ctx.fillStyle="#ffd37a";ctx.font=`900 ${9*d}px system-ui`;ctx.fillText(status.toUpperCase(),W*.45,rowY+14*d);}
   });
 
-  if(currentHero){
-    ctx.fillStyle="#fff38b";
-    ctx.font=`${12*d}px system-ui`;
-    ctx.textAlign="center";
-    ctx.fillText(`Turn: ${currentHero.name}`,W/2,H*.965);
+  if(currentHero){ctx.fillStyle="#fff38b";ctx.font=`900 ${12*d}px system-ui`;ctx.textAlign="center";ctx.fillText(`TURN • ${currentHero.name}`,W/2,H*.965);}
+  if(battle&&battle.victory){
+    const v=battle.victory,t=Math.min(1,(performance.now()-v.start)/260),pulse=1+.035*Math.sin(performance.now()*.012);
+    ctx.save();ctx.translate(W/2,H*.43);ctx.scale(pulse,pulse);ctx.globalAlpha=t;
+    ctx.fillStyle="rgba(5,10,38,.88)";ctx.strokeStyle="#fff38b";ctx.lineWidth=3*d;chRoundRect(-W*.29,-74*d,W*.58,148*d,16*d);ctx.fill();ctx.stroke();
+    ctx.fillStyle="#fff38b";ctx.textAlign="center";ctx.font=`1000 ${30*d}px Georgia,serif`;ctx.fillText(v.boss?"BOSS VICTORY!":"VICTORY!",0,-42*d);
+    ctx.fillStyle="#fff";ctx.font=`900 ${15*d}px system-ui`;ctx.fillText(`+${v.xp} EXP     +${v.gold} GOLD`,0,-5*d);
+    if(v.levelUps&&v.levelUps.length){ctx.fillStyle="#9ee8ff";ctx.font=`900 ${13*d}px system-ui`;ctx.fillText(`LEVEL UP • ${v.levelUps.join(" • ")}`,0,25*d);}
+    ctx.fillStyle="#dff8ff";ctx.font=`800 ${11*d}px system-ui`;ctx.fillText(v.boss?"The Meadow Crystal is restored!":"The party is ready for the road ahead.",0,52*d);ctx.restore();
   }
+  ctx.restore();
 }
 
 function drawFX(){
+  drawBattleVfx();
   particles.forEach(p=>{
     ctx.globalAlpha=Math.max(0,p.life/36);
     ctx.fillStyle=p.c;
@@ -4128,12 +4237,14 @@ function drawFX(){
     ctx.globalAlpha=Math.min(1,a*1.4);
     ctx.textAlign="center";
     ctx.textBaseline="middle";
-    ctx.font=`900 ${t.size}px system-ui`;
-    ctx.lineWidth=4*dpr;
-    ctx.strokeStyle="rgba(0,0,0,.75)";
+    const scale=t.emphasis?(1+.16*Math.sin((1-a)*Math.PI)):1;
+    ctx.translate(t.x,t.y);ctx.scale(scale,scale);
+    ctx.font=`1000 ${t.size}px system-ui`;
+    ctx.lineWidth=(t.emphasis?6:5)*dpr;
+    ctx.strokeStyle="rgba(0,0,0,.82)";
     ctx.fillStyle=t.color;
-    ctx.strokeText(t.text,t.x,t.y);
-    ctx.fillText(t.text,t.x,t.y);
+    ctx.strokeText(t.text,0,0);
+    ctx.fillText(t.text,0,0);
     ctx.restore();
     t.y+=t.dy;
     t.life--;
