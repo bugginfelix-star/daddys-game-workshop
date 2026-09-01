@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Crystal Heroes v1.5.48 Phase 3 Meadowvale</title>
+<title>Crystal Heroes v1.5.48 Phase 2 Battle Presentation</title>
 <!-- Phase 1B: battle facing / lane / weapon-attachment correction -->
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
@@ -503,22 +503,9 @@ body.menuMode .panel.classic{
 }
 
 
-/* Phase 3 mobile exploration controls: keep swipe movement, but restore the
-   existing D-pad / Party / Bag / Menu deck on playable maps. */
-body.mapMode #controls{display:grid !important;}
-body:not(.mapMode) #controls,
-body.menuMode #controls,
-body.battleMode #controls,
-body.titleMode #controls{display:none !important;}
-body.mapMode #stage{flex:1 1 auto !important;min-height:0;}
-body.mapMode #mapQuickMenu,
-body.mapMode #touchHint{display:none !important;}
-@media(max-width:650px){
-  body.mapMode #controls{grid-template-columns:1.35fr .82fr .82fr .82fr;gap:5px;padding:6px 6px calc(6px + env(safe-area-inset-bottom));}
-  body.mapMode .ctrl{min-height:46px;font-size:11px;border-radius:14px;padding:3px;}
-  body.mapMode #dpad{gap:3px;}
-  body.mapMode .dpadBtn{min-height:31px;}
-}
+/* v1.5.48 touch swipe movement */
+#controls{display:none !important;}
+#stage{flex:1 1 auto !important;}
 
 #mapQuickMenu{
   position:absolute;
@@ -1919,21 +1906,10 @@ body.battleMode #battleCmdPanel .targetHint{
 }
 
 
-
-/* ============================================================
-   Phase 3 — Meadowvale world / Starbrook town / menu foundation
-   Exploration presentation only. Phase 1B renderer + Phase 2 battle remain intact.
-   ============================================================ */
-.phase3RegionStrip{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:0 0 9px;padding:8px 10px;border:2px solid #f5f5ff;border-radius:12px;background:linear-gradient(135deg,#123b77,#166a73);box-shadow:0 0 0 2px #000;color:#fff}
-.phase3RegionStrip strong{color:#fff38b}.phase3RegionStrip small{display:block;opacity:.9;line-height:1.25;margin-top:2px}.phase3GoalTag{background:#081064;border:2px solid #fff;border-radius:10px;padding:7px 9px;font-size:11px;font-weight:1000;text-align:center;max-width:150px}
-.phase3QuestCard{background:linear-gradient(135deg,#10206e,#173e75);border:3px solid #f5f5ff;box-shadow:0 0 0 3px #000;border-radius:14px;padding:10px;margin:9px 0;color:#fff;text-align:left}.phase3QuestCard h3{margin:0 0 5px;color:#fff38b}.phase3QuestState{display:inline-block;margin-top:7px;padding:4px 8px;border-radius:9px;background:#07104c;color:#9ee8ff;font-size:11px;font-weight:1000}.phase3QuestReward{color:#b8ffbd;font-weight:900}
-.phase3ShopIntro{display:grid;grid-template-columns:58px 1fr;gap:9px;align-items:center;margin-bottom:8px}.phase3Keeper{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#172776;border:3px solid #fff;box-shadow:0 0 0 2px #000;font-size:29px}.phase3ShopIntro strong{color:#fff38b}.phase3ShopIntro small{display:block;line-height:1.25;margin-top:2px}
-.phase3Compare{display:grid;gap:5px;margin-top:7px}.phase3CompareRow{display:grid;grid-template-columns:minmax(74px,.7fr) 1.3fr;gap:7px;padding:6px 7px;background:#0b1767;border-radius:9px;border:1px solid #ffffff42;font-size:11px}.phase3CompareRow b{color:#fff38b}.phase3Up{color:#9effae}.phase3Down{color:#ff9e9e}.phase3Same{color:#dce5ff}.phase3EquipQuick{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
-.phase3InvTabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:7px 0}.phase3InvTabs .tabBtn{min-width:0!important}
-.phase3TownHelp{font-size:11px;color:#dff8ff;line-height:1.35}.phase3NpcLine{padding:8px 9px;margin:7px 0;border-left:4px solid #fff38b;background:#101c9b;border-radius:7px;line-height:1.35}.phase3NpcName{color:#fff38b;font-weight:1000}
-.phase3Legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-top:7px;font-size:10px}.phase3Legend span{background:#101c9b;border:1px solid #ffffff38;border-radius:8px;padding:5px 6px}
-@media(max-width:650px){.phase3RegionStrip{grid-template-columns:1fr;padding:7px 8px}.phase3GoalTag{max-width:none;text-align:left}.phase3CompareRow{grid-template-columns:68px 1fr;font-size:10px}.phase3ShopIntro{grid-template-columns:48px 1fr}.phase3Keeper{width:44px;height:44px;font-size:24px}.phase3InvTabs{grid-template-columns:repeat(2,1fr)}}
-
+/* Phase 3 — connected starting region */
+body.mapMode #controls{display:grid !important;}
+.classic .commandBox small{color:#dbe5ff;line-height:1.35;}
+@media(max-width:520px){.classic .menuBtn{min-height:44px}.classic .detailBox{font-size:12px}.classic .commandBox{font-size:12px}}
 </style>
 </head>
 <body><div id="app">
@@ -1942,10 +1918,11 @@ body.battleMode #battleCmdPanel .targetHint{
 <div class="hud"><b>Context</b><span id="areaHud">Explore</span></div>
 <div class="hud"><b>Goal</b><span id="itemHud">Find Crystal</span></div>
 <div class="hud"><b>Save</b><span id="saveHud">Auto</span></div></div></header>
-<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Phase 3 Meadowvale</h2><p>Four heroes seek the Star Crystals. Explore Meadowvale, visit Starbrook, prepare at its shops, and investigate the trouble near Thorn Cave.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
+<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Phase 2 Battle Presentation</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
 <div id="controls"><div id="dpad"><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="upBtn">⬆️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="leftBtn">⬅️</button><button class="dpadBtn ctrl" id="okBtn">OK</button><button class="dpadBtn ctrl gold" id="rightBtn">➡️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="downBtn">⬇️</button><button class="dpadBtn ctrl" disabled></button></div><div class="ctrl pink" id="partyBtn">👥 Party</div><div class="ctrl green" id="bagBtn">🎒 Bag</div><div class="ctrl" id="menuBtn">☰ Menu</div></div>
 </div>
 <script>
+/* Phase 3 — CONNECTED WORLD / STARBROOK / THORN CAVE / ENEMY FAMILY FOUNDATION */
 const canvas=document.getElementById("game"),ctx=canvas.getContext("2d"),overlay=document.getElementById("overlay"),toast=document.getElementById("toast"),banner=document.getElementById("banner"),battleBtns=document.getElementById("battleBtns");
 const ui={gold:goldHud,steps:stepHud,area:areaHud,item:itemHud,save:saveHud,place:placePill};let dpr=1,W=0,H=0,tile=32,mode="menu",running=false,keys={},touch={x:0,y:0},touchMove={active:false,startX:0,startY:0,dirX:0,dirY:0,nextStep:0},cam={x:0,y:0},playerDraw={x:8,y:8,ready:false,fromX:8,fromY:8,toX:8,toY:8,start:0,dur:190,moving:false,facingX:0,facingY:1},camDraw={x:0,y:0,ready:false},battle=null,last=0,moveLock=0,particles=[],battleFloatTexts=[],battleVfx=[],battleImpact=null,battleShake={start:0,dur:0,mag:0},battleMapFadeStart=0,battleAudioCtx=null,battleAudioPrimed=false;
 
@@ -2510,12 +2487,20 @@ const gear={
 "Cloth Tunic":{slot:"armor",class:["Fighter","Dark Mage","Cleric","Tinkerer"],def:2,cost:0},"Leather Vest":{slot:"armor",class:["Fighter","Cleric","Tinkerer"],def:5,cost:55},"Chain Mail":{slot:"armor",class:["Fighter","Cleric"],def:9,cost:125},"Gear Coat":{slot:"armor",class:["Tinkerer"],def:8,cost:115},"Mage Robe":{slot:"armor",class:["Dark Mage","Cleric"],def:5,matk:3,cost:90}
 };
 const spells={"Shadow Spark":{class:"Dark Mage",mp:1,pow:22,type:"dmg",desc:"Dark damage"},"Poison Puff":{class:"Dark Mage",mp:2,pow:12,type:"dmg",desc:"Damage plus poison"},"Sleep Hex":{class:"Dark Mage",mp:2,pow:0,type:"sleep",desc:"May skip enemy turn"},"Night Bolt":{class:"Dark Mage",mp:3,pow:38,type:"dmg",desc:"Heavy shadow damage"},"Heal":{class:"Cleric",mp:1,pow:34,type:"heal",desc:"Restore HP"},"Bless":{class:"Cleric",mp:2,pow:3,type:"buff",desc:"Raise attack"},"Guard Prayer":{class:"Cleric",mp:2,pow:3,type:"guard",desc:"Raise defense"},"Life":{class:"Cleric",mp:4,pow:25,type:"life",desc:"Revive ally"},"Power Slash":{class:"Fighter",mp:0,pow:10,type:"skill",desc:"Strong sword hit"},"Gear Shot":{class:"Tinkerer",mp:0,pow:12,type:"skill",desc:"Mechanical shot"},"Smoke Bomb":{class:"Tinkerer",mp:0,pow:0,type:"smoke",desc:"Escape attempt"}};
-const enemies=[["Slimelet","🟢",24,7,8,6],["Cave Bat","🦇",28,8,10,8],["Thorn Beast","🌿",38,10,14,12],["Bone Rattler","💀",45,12,18,15],["Crystal Mimic","💎",55,15,25,25]],bossDef=["Thornroot Guardian","🌳",180,18,85,120,true];
-const worldMap=["wwwwwwwwwwwwwwwwwwwwwwwwwwww","wggggggggggggggggggggggggggw","wgggffffgfggggggggggmmgmmggw","wgggfffgffgggqwwqgggmgmmmggw","wgggffgfffgggqwwqggggmmmgggw","wgggfgffffglgqwwqgkgmmmgmggw","wggggggggggggqwwqgggmmgmmggw","wgggtttggggggqwwqggggggggggw","wgggtttrgggggqwwqggggggggggw","wgggttrrrrrrrrbbrrrrrrrggggw","wggggggggrgggqwwqgggggrggggw","wggggggggrgggqwwqgggggrggggw","wggwwwqggrgggqwwqgggggrggggw","wggwwwqggggggqwwqgggggccgggw","wggggggggggggqwwqggkgggggggw","wggggggggggkgqwwqggggggggggw","wggmgmgmgggggqwwqggggggkgggw","wggmmmmmkggggqwwqggggggggggw","wgggmgmggggggqwwqggggggggggw","wggmmmmmgggggggggggggggggggw","wggggggggggggggggggggggggggw","wwwwwwwwwwwwwwwwwwwwwwwwwwww"];
-const townMap=["############################","############################","##...........RRR..........##","##.HHHHHH.HHHHHH..HHHHHHH.##","##THHHHHH.HHHHHH..HHHHHHHT##","##.HHHHHH.HHHHHH..HHHHHHH.##","##.HHHIHH.HHHSHH..HHHWHHH.##","##...........RRR..........##","##.HHHHH.....RRR..........##","##RHHHHHRRRRRRFRRRRRRRRRRR##","##RHHDHHRRRRRRRRRRRRRRRRRR##","##...........RRR..........##","##........T..RRR.T........##","##.HHHAHHH...RRR..HHHDHHH.##","##.HHHHHHH...RRR..HHHHHHH.##","##.HHHHHHH...RRR..HHHHHHH.##","##.HHHHHHHT..RRR.THHHHHHH.##","##T..........RRR.........T##","##...........RRR..........##","##.........HHHEHHH........##","############################","############################"];
-const shopMap=["############################","############################","############################","############################","#####..................#####","#####.s.ssssssssssss.s.#####","#####.s..............s.#####","#####.s..............s.#####","#####.s..............s.#####","#####.....CCCCKCCCC....#####","#####.........R........#####","#####.........R........#####","#####...s.....R.....s..#####","#####.........R........#####","#####.........R........#####","#####...s.....R.....s..#####","#####.........R........#####","#####.........R........#####","#####.........E........#####","############################","############################","############################"];
-const caveMap=["############################","###.............############","###.#####.#####.############","###.....#.....#.############","#######.#####.#.############","###.....#.....#.############","###.#####.#####.############","###.............############","###.###########.############","###.............############","###E.......B....############","############################","############################","############################","############################","############################","############################","############################","############################","############################","############################","############################"];
-function defGame(){return{gold:120,steps:0,area:"overworld",x:8,y:8,items:{Potion:5,Ether:1,"Smoke Bomb":1},inventory:["Iron Sword","Old Staff","Oak Club","Slingshot","Cloth Tunic","Cloth Tunic","Cloth Tunic","Cloth Tunic"],bossDead:false,crystal:false,party:[
+const enemies=[
+["Meadow Slime","🟢",24,7,8,6],["Cave Bat","🦇",28,8,10,8],["Thorn Treant","🌿",38,10,14,12],["Bone Rattler","💀",45,12,18,15],["Crystal Mimic","💎",55,15,25,25],
+["Briar Wolf","🐺",34,9,12,10],["Green Goblin","👺",36,10,13,11],["Forest Spider","🕷️",31,9,11,9],["Stone Golem","🗿",52,13,21,18]
+],bossDef=["Thornroot Guardian","🌳",180,18,85,120,true];
+const enemyFamilies={
+ slime:{ordinary:["Meadow Slime"]},wolf:{ordinary:["Briar Wolf"]},goblin:{ordinary:["Green Goblin"]},spider:{ordinary:["Forest Spider"]},bat:{cave:["Cave Bat"]},treant:{forest:["Thorn Treant"]},golem:{cave:["Stone Golem"]},undead:{special:["Bone Rattler"]},mimic:{special:["Crystal Mimic"]}
+};
+function enemyByName(name){return enemies.find(e=>e[0]===name)}
+
+let worldMap=["wwwwwwwwwwwwwwwwwwwwwwwwwwww","wggggggggggggggggggggggggggw","wggfffgffggggggwggggmmgmmggw","wggffgfffggggggwgggmmgmmgggw","wggfgfffgggggggwgggmgmmgmggw","wgggfffgfggglggwggggmmgmmggw","wggfffgffggggggwgggggggggggw","wggffgfffggggggwggggfgffffgw","wggggggtrrrrrrrwggggffffgfgw","wgggggggggggggrwggggffgfffgw","wgggggggggggggrrrrrrrrrffggw","wgggggggggggggggwgggffrgffgw","wgggggggggggggggwgggfgrfffgw","wgggggggggggggggwgggffcfgfgw","wgggggggggggggggwgggffgfffgw","wgggggggggggggggwggggggggggw","wgggmgmmgmmgggggwggggggggggw","wggggmmgmmggggggwglggggggggw","wgggmmgmmgmgggggwggggggggggw","wgggmgmmgmmgggggwggggggggggw","wggggggggggggggggggggggggggw","wwwwwwwwwwwwwwwwwwwwwwwwwwww"];
+let townMap=["############################","############################","##........................##","##.#####..#####..###########","##.#####..#####..###########","##.#####..#####..###########","##.##I##..##S##..##W###A####","##........................##","##...............N........##","##..........Q.F...........##","##........................##","##........n.......n.......##","##.######..........######.##","##.######..........######.##","##.######.....N....######.##","##.######..........######.##","##.##H###..........##H###.##","##........................##","##........................##","##............E...........##","############################","############################"];
+let caveMap=["############################","############################","############################","#######################B####","#######################.####","#######################.####","#################...L...####","#################.##########","############T..##.....######","########...###.##.###L######","########.#........###.######","#####....#.###.######.######","#####.####.....######T######","#####.####.#################","###........#################","###.###.####################","###.###.####################","###.###.....T###############","###.########################","###E########################","############################","############################"];
+const shopMap=["############################","############################","############################","############################","#####..................#####","#####..................#####","#####.........K........#####","#####..................#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..................#####","#####..................#####","#####..................#####","#####.........E........#####","############################","############################","############################"];
+function defGame(){return{gold:120,steps:0,area:"overworld",x:8,y:8,items:{Potion:5,Ether:1,"Smoke Bomb":1},inventory:["Iron Sword","Old Staff","Oak Club","Slingshot","Cloth Tunic","Cloth Tunic","Cloth Tunic","Cloth Tunic"],bossDead:false,crystal:false,localQuest:"not_started",openedChests:{},shopType:"",lastWorldX:8,lastWorldY:8,party:[
 {name:"Arin",class:"Fighter",level:1,xp:0,next:30,baseHP:56,hp:56,baseMP:0,mp:0,baseAtk:12,baseDef:5,weapon:"Iron Sword",armor:"Cloth Tunic",spells:["Power Slash"]},
 {name:"Nyx",class:"Dark Mage",level:1,xp:0,next:30,baseHP:34,hp:34,baseMP:5,mp:5,baseAtk:5,baseDef:2,weapon:"Old Staff",armor:"Cloth Tunic",spells:["Shadow Spark","Poison Puff"]},
 {name:"Luma",class:"Cleric",level:1,xp:0,next:30,baseHP:42,hp:42,baseMP:5,mp:5,baseAtk:6,baseDef:4,weapon:"Oak Club",armor:"Cloth Tunic",spells:["Heal","Bless"]},
@@ -2559,6 +2544,11 @@ function normalizeGame(){
     game.heroGearMigrated=true;
   }
   if(typeof game.gold!=="number")game.gold=120;
+  if(!game.localQuest)game.localQuest=game.bossDead?"ready":"not_started";
+  if(!game.openedChests||typeof game.openedChests!=="object")game.openedChests={};
+  if(typeof game.shopType!=="string")game.shopType="";
+  if(typeof game.lastWorldX!=="number")game.lastWorldX=8;
+  if(typeof game.lastWorldY!=="number")game.lastWorldY=8;
 }
 
 normalizeGame();
@@ -2588,7 +2578,7 @@ function loadFromSlot(n){
   saveGame();
   document.body.classList.remove("titleMode");
   overlay.style.display="none";
-  startMap(game.area==="town"?"town":game.area==="dungeon"?"dungeon":"overworld");
+  startMap(game.area==="town"?"town":game.area==="dungeon"?"dungeon":String(game.area).startsWith("shop_")?game.area:"overworld");
   toastMsg("Loaded Slot "+n+".");
 }
 function deleteSaveSlot(n){
@@ -2642,42 +2632,38 @@ function resize(){let r=canvas.getBoundingClientRect();dpr=Math.min(2,Math.max(1
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>toast.classList.remove("show"),1500)}function ban(m){banner.textContent=m;banner.classList.add("show");clearTimeout(banner.t);banner.t=setTimeout(()=>banner.classList.remove("show"),1300)}
 
 function currentGoal(){
-  if(game.bossDead||game.crystal)return "Crystal Restored";
-  if(game.area==="town")return "Prepare Party";
-  if(game.area==="dungeon")return "Defeat Boss";
-  return "Find Cave";
+  if(game.localQuest==="done")return "Starbrook Safe";
+  if(game.localQuest==="ready"||game.bossDead)return "Return to Mira";
+  if(game.localQuest==="accepted")return "Investigate Thorn Cave";
+  if(game.area==="town")return "Talk to Warden Mira";
+  if(game.area==="dungeon")return "Explore the Branches";
+  if(String(game.area).startsWith("shop_"))return "Speak to Shopkeeper";
+  return "Follow the East Road";
 }
 function currentTileName(){
   let t=terrain(game.x,game.y);
-  if(game.area==="overworld")return t==="t"?"Town":t==="c"?"Cave":"Explore";
-  if(game.area==="dungeon")return t==="B"?"Boss":t==="E"?"Exit":"Cave";
+  if(game.area==="overworld")return t==="t"?"Starbrook":t==="c"?"Thorn Cave":t==="r"?"East Road":t==="b"?"Willow Bridge":t==="f"?"Forest":t==="l"?"Landmark":"Meadow";
+  if(game.area==="dungeon")return t==="B"?"Deep Roots":t==="E"?"Cave Mouth":t==="T"?"Treasure":t==="L"?"Root Marker":"Thorn Cave";
   if(game.area==="town"){
-    if(t==="I")return "Inn";
-    if(t==="S")return "Item Shop";
-    if(t==="W")return "Weapon Shop";
-    if(t==="A")return "Armor Shop";
-    if(t==="E")return "Town Gate";
-    return "Town";
+    if(t==="I")return "Willow Rest Inn";if(t==="S")return "Moonpetal Remedies";if(t==="W")return "Sunleaf Armory";if(t==="A")return "Brookstone Outfitters";if(t==="Q")return "Warden Mira";if(t==="F")return "Starbrook Spring";if(t==="E")return "South Gate";if(t==="N"||t==="n")return "Townsfolk";return "Starbrook";
   }
+  if(String(game.area).startsWith("shop_"))return t==="K"?"Shopkeeper":t==="E"?"Exit":shopName(game.shopType);
   return "Explore";
 }
 function placeName(){
-  if(game.area==="overworld")return "Meadowvale";
-  if(game.area==="town")return "Starbrook";
-  if(game.area==="dungeon")return "Thorn Cave";
-  return "Unknown";
+  if(game.area==="overworld")return "Meadowvale";if(game.area==="town")return "Starbrook";if(game.area==="dungeon")return "Thorn Cave";if(String(game.area).startsWith("shop_"))return shopName(game.shopType);return "Unknown";
 }
-
-function hud(){
-  ui.gold.textContent=game.area==="overworld"?"World Map":game.area==="town"?"Town":game.area==="dungeon"?"Dungeon":"Map";
-  ui.steps.textContent=placeName();
-  ui.area.textContent=currentTileName();
-  ui.item.textContent=currentGoal();
-  ui.place.textContent=currentTileName()==="Town"||currentTileName()==="Explore"||currentTileName()==="Cave"?placeName():currentTileName();
+function hud(){ui.gold.textContent=game.area==="overworld"?"World Map":game.area==="town"?"Town":game.area==="dungeon"?"Dungeon":String(game.area).startsWith("shop_")?"Interior":"Map";ui.steps.textContent=placeName();ui.area.textContent=currentTileName();ui.item.textContent=currentGoal();ui.place.textContent=currentTileName();}
+function newGame(){game=defGame();normalizeGame();startMap("overworld");saveGame();toastMsg("New adventure started.");}
+function legacyContinueGame(){return startTitleContinue()}function legacyNewGame(){return startTitleNewGame()}window.newGame=legacyNewGame;window.continueGame=startTitleContinue;
+function startMap(area,opts={}){
+  document.body.classList.remove("titleMode");document.body.classList.remove("battleMode");hideBattleCommandPanel&&hideBattleCommandPanel();mode="map";running=true;overlay.style.display="none";battleBtns.style.display="none";game.area=area;
+  if(area==="town"){game.x=14;game.y=18}else if(area==="dungeon"){game.x=3;game.y=19}else if(String(area).startsWith("shop_")){game.x=14;game.y=17}
+  if(opts.x!=null)game.x=opts.x;if(opts.y!=null)game.y=opts.y;
+  ban(area==="town"?"Starbrook":area==="dungeon"?"Thorn Cave":String(area).startsWith("shop_")?shopName(game.shopType):"Meadowvale");
+  playerDraw.x=game.x;playerDraw.y=game.y;playerDraw.fromX=game.x;playerDraw.fromY=game.y;playerDraw.toX=game.x;playerDraw.toY=game.y;playerDraw.start=performance.now();playerDraw.moving=false;playerDraw.ready=true;camDraw.ready=false;hud();syncScreenControls&&syncScreenControls();saveGame();
 }
-function newGame(){game=defGame();normalizeGame();startMap("overworld");saveGame();toastMsg("New adventure started.");}function legacyContinueGame(){return startTitleContinue()}function legacyNewGame(){return startTitleNewGame()}window.newGame=legacyNewGame;window.continueGame=startTitleContinue;
-function startMap(area){document.body.classList.remove("titleMode");document.body.classList.remove("battleMode");hideBattleCommandPanel&&hideBattleCommandPanel();mode="map";running=true;overlay.style.display="none";battleBtns.style.display="none";game.area=area;if(area==="town"){game.x=5;game.y=7}else if(area==="dungeon"){game.x=3;game.y=10}ban(area==="town"?"Starbrook Town":area==="dungeon"?"Thorn Cave":"Meadowvale");playerDraw.x=game.x;playerDraw.y=game.y;playerDraw.fromX=game.x;playerDraw.fromY=game.y;playerDraw.toX=game.x;playerDraw.toY=game.y;playerDraw.start=performance.now();playerDraw.moving=false;playerDraw.ready=true;camDraw.ready=false;hud();syncScreenControls&&syncScreenControls()}
-function showHow(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Instructions</h2><ul><li>Town shops now open menus. Press OK on Inn, Item Shop, Weapon Shop, or Armor Shop.</li><li>Equipment changes ATK, DEF, and magic power. Open Party / Equip.</li><li>Magic opens a spell list in battle. Dark Mage harms; Cleric heals and buffs.</li><li>Inventory can use Potions and Ethers outside battle.</li><li>Future promotions: Fighter→Knight, Dark Mage→Battle Wizard, Cleric→Priest, Tinkerer→War Engineer.</li></ul><button onclick="continueGame()">Back</button></div>`}window.showHow=showHow;
+function showHow(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel"><h2>Exploring Meadowvale</h2><ul><li>Follow roads and landmarks to Starbrook and Thorn Cave.</li><li>In Starbrook, walk onto doors or NPCs and press OK.</li><li>Shops are physical interiors: enter, approach the shopkeeper, press OK, then leave through the door.</li><li>Warden Mira starts the local quest. Thorn Cave has branches and treasure dead ends.</li><li>Common creatures dominate the meadow and forest. Stranger undead/mimic threats are reserved for deeper cave spaces.</li><li>Use Weapon / Armor menus to compare and equip purchased gear.</li></ul><button onclick="closeOverlay()">Back</button></div>`}window.showHow=showHow;
 
 function heroStatusText(h){
   if(h.hp<=0)return "KO";
@@ -2720,6 +2706,8 @@ function showMenu(){
           <button class="menuBtn" onclick="showGearMenu('weapon','equip')">Weapon</button>
           <button class="menuBtn" onclick="showGearMenu('armor','equip')">Armor</button>
           <button class="menuBtn" onclick="showStatus()">Status</button>
+          <button class="menuBtn" onclick="showQuestLog()">Quest Log</button>
+          <button class="menuBtn" onclick="showRegionGuide()">Region</button>
           <button class="menuBtn" onclick="showSaveSlots('save')">Save</button>
           <button class="menuBtn" onclick="showConfig()">Config</button>
           <button class="menuBtn" onclick="closeOverlay()">Close</button>
@@ -2729,6 +2717,12 @@ function showMenu(){
     </div>
   </div>`;
 }
+function showQuestLog(){
+  const state=game.localQuest||"not_started";const text=state==="not_started"?"Talk to Warden Mira beside Starbrook Spring.":state==="accepted"?"Roots on the East Road — investigate Thorn Cave beyond Willow Bridge.":state==="ready"?"Roots on the East Road — the threat is defeated. Return to Mira.":"Roots on the East Road — Complete. Starbrook's road is safe.";
+  overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>Quest Log</h2><div class="commandBox"><strong>Roots on the East Road</strong><br>${text}</div><button class="menuBtn" onclick="showMenu()">Back</button></div>`;
+}
+function showRegionGuide(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>Meadowvale Region</h2><div class="commandBox"><strong>Biome:</strong> green meadow, willow woods, river road, and root-carved cave.<br><br><strong>Common outdoors:</strong> Meadow Slimes, Briar Wolves, Green Goblins, Forest Spiders, Thorn Treants.<br><strong>Thorn Cave:</strong> Cave Bats, Spiders, Stone Golems. Bone Rattlers appear only deeper inside; Crystal Mimics are special treasure threats.<br><br><strong>Route:</strong> Starbrook → East Road → Willow Bridge → Thorn Cave.</div><button class="menuBtn" onclick="showMenu()">Back</button></div>`}
+window.showQuestLog=showQuestLog;window.showRegionGuide=showRegionGuide;
 function closeOverlay(){overlay.style.display="none";syncScreenControls&&syncScreenControls()}window.closeOverlay=closeOverlay;window.showMenu=showMenu;
 
 function equippedBy(item){
@@ -3120,13 +3114,6 @@ function gearListForHero(heroIndex,slot,mode='equip',selectedHero=-1,selectedIte
     return `<button class="${cls}" onclick="event.stopPropagation();showGearMenu('${slot}','${mode}',${heroIndex},'${encodeURIComponent(it)}')">${prefix}${it} ${tag}</button>`;
   }).join('')}</div>`;
 }
-function phase3GearStatPreview(h,slot,item){
-  const g=gear[item];if(!h||!g)return "";
-  const before={atk:stat(h,"atk"),def:stat(h,"def"),matk:stat(h,"matk")},old=h[slot];
-  h[slot]=item;const after={atk:stat(h,"atk"),def:stat(h,"def"),matk:stat(h,"matk")};h[slot]=old;
-  const fmt=(label,a,b)=>`<span class="${phase3DeltaClass(b-a)}">${label} ${a}→${b}</span>`;
-  return `${fmt("ATK",before.atk,after.atk)} • ${fmt("DEF",before.def,after.def)} • ${fmt("MAG",before.matk,after.matk)}`;
-}
 function gearActionHint(slot,mode,selectedHero,selectedItem){
   if(selectedHero<0||!selectedItem){
     if(mode==='equip')return `Tap a held ${slot}, then tap EQUIP. Each hero can hold unlimited gear for their class.`;
@@ -3134,7 +3121,9 @@ function gearActionHint(slot,mode,selectedHero,selectedItem){
     return `Tap equipped gear, then tap DROP to unequip it but keep it held by that hero.`;
   }
   const h=game.party[selectedHero];
-  if(mode==='equip')return `${h.name}: ${h[slot]||"None"} → <strong>${selectedItem}</strong><br>${phase3GearStatPreview(h,slot,selectedItem)}<br>Tap EQUIP to confirm.`;
+  const g=gear[selectedItem]||{};
+  const stats=g?`ATK ${g.atk||0} DEF ${g.def||0} MAG ${g.matk||0}`:'';
+  if(mode==='equip')return `${h.name} selected ${selectedItem}. ${stats}. Tap EQUIP to equip it.`;
   if(mode==='trade')return `${h.name} selected ${selectedItem}. Choose Move to hold it, or Move + Equip to equip it on the target hero.`;
   return `${h.name} selected ${selectedItem}. Tap DROP to unequip it but keep it in ${h.name}'s gear space.`;
 }
@@ -3441,86 +3430,65 @@ function useItemOnTarget(item,index,context='outside'){
 window.useItemOnTarget=useItemOnTarget;
 
 function useItemOutside(k){ if(k==='Potion'||k==='Ether') return chooseItemTarget(k,'outside'); toastMsg('Save this for battle.'); showBag('items',k,'use'); }window.useItemOutside=useItemOutside;
-function terrain(x,y){if(x<0||y<0||x>=28||y>=22)return "w"; if(game.area==="town")return townMap[y]?.[x]||"#"; if(game.area==="dungeon")return caveMap[y]?.[x]||"#"; return worldMap[y]?.[x]||"g"}function pass(t){return !["w","#"].includes(t)}
+function caveChestKey(){return game.x+","+game.y}
+function terrain(x,y){
+  if(x<0||y<0||x>=28||y>=22)return "w";
+  let t;if(game.area==="town")t=townMap[y]?.[x]||"#";else if(game.area==="dungeon")t=caveMap[y]?.[x]||"#";else if(String(game.area).startsWith("shop_"))t=shopMap[y]?.[x]||"#";else t=worldMap[y]?.[x]||"g";
+  if(game.area==="dungeon"&&t==="T"&&game.openedChests&&game.openedChests[x+","+y])return "o";
+  return t;
+}
+function pass(t){return !["w","#","m","s","="].includes(t)}
+function shopName(type){return type==="weapon"?"Sunleaf Armory":type==="armor"?"Brookstone Outfitters":type==="item"?"Moonpetal Remedies":"Willow Rest Inn"}
+function compactListHtml(rows,cat,selected,handler){return `<div class="listGrid">${rows.map(r=>`<button class="itemRow ${r.name===selected?"selected":""}" onclick="${handler}('${r.type||cat}','${String(r.name).replace(/'/g,"\\'")}')"><span>${r.name}</span><span>${r.count??""}</span></button>`).join("")}</div>`}
+function enterShop(type){game.shopType=type;startMap("shop_"+type);toastMsg("Entered "+shopName(type)+".")}
+function leaveShop(){game.shopType="";startMap("town",{x:14,y:10});toastMsg("Back in Starbrook.")}
 function move(dx,dy){if(mode!=="map"||overlay.style.display==="flex"||moveLock>0)return;
-if(dx||dy){playerDraw.facingX=dx>0?1:dx<0?-1:0;playerDraw.facingY=dy>0?1:dy<0?-1:0;}
-if(game.area==="town"&&((game.x<=4&&dx<0)||(game.x>=15&&dx>0)||(game.y<=2&&dy<0)||(game.y>=10&&dy>0))){game.x=5;game.y=10;playerDraw.x=game.x;playerDraw.y=game.y;camDraw.ready=false;startMap("overworld");toastMsg("Returned to Meadowvale.");saveGame();return}
-let nx=game.x+dx,ny=game.y+dy,t=terrain(nx,ny);
-if(!pass(t)){toastMsg("Blocked.");return}const nowMove=performance.now();
-playerDraw.fromX=playerDraw.x;
-playerDraw.fromY=playerDraw.y;
-game.x=nx;game.y=ny;
-playerDraw.toX=game.x;
-playerDraw.toY=game.y;
-playerDraw.start=nowMove;
-playerDraw.dur=380;
-playerDraw.moving=true;
-game.steps++;
-moveLock=18;if(game.area==="overworld"){if(t==="t"){startMap("town");return} if(t==="c"){startMap("dungeon");return} if((t==="g"||t==="f"||t==="m")&&Math.random()<.13)startRandomBattle(t)}else if(game.area==="town"){townHint(t)}else if(game.area==="dungeon"){if(t==="B"){toastMsg(game.bossDead?"The crystal roots are calm.":"Boss roots: press OK to fight.");return} if(t==="E"){toastMsg("Cave exit: press OK to leave.");return} if(t==="."&&Math.random()<.18)startRandomBattle("cave")}hud();saveGame()}
-function townHint(t){hud();if(t==="I")toastMsg("Inn: press OK.");if(t==="S")toastMsg("Item shop: press OK.");if(t==="W")toastMsg("Weapon shop: press OK.");if(t==="A")toastMsg("Armor shop: press OK.");if(t==="E")toastMsg("Town gate: press OK.")}
-
-function itemCount(name){
-  return game.inventory.filter(x=>x===name).length;
+  if(dx||dy){playerDraw.facingX=dx>0?1:dx<0?-1:0;playerDraw.facingY=dy>0?1:dy<0?-1:0;}
+  let nx=game.x+dx,ny=game.y+dy,t=terrain(nx,ny);if(!pass(t)){toastMsg("Blocked.");return}
+  playerDraw.fromX=playerDraw.x;playerDraw.fromY=playerDraw.y;game.x=nx;game.y=ny;playerDraw.toX=game.x;playerDraw.toY=game.y;playerDraw.start=performance.now();playerDraw.dur=300;playerDraw.moving=true;game.steps++;moveLock=18;
+  if(game.area==="overworld"){
+    if(t==="t"){game.lastWorldX=nx;game.lastWorldY=ny;startMap("town");return}
+    if(t==="c"){game.lastWorldX=nx;game.lastWorldY=ny;startMap("dungeon");return}
+    if(["g","r","b","f"].includes(t)&&Math.random()<(t==="f"?.15:.10))startRandomBattle(t);
+  }else if(game.area==="town")townHint(t);else if(game.area==="dungeon"){
+    if(t==="B")toastMsg(game.bossDead?"The roots are calm.":"The deepest roots twist ahead. Press OK.");
+    else if(t==="T")toastMsg("Treasure chest — press OK.");else if(t==="L")toastMsg("Old root-carvings mark the way.");else if(t==="."&&Math.random()<.15)startRandomBattle("cave");
+  }else if(String(game.area).startsWith("shop_")){if(t==="K")toastMsg("Shopkeeper — press OK.");if(t==="E")toastMsg("Door — press OK to leave.");}
+  hud();saveGame();
 }
-function shopPreviewForItem(type,n){
-  if(type==="item")return "Consumable item";
-  let g=gear[n]; if(!g)return "";
-  let users=game.party.filter(h=>g.class.includes(h.class));
-  if(!users.length)return `No one can use this.`;
-  return users.map(h=>{
-    let marker=(h[g.slot]===n)?"✅ equipped":"";
-    return `${h.name}: ${deltaText(h,n)} ${marker}`;
-  }).join("<br>");
+function townHint(t){hud();if(t==="I")toastMsg("Willow Rest Inn — press OK to enter.");if(t==="S")toastMsg("Moonpetal Remedies — press OK to enter.");if(t==="W")toastMsg("Sunleaf Armory — press OK to enter.");if(t==="A")toastMsg("Brookstone Outfitters — press OK to enter.");if(t==="Q")toastMsg("Warden Mira — press OK to talk.");if(t==="N"||t==="n")toastMsg("Townsfolk — press OK to talk.");if(t==="E")toastMsg("South Gate — press OK to leave.")}
+function talkTownNpc(t){
+  if(t==="Q"){
+    if(game.localQuest==="not_started"){game.localQuest="accepted";saveGame();dialogue("Warden Mira","Thorny roots are choking the East Road. Please inspect Thorn Cave beyond Willow Bridge. If you stop the source, come back to me.");return}
+    if((game.localQuest==="accepted"&&game.bossDead)||game.localQuest==="ready"){game.localQuest="done";game.gold+=75;game.items.Potion=(game.items.Potion||0)+2;game.items.Ether=(game.items.Ether||0)+1;game.items["Starbrook Crest"]=1;saveGame();dialogue("Warden Mira","The road is safe again. Take 75 G, two Potions, an Ether, and the Starbrook Crest. Meadowvale owes you.");return}
+    if(game.localQuest==="done"){dialogue("Warden Mira","Travelers are using the East Road again. Future regions will have troubles of their own.");return}
+    dialogue("Warden Mira","Follow the East Road across Willow Bridge. Thorn Cave is beyond the eastern woods.");return;
+  }
+  if(t==="N"){dialogue("Rowan","The meadow creatures are ordinary enough. The strange undead only show up deeper underground.");return}
+  if(t==="n"){const lines=["Sunleaf Armory has weapons for every member of your party.","Dead ends in Thorn Cave sometimes hide worthwhile treasure.","The spring is Starbrook's landmark. Every traveler knows the road from here."];dialogue("Townsfolk",lines[(game.x+game.y)%lines.length]);return}
+  if(t==="F"){dialogue("Starbrook Spring","Clear water bubbles beneath an old willow. The town was built around this spring.");return}
+  if(t==="H"){dialogue("Resident","A small home with a warm hearth. Nothing urgent here today.");return}
 }
+function dialogue(name,text){overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>${name}</h2><div class="commandBox"><p>${text}</p></div><button class="menuBtn" onclick="closeOverlay();hud()">OK</button></div>`}
+function townAction(t){if(t==="E"){startMap("overworld",{x:game.lastWorldX||7,y:(game.lastWorldY||8)+1});return}if(t==="I")enterShop("inn");else if(t==="S")enterShop("item");else if(t==="W")enterShop("weapon");else if(t==="A")enterShop("armor");else if(["Q","N","n","F","H"].includes(t))talkTownNpc(t);else toastMsg("Nothing to use here.")}
+function shopInteriorAction(t){if(t==="E"){leaveShop();return}if(t==="K"){shop(game.shopType||"item");return}toastMsg("Browse the shelves or speak with the shopkeeper.")}
+function openCaveChest(){const key=caveChestKey();if(game.openedChests[key]){toastMsg("The chest is empty.");return}game.openedChests[key]=true;let reward="";if(key==="12,17"){game.gold+=45;reward="45 G"}else if(key==="12,8"){game.items.Ether=(game.items.Ether||0)+1;reward="Ether"}else{let h=game.party.find(x=>gear["Leather Vest"].class.includes(x.class));if(h){if(!Array.isArray(h.gearBag))h.gearBag=[];h.gearBag.push("Leather Vest")}else game.inventory.push("Leather Vest");reward="Leather Vest"}saveGame();toastMsg("Treasure: "+reward+"!")}
+function caveAction(t){if(t==="E"){startMap("overworld",{x:game.lastWorldX||22,y:Math.max(1,(game.lastWorldY||13)-1)});return}if(t==="T"||t==="o"){openCaveChest();return}if(t==="L"){dialogue("Root Marker","Ancient cuts in the stone point toward the deep root chamber. Side tunnels branch away from the main path.");return}if(t==="B"){if(game.bossDead){toastMsg("The crystal roots are calm.");return}startBattle([bossDef.slice()],true);if(battle)battle.env="cave";return}toastMsg("The cave echoes through branching tunnels.")}
 
-
+function itemCount(name){return game.party.reduce((n,h)=>n+((h.gearBag||[]).filter(x=>x===name).length),0)+game.inventory.filter(x=>x===name).length}
+function shopPreviewForItem(type,n){if(type==="item")return "Consumable item";let g=gear[n];if(!g)return "";let users=game.party.filter(h=>g.class.includes(h.class));if(!users.length)return `No one can use this.`;return users.map(h=>{let marker=(h[g.slot]===n)?"✅ equipped":"";return `${h.name}: ${deltaText(h,n)} ${marker}`}).join("<br>")}
 function shopRows(type){
   if(type==="item")return [["Potion",10],["Ether",25],["Smoke Bomb",18]].map(([name,cost])=>({name,cost,count:game.items[name]||0}));
-  return Object.entries(gear).filter(([n,g])=>g.slot===type&&g.cost>0).map(([name,g])=>({name,cost:g.cost,count:itemCount(name)}));
+  const regional=type==="weapon"?["Bronze Sword","Hex Wand","Blessed Mace","Crossbow","Spark Blade"]:["Leather Vest","Mage Robe","Gear Coat","Chain Mail"];
+  return regional.filter(n=>gear[n]&&gear[n].slot===type).map(name=>({name,cost:gear[name].cost,count:itemCount(name)}));
 }
 function selectShopItem(type,name){shop(type,name)}
-function shopDetail(type,name){
-  if(!name)return "Choose an item.";
-  if(type==="item")return invDescription("items",name);
-  let cat=type==="weapon"?"weapons":"armor";
-  return `${invDescription(cat,name)}<br><br><strong>Preview by hero:</strong><br>${shopPreviewForItem(type,name)}`;
-}
-function shopBuyButton(type,name){
-  if(!name)return "";
-  let rows=shopRows(type),r=rows.find(x=>x.name===name);
-  if(!r)return "";
-  return `<button class="menuBtn miniCmd" onclick="buyShop('${type}','${name}',${r.cost})">Buy — ${r.cost} G</button>`;
-}
+function shopDetail(type,name){if(!name)return "Choose an item.";if(type==="item")return invDescription("items",name);let cat=type==="weapon"?"weapons":"armor";return `${invDescription(cat,name)}<br><br><strong>Stat change:</strong><br>${shopPreviewForItem(type,name)}`}
+function shopBuyButton(type,name){if(!name)return "";let r=shopRows(type).find(x=>x.name===name);if(!r)return "";return `<button class="menuBtn miniCmd" onclick="buyShop('${type}','${name}',${r.cost})">Buy — ${r.cost} G</button>`}
 window.selectShopItem=selectShopItem;
-
-function shop(type,selected=null){
-  let title=type==="item"?"Item Shop":type==="weapon"?"Weapon Shop":type==="armor"?"Armor Shop":"Inn";
-  ui.place.textContent=title;
-  ui.item.textContent="Shopping";
-  if(type==="inn"){
-    overlay.style.display="flex";
-    overlay.innerHTML=`<div class="panel classic"><h2>Starbrook Inn</h2><div class="commandBox">Restores all HP/MP for 25 gold.<br>Gold: ${game.gold} G</div><button class="menuBtn" onclick="buyInn()">Rest - 25 G</button><button class="menuBtn" onclick="closeOverlay();hud()">Leave</button></div>`;
-    return;
-  }
-  let rows=shopRows(type);
-  if(!selected&&rows.length)selected=rows[0].name;
-  let cat=type==="item"?"items":type==="weapon"?"weapons":"armor";
-  overlay.style.display="flex";
-  overlay.innerHTML=`<div class="panel classic">
-    <h2>${title}</h2>
-    <div class="commandBox"><div class="statLine"><span>Gold</span><span>${game.gold} G</span></div></div>
-    <div class="twoPane">
-      <div>${phase3ShopListHtml(rows,type,selected)}</div>
-      <div class="detailBox"><strong>${selected||"No Selection"}</strong><br>${shopDetail(type,selected)}<div style="margin-top:8px">${shopBuyButton(type,selected)}</div></div>
-    </div>
-    <button class="menuBtn" onclick="closeOverlay();hud()">Leave</button>
-  </div>`;
-}
-function buyInn(){if(game.gold>=25){game.gold-=25;game.party.forEach(h=>{h.hp=stat(h,"maxHP");h.mp=stat(h,"maxMP")});toastMsg("Rested at the inn.");saveGame();shop("inn")}else toastMsg("Need 25 gold.")}window.buyInn=buyInn;
-function buyShop(type,n,cost){if(game.gold<cost){toastMsg("Need more gold.");return}game.gold-=cost;if(type==="item")game.items[n]=(game.items[n]||0)+1;else game.inventory.push(n);saveGame();shop(type,n);toastMsg("Bought "+n)}window.shop=shop;window.buyShop=buyShop;
-function townAction(t){if(t==="E"){game.x=8;game.y=8;startMap("overworld");return}if(t==="I")shop("inn");else if(t==="S")shop("item");else if(t==="W")shop("weapon");else if(t==="A")shop("armor");else toastMsg("Nothing to use here.")}
-function caveAction(t){if(t==="E"){game.x=22;game.y=13;startMap("overworld");return}if(t==="B"){game.bossDead?toastMsg("The crystal roots are calm."):startBattle([bossDef.slice()],true);return}toastMsg("The cave echoes...")}
-
+function shop(type,selected=null){let title=shopName(type);ui.place.textContent=title;ui.item.textContent="Shopping";if(type==="inn"){overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>Willow Rest Inn</h2><div class="commandBox">Restores all HP/MP for 25 G.<br>Gold: ${game.gold} G</div><button class="menuBtn" onclick="buyInn()">Rest — 25 G</button><button class="menuBtn" onclick="closeOverlay();hud()">Back to Interior</button></div>`;return}let rows=shopRows(type);if(!selected&&rows.length)selected=rows[0].name;let cat=type==="item"?"items":type==="weapon"?"weapons":"armor";overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>${title}</h2><div class="commandBox"><div class="statLine"><span>Gold</span><span>${game.gold} G</span></div><small>Purchased gear is placed with the first compatible hero so you can equip it immediately.</small></div><div class="twoPane"><div>${compactListHtml(rows.map(r=>({name:r.name,count:r.cost,type})),cat,selected,"selectShopItem")}</div><div class="detailBox"><strong>${selected||"No Selection"}</strong><br>${shopDetail(type,selected)}<div style="margin-top:8px">${shopBuyButton(type,selected)}</div></div></div><button class="menuBtn" onclick="closeOverlay();hud()">Back to Interior</button></div>`}
+function buyInn(){if(game.gold>=25){game.gold-=25;game.party.forEach(h=>{h.hp=stat(h,"maxHP");h.mp=stat(h,"maxMP")});toastMsg("Rested at Willow Rest.");saveGame();shop("inn")}else toastMsg("Need 25 gold.")}window.buyInn=buyInn;
+function buyShop(type,n,cost){if(game.gold<cost){toastMsg("Need more gold.");return}game.gold-=cost;if(type==="item")game.items[n]=(game.items[n]||0)+1;else{let g=gear[n],h=game.party.find(x=>g.class.includes(x.class));if(h){if(!Array.isArray(h.gearBag))h.gearBag=[];h.gearBag.push(n)}else game.inventory.push(n)}saveGame();shop(type,n);toastMsg("Bought "+n)}window.shop=shop;window.buyShop=buyShop;
 function battleCommandPanel(){
   return document.getElementById("battleCmdPanel");
 }
@@ -3626,15 +3594,20 @@ function updateBattleCommandPanel(){
   if(mode==="battle")showBattleCommandPanel();
 }
 function startRandomBattle(t){
-  let pool=t==="cave"?[1,2,3,4]:t==="m"?[2,3]:[0,1,2],
-      n=t==="cave"?2:Math.random()<.5?1:2,foes=[];
-  for(let i=0;i<n;i++)foes.push(enemies[pool[Math.floor(Math.random()*pool.length)]].slice());
-  startBattle(foes,false);
+  let names=[];
+  if(t==="cave"||game.area==="dungeon"){
+    names=["Cave Bat","Forest Spider","Stone Golem"];
+    if(game.y<9)names.push("Bone Rattler");
+  }else if(t==="f")names=["Briar Wolf","Forest Spider","Thorn Treant"];
+  else names=["Meadow Slime","Briar Wolf","Green Goblin"];
+  const n=(game.area==="dungeon"||t==="f")?(Math.random()<.55?2:1):(Math.random()<.65?1:2),foes=[];
+  for(let i=0;i<n;i++){const base=enemyByName(names[Math.floor(Math.random()*names.length)]);if(base)foes.push(base.slice())}
+  startBattle(foes,false);if(battle)battle.env=game.area==="dungeon"?"cave":t==="f"?"forest":"meadow";
 }
 function startBattle(foes,boss){
   mode="battle";
   document.body.classList.add("battleMode");
-  battle={foes:foes||[],boss:!!boss,msg:boss?"The Thornroot Guardian blocks the crystal!":"Monsters appeared!",queue:[],selectHero:0,buffs:{},sleep:false,round:1,phase:"intro",activeHeroIndex:-1,activeEnemyIndex:-1,activeAction:null,actionStep:0,actionStepStarted:0,entryStart:performance.now(),victory:null};
+  battle={foes:foes||[],boss:!!boss,msg:boss?"The Thornroot Guardian blocks the crystal!":"Monsters appeared!",queue:[],selectHero:0,buffs:{},sleep:false,round:1,phase:"intro",activeHeroIndex:-1,activeEnemyIndex:-1,activeAction:null,actionStep:0,actionStepStarted:0,entryStart:performance.now(),victory:null,env:boss?"cave":(game.area==="dungeon"?"cave":"meadow")};
   battleBtns.style.display="none";overlay.style.display="none";hideBattleCommandPanel();battleSfx("start");ban(boss?"Boss Battle!":"Battle!");
   setTimeout(()=>{if(battle&&mode==="battle"&&!battle.victory)showBattleCommandPanel()},280);
 }
@@ -3922,7 +3895,7 @@ function enemyTurn(){
 function winBattle(){
   if(!battle||battle.victory)return;let xp=0,g=0;for(let e of battle.foes){xp+=e[4];g+=e[5]}const levelUps=[];game.gold+=g;
   game.party.forEach(h=>{if(h.hp>0){h.xp+=xp;while(h.xp>=h.next){h.xp-=h.next;h.level++;h.next=Math.round(h.next*1.55);h.baseHP+=9+Math.floor(Math.random()*4);h.hp=stat(h,"maxHP");h.baseAtk+=2;h.baseDef+=1;if(h.baseMP>0){h.baseMP++;h.mp=stat(h,"maxMP")}if(h.level===2&&h.class==="Dark Mage"&&!h.spells.includes("Sleep Hex"))h.spells.push("Sleep Hex");if(h.level===2&&h.class==="Cleric"&&!h.spells.includes("Guard Prayer"))h.spells.push("Guard Prayer");if(h.level===3&&h.class==="Dark Mage"&&!h.spells.includes("Night Bolt"))h.spells.push("Night Bolt");if(h.level===3&&h.class==="Cleric"&&!h.spells.includes("Life"))h.spells.push("Life");levelUps.push(`${h.name} Lv.${h.level}`);}}});
-  const wasBoss=!!battle.boss;if(wasBoss){game.bossDead=true;game.crystal=true;game.items["Star Crystal"]=1;}
+  const wasBoss=!!battle.boss;if(wasBoss){game.bossDead=true;game.crystal=true;game.items["Star Crystal"]=1;if(game.localQuest!=="done")game.localQuest="ready";}
   battle.phase="victory";battle.activeHeroIndex=-1;battle.activeEnemyIndex=-1;battle.activeAction=null;hideBattleCommandPanel();battle.victory={start:performance.now(),xp,gold:g,levelUps,boss:wasBoss};battleSfx("victory");
   game.party.forEach((h,i)=>{if(h.hp>0){const p=battleHeroBasePos(i);burst(p.x,p.y-18*dpr,"#fff38b",16)}});spawnBattleVfx("bless",W*.5,H*.39,"#fff38b",950,1.5);saveGame();
   setTimeout(()=>{if(!battle||!battle.victory)return;endBattle(wasBoss?`Victory! Meadow Crystal restored. +${xp} XP +${g} gold.`:`Victory! +${xp} XP +${g} gold.`)},wasBoss?1800:1550);
@@ -3987,8 +3960,6 @@ function drawMap(){
     }
   }
 
-  if(typeof drawPhase3MapEntities==="function")drawPhase3MapEntities(s,camDraw.x,camDraw.y);
-
   let px=(playerDraw.x-camDraw.x)*s;
   let py=(playerDraw.y-camDraw.y)*s;
 
@@ -4026,16 +3997,26 @@ function drawMap(){
   ctx.restore();
 }
 function drawTile(x,y,s,t){
-  let base=t==="w"?"#256fc7":t==="f"?"#1e8d44":t==="m"?"#7d6d62":t==="t"?"#d9b16f":t==="c"?"#57506f":t==="#"?"#22263c":t==="B"?"#2f9e55":t==="I"?"#ff86d9":t==="S"?"#47d66c":t==="W"?"#ffb23f":t==="A"?"#9ad0ff":t==="E"?"#e8d45c":"#4dbb4b";
+  const area=game.area;
+  let base="#4dbb4b";
+  if(area==="overworld")base=t==="w"?"#347fbd":t==="f"?"#267542":t==="m"?"#746c66":t==="r"?"#b99463":t==="b"?"#a97e50":t==="t"?"#d6b06e":t==="c"?"#514b5c":t==="l"?"#77924c":"#55a84c";
+  else if(area==="town")base=t==="#"?"#9a7557":t==="F"?"#67b7dc":t==="E"?"#d4b55e":"#c8b083";
+  else if(area==="dungeon")base=t==="#"?"#262838":t==="L"?"#55476a":t==="B"?"#355e3c":"#4a4656";
+  else base=t==="#"?"#6f5649":t==="s"?"#987353":t==="K"?"#d7aa66":t==="E"?"#d4b55e":"#b99a78";
   ctx.fillStyle=base;ctx.fillRect(x,y,s,s);
-  // richer 8-bit texture
-  if(t==="w"){ctx.strokeStyle="#7be7ff66";ctx.lineWidth=2*dpr;ctx.beginPath();ctx.moveTo(x+s*.15,y+s*.35);ctx.quadraticCurveTo(x+s*.5,y+s*.2,x+s*.85,y+s*.35);ctx.stroke();ctx.beginPath();ctx.moveTo(x+s*.1,y+s*.7);ctx.quadraticCurveTo(x+s*.5,y+s*.55,x+s*.9,y+s*.7);ctx.stroke();}
-  if(t==="g"||t==="f"){ctx.fillStyle=t==="f"?"#0d642d":"#2e9632";for(let i=0;i<4;i++){let gx=x+((i*13+game.steps*3)%Math.max(1,s));let gy=y+((i*17+7)%Math.max(1,s));ctx.fillRect(gx,gy,3*dpr,8*dpr)}}
-  if(t==="m"){ctx.fillStyle="#9a897a";ctx.beginPath();ctx.moveTo(x+s*.18,y+s*.72);ctx.lineTo(x+s*.45,y+s*.25);ctx.lineTo(x+s*.72,y+s*.72);ctx.fill();}
-  if(t==="#"){ctx.fillStyle="#394063";ctx.fillRect(x+s*.08,y+s*.15,s*.84,s*.18);ctx.fillRect(x+s*.08,y+s*.55,s*.84,s*.18)}
-  ctx.strokeStyle="#0005";ctx.strokeRect(x,y,s,s);
-  let icon=t==="t"?"🏘️":t==="c"?"🕳️":t==="I"?"🏨":t==="S"?"🧪":t==="W"?"⚔️":t==="A"?"🛡️":t==="B"?"🌳":t==="E"?"🚪":"";
-  if(icon){ctx.font=`${s*.52}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(icon,x+s/2,y+s/2)}
+  if(area==="overworld"){
+    if(t==="w"){ctx.strokeStyle="#8de8ff88";ctx.lineWidth=2*dpr;ctx.beginPath();ctx.moveTo(x+s*.1,y+s*.38);ctx.quadraticCurveTo(x+s*.5,y+s*.23,x+s*.9,y+s*.38);ctx.stroke();}
+    if(t==="g"||t==="f"){ctx.fillStyle=t==="f"?"#174f2d":"#357f35";for(let i=0;i<3;i++)ctx.fillRect(x+(i*11+7)%s,y+(i*15+9)%s,2*dpr,7*dpr)}
+    if(t==="r"){ctx.fillStyle="#d0ad77";ctx.fillRect(x,y+s*.22,s,s*.56)}
+    if(t==="b"){ctx.fillStyle="#9c7147";ctx.fillRect(x,y+s*.15,s,s*.7);ctx.strokeStyle="#6d4d32";for(let k=0;k<4;k++){ctx.beginPath();ctx.moveTo(x+k*s/4,y+s*.15);ctx.lineTo(x+k*s/4,y+s*.85);ctx.stroke()}}
+    if(t==="m"){ctx.fillStyle="#a39588";ctx.beginPath();ctx.moveTo(x+s*.12,y+s*.8);ctx.lineTo(x+s*.5,y+s*.18);ctx.lineTo(x+s*.86,y+s*.8);ctx.fill()}
+  }
+  if(area==="town"&&t==="#"){ctx.fillStyle="#b88b63";ctx.fillRect(x+s*.08,y+s*.08,s*.84,s*.84);ctx.fillStyle="#77513e";ctx.fillRect(x+s*.08,y+s*.08,s*.84,s*.22)}
+  if(area==="dungeon"&&t==="#"){ctx.strokeStyle="#3e4055";ctx.strokeRect(x+s*.1,y+s*.1,s*.8,s*.8)}
+  if(String(area).startsWith("shop_")&&t==="s"){ctx.fillStyle="#7a583e";ctx.fillRect(x+s*.12,y+s*.1,s*.76,s*.8);ctx.fillStyle="#d4b06c";ctx.fillRect(x+s*.2,y+s*.25,s*.6,s*.12);ctx.fillRect(x+s*.2,y+s*.58,s*.6,s*.12)}
+  ctx.strokeStyle="rgba(0,0,0,.18)";ctx.strokeRect(x,y,s,s);
+  let icon=t==="t"?"🏘️":t==="c"?"🕳️":t==="l"?"🪧":t==="I"?"🏨":t==="S"?"🧪":t==="W"?"⚔️":t==="A"?"🛡️":t==="Q"?"🧑‍✈️":t==="N"?"🧑":t==="n"?"🧑":t==="F"?"⛲":t==="H"?"🏠":t==="B"?"🌳":t==="T"?"🎁":t==="o"?"📭":t==="L"?"🪨":t==="K"?"🧑‍💼":t==="E"?"🚪":"";
+  if(icon){ctx.font=`${s*.48}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(icon,x+s/2,y+s/2)}
 }
 
 function chRoundRect(x,y,w,h,r){
@@ -4083,15 +4064,34 @@ function chWrapText(text,x,y,maxWidth,lineHeight){
   lines.slice(0,2).forEach((ln,i)=>ctx.fillText(ln,x,y+i*lineHeight));
 }
 
+function drawRegionBattleBackdrop(){
+  const d=dpr,env=(battle&&battle.env)||"meadow";
+  if(env==="cave"){
+    let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#171a2a");g.addColorStop(1,"#30263b");ctx.fillStyle=g;ctx.fillRect(-8*d,-8*d,W+16*d,H+16*d);
+    ctx.fillStyle="#443a55";for(let x=0;x<W;x+=46*d){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+15*d,55*d);ctx.lineTo(x+30*d,0);ctx.fill()}
+    ctx.fillStyle="#524661";ctx.fillRect(0,H*.54,W,H*.46);ctx.strokeStyle="#756883";for(let y=H*.58;y<H;y+=26*d){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y+5*d);ctx.stroke()}
+    [W*.12,W*.82].forEach(x=>{let gl=ctx.createRadialGradient(x,H*.42,2*d,x,H*.42,45*d);gl.addColorStop(0,"rgba(116,232,255,.34)");gl.addColorStop(1,"rgba(80,170,255,0)");ctx.fillStyle=gl;ctx.beginPath();ctx.arc(x,H*.42,45*d,0,7);ctx.fill();ctx.fillStyle="#7de6ff";ctx.beginPath();ctx.moveTo(x,H*.37);ctx.lineTo(x+9*d,H*.44);ctx.lineTo(x-8*d,H*.44);ctx.fill()});
+  }else if(env==="forest"){
+    let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#6cbad4");g.addColorStop(.45,"#3f8a50");g.addColorStop(1,"#315a35");ctx.fillStyle=g;ctx.fillRect(-8*d,-8*d,W+16*d,H+16*d);
+    ctx.fillStyle="#255438";for(let x=-20*d;x<W+40*d;x+=55*d){ctx.fillRect(x,H*.18,13*d,H*.48);ctx.beginPath();ctx.arc(x+6*d,H*.17,35*d,0,7);ctx.fill()}
+    ctx.fillStyle="#5a7e40";ctx.fillRect(0,H*.58,W,H*.42);ctx.strokeStyle="rgba(211,238,155,.25)";for(let y=H*.64;y<H;y+=24*d){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+  }else{
+    let g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#8fd5f2");g.addColorStop(.5,"#d9eaa6");g.addColorStop(1,"#4f9b48");ctx.fillStyle=g;ctx.fillRect(-8*d,-8*d,W+16*d,H+16*d);
+    ctx.fillStyle="#79a95c";ctx.beginPath();ctx.moveTo(0,H*.48);ctx.quadraticCurveTo(W*.25,H*.30,W*.48,H*.49);ctx.quadraticCurveTo(W*.75,H*.28,W,H*.47);ctx.lineTo(W,H*.64);ctx.lineTo(0,H*.64);ctx.fill();
+    ctx.fillStyle="#55a24d";ctx.fillRect(0,H*.55,W,H*.45);ctx.strokeStyle="rgba(255,255,210,.22)";for(let y=H*.62;y<H;y+=26*d){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y+3*d);ctx.stroke()}
+    ctx.fillStyle="rgba(199,171,103,.65)";ctx.beginPath();ctx.moveTo(W*.33,H);ctx.lineTo(W*.46,H*.55);ctx.lineTo(W*.57,H*.55);ctx.lineTo(W*.71,H);ctx.fill();
+  }
+}
+
 function drawBattle(){
   const d=dpr;
   const party = (game && game.party) ? game.party : [];
   const foes = (battle && battle.foes) ? battle.foes.filter(e=>e && e[2]>0) : [];
 
-  // Phase 3: location-matched battle backdrop. All Phase 2 combat staging remains unchanged.
+  // Phase 3: location-matched battle backdrop; combat layout remains unchanged.
   const shake=battleShakeOffset();
   ctx.save();ctx.translate(shake.x,shake.y);
-  drawRegionBattleBackdrop(d,(battle&&battle.biome)||phase3BiomeForArea());
+  drawRegionBattleBackdrop();
 
   // Phase 2: keep target direction readable without a debug-looking guide.
   if(battle&&battle.phase==="playback"&&battle.activeAction&&battle.activeAction.type==="attack"){
@@ -4362,7 +4362,7 @@ canvas.addEventListener("mouseleave",()=>{
 });
 
 function setDir(x,y){touch={x,y}}function bind(id,x,y){let el=document.getElementById(id);el.addEventListener("touchstart",e=>{e.preventDefault();setDir(x,y)},{passive:false});el.addEventListener("touchend",e=>{e.preventDefault();setDir(0,0)},{passive:false});el.addEventListener("mousedown",e=>{e.preventDefault();setDir(x,y)});addEventListener("mouseup",()=>setDir(0,0))}
-bind("upBtn",0,-1);bind("downBtn",0,1);bind("leftBtn",-1,0);bind("rightBtn",1,0);okBtn.onclick=()=>{let t=terrain(game.x,game.y);if(game.area==="overworld"){if(t==="t")startMap("town");else if(t==="c")startMap("dungeon");else toastMsg("Nothing here.");}else if(game.area==="town")townAction(t);else if(game.area==="dungeon")caveAction(t);};document.getElementById("partyBtn").onclick=openPartySafe;document.getElementById("bagBtn").onclick=showBag;document.getElementById("menuBtn").onclick=showMenu;document.addEventListener("keydown",e=>{keys[e.key]=true;if(e.key==="Escape")showMenu()});document.addEventListener("keyup",e=>keys[e.key]=false);
+bind("upBtn",0,-1);bind("downBtn",0,1);bind("leftBtn",-1,0);bind("rightBtn",1,0);okBtn.onclick=()=>{let t=terrain(game.x,game.y);if(game.area==="overworld"){if(t==="t")startMap("town");else if(t==="c")startMap("dungeon");else if(t==="l")dialogue("Road Marker",game.x<15?"Starbrook lies southwest. Thorn Cave lies east across Willow Bridge.":"The eastern trail climbs toward Thorn Cave.");else toastMsg("Nothing here.");}else if(game.area==="town")townAction(t);else if(game.area==="dungeon")caveAction(t);else if(String(game.area).startsWith("shop_"))shopInteriorAction(t);};document.getElementById("partyBtn").onclick=openPartySafe;document.getElementById("bagBtn").onclick=showBag;document.getElementById("menuBtn").onclick=showMenu;document.addEventListener("keydown",e=>{keys[e.key]=true;if(e.key==="Escape")showMenu()});document.addEventListener("keyup",e=>keys[e.key]=false);
 window.newGame = newGame;
 window.continueGame = continueGame;
 window.showHow = showHow;
@@ -4429,7 +4429,7 @@ function forceTitleStart(kind){
     if(!raw)saveGame();
     document.body.classList.remove("titleMode");
     overlay.style.display="none";
-    startMap(game.area==="town"?"town":game.area==="dungeon"?"dungeon":"overworld");
+    startMap(game.area==="town"?"town":game.area==="dungeon"?"dungeon":String(game.area).startsWith("shop_")?game.area:"overworld");
     toastMsg(raw?"Save loaded.":"No save found. New game started.");
   }catch(err){
     console.error(err);
@@ -4472,7 +4472,7 @@ function showTitleScreen(){
       <button class="titleActionBtn" onclick="forceTitleStart('new')">New Game</button>
       <button class="titleActionBtn ${hasAnySave()?'':'disabled'}" onclick="showSaveSlots('load')">Continue</button>
     </div>
-    <div class="titleVersion">v1.5.48 • Phase 3</div>
+    <div class="titleVersion">v1.5.48</div>
   </div>`;
   if(typeof syncScreenControls==="function")syncScreenControls();
   bindTitleButtonFallbacks();
@@ -4508,7 +4508,7 @@ window.continueGame=startTitleContinue;
 
 function syncScreenControls(){
   const overlayOpen = overlay && overlay.style.display !== "none";
-  const onPlayableMap = mode === "map" && !overlayOpen && (game.area==="overworld" || game.area==="town" || game.area==="dungeon" || game.area==="shop");
+  const onPlayableMap = mode === "map" && !overlayOpen && (game.area==="overworld" || game.area==="town" || game.area==="dungeon" || String(game.area).startsWith("shop_"));
   document.body.classList.toggle("menuMode", overlayOpen);
   document.body.classList.toggle("mapMode", onPlayableMap);
 }
@@ -4516,333 +4516,6 @@ const screenControlWatcher = new MutationObserver(syncScreenControls);
 screenControlWatcher.observe(overlay,{attributes:true,attributeFilter:["style"]});
 setInterval(syncScreenControls,200);
 syncScreenControls();
-
-
-
-/* ============================================================
-   Phase 3 — WORLD / TOWNS / MENUS / EQUIPMENT ACCESSIBILITY / BIOME FOUNDATION
-   Built on Phase 1B renderer + Phase 2 battle polish.
-   ============================================================ */
-const phase3TownNPCs=[
-  {x:16,y:11,name:"Warden Mira",icon:"🧝‍♀️",important:true,kind:"warden"},
-  {x:10,y:11,name:"Rowan",icon:"🧑‍🌾",lines:["The east road follows Starbrook River.","Cross the old stone bridge and the path bends south toward Thorn Cave."]},
-  {x:18,y:8,name:"Pella",icon:"🧑‍🎨",lines:["Borin keeps weapons in the north-east shop.","Check the green stat changes before spending your gold."]},
-  {x:8,y:17,name:"Tavi",icon:"🧒",lines:["I saw green lights near Thorn Cave last night!","Warden Mira says the roots are getting restless."]},
-  {x:22,y:17,name:"Elder Orin",icon:"🧓",lines:["Starbrook grew around the spring in the town square.","The meadow roads were laid so travelers could always find the river again."]}
-];
-const phase3Shops={
-  item:{name:"Moonpetal Remedies",keeper:"Pip",icon:"🧪",line:"Potions, ether, and road supplies for Meadowvale travelers."},
-  weapon:{name:"Sunleaf Armory",keeper:"Borin",icon:"⚒️",line:"Practical weapons forged for the roads around Starbrook."},
-  armor:{name:"Brookstone Outfitters",keeper:"Tessa",icon:"🛡️",line:"Armor for meadow roads, thorny woods, and the cave trail."},
-  inn:{name:"Willow Rest Inn",keeper:"Mara",icon:"🛏️",line:"A quiet room, a warm meal, and a full party recovery."}
-};
-const phase3RegionalFoes={
-  meadow:[
-    ["Meadow Slimelet","🟢",24,7,8,6],
-    ["Bramble Bat","🦇",28,8,10,8],
-    ["Thorn Beast","🌿",38,10,14,12]
-  ],
-  forest:[
-    ["Moss Slimelet","🟢",24,7,8,6],
-    ["Bramble Bat","🦇",28,8,10,8],
-    ["Thorn Beast","🌿",38,10,14,12]
-  ],
-  highland:[
-    ["Stone Thorn Beast","🌿",38,10,14,12],
-    ["Bone Rattler","💀",45,12,18,15]
-  ],
-  cave:[
-    ["Cave Bat","🦇",28,8,10,8],
-    ["Thorn Beast","🌿",38,10,14,12],
-    ["Bone Rattler","💀",45,12,18,15],
-    ["Crystal Mimic","💎",55,15,25,25]
-  ]
-};
-let phase3AreaFadeStart=0,phase3LastTerrain="g";
-
-const _phase2NormalizeGame=normalizeGame;
-normalizeGame=function(){
-  _phase2NormalizeGame();
-  if(!game.localQuest)game.localQuest=game.bossDead?"ready":"notStarted";
-  if(game.bossDead&&game.localQuest==="started")game.localQuest="ready";
-  if(!game.shopType)game.shopType="";
-  if(!game.worldReturn||typeof game.worldReturn.x!=="number")game.worldReturn={x:8,y:8};
-  if(!game.shopReturn||typeof game.shopReturn.x!=="number")game.shopReturn={x:14,y:17};
-};
-normalizeGame();
-
-function phase3QuestGoal(){
-  if(game.localQuest==="done")return "Meadow Crystal Restored";
-  if(game.bossDead||game.localQuest==="ready")return "Return to Warden Mira";
-  if(game.localQuest==="started")return "Investigate Thorn Cave";
-  return "Talk to Warden Mira";
-}
-function phase3QuestStatus(){
-  return game.localQuest==="done"?"COMPLETED":game.localQuest==="ready"||game.bossDead?"REPORT BACK":game.localQuest==="started"?"ACTIVE":"NEW RUMOR";
-}
-function phase3QuestText(){
-  if(game.localQuest==="done")return "The Thornroot Guardian is defeated, the Meadow Crystal is restored, and the east road is safe again.";
-  if(game.localQuest==="ready"||game.bossDead)return "The Thornroot Guardian has fallen. Return to Warden Mira in Starbrook for the town's thanks.";
-  if(game.localQuest==="started")return "Travel east from Starbrook, cross the stone bridge, follow the road south, and investigate Thorn Cave.";
-  return "Warden Mira in Starbrook has been asking travelers about strange roots spreading near Thorn Cave.";
-}
-function showQuestLog(){
-  normalizeGame();overlay.style.display="flex";
-  overlay.innerHTML=`<div class="panel classic"><h2>Quest Log</h2><div class="phase3QuestCard"><h3>Roots on the East Road</h3><div>${phase3QuestText()}</div><div class="phase3QuestState">${phase3QuestStatus()}</div>${game.localQuest==="done"?'<div class="phase3QuestReward">Reward received: 75 G • 2 Potions • 1 Ether • Starbrook Crest</div>':''}</div><div class="commandBox phase3TownHelp"><strong>Meadowvale route:</strong><div class="phase3Legend"><span>🏘 Starbrook — west meadow</span><span>🌉 Stone Bridge — east road</span><span>🌿 Starflower Grove — north trail</span><span>🕳 Thorn Cave — south-east</span></div></div><button class="menuBtn" onclick="showMenu()">Back</button></div>`;
-}
-window.showQuestLog=showQuestLog;
-
-function phase3ShopInfo(type=game.shopType){return phase3Shops[type]||phase3Shops.item}
-function phase3AreaLabel(){
-  if(game.area==="shop")return phase3ShopInfo().name;
-  if(game.area==="town")return "Starbrook";
-  if(game.area==="dungeon")return "Thorn Cave";
-  return "Meadowvale";
-}
-placeName=function(){return phase3AreaLabel()};
-currentGoal=function(){return phase3QuestGoal()};
-currentTileName=function(){
-  const t=terrain(game.x,game.y);
-  if(game.area==="shop")return t==="E"?"Shop Door":t==="K"?"Counter":phase3ShopInfo().name;
-  if(game.area==="town")return t==="I"?"Willow Rest":t==="S"?"Moonpetal Remedies":t==="W"?"Sunleaf Armory":t==="A"?"Brookstone Outfitters":t==="E"?"South Gate":t==="F"?"Starbrook Spring":"Starbrook";
-  if(game.area==="dungeon")return t==="B"?"Thornroot Heart":t==="E"?"Cave Mouth":"Thorn Cave";
-  if(t==="t")return "Starbrook";if(t==="c")return "Thorn Cave";if(t==="b")return "Stone Bridge";if(t==="l")return "Starflower Grove";if(t==="f")return "Willowwood";if(t==="m")return "Meadowvale Highlands";if(t==="r")return "East Road";return "Meadowvale";
-};
-hud=function(){ui.gold.textContent=game.area==="overworld"?"Meadowvale":game.area==="town"?"Starbrook":game.area==="shop"?"Shop":"Thorn Cave";ui.steps.textContent=placeName();ui.area.textContent=currentTileName();ui.item.textContent=phase3QuestGoal();ui.place.textContent=currentTileName();};
-
-terrain=function(x,y){
-  if(x<0||y<0||x>=28||y>=22)return game.area==="shop"?"#":"w";
-  if(game.area==="town")return townMap[y]?.[x]||"#";
-  if(game.area==="shop")return shopMap[y]?.[x]||"#";
-  if(game.area==="dungeon")return caveMap[y]?.[x]||"#";
-  return worldMap[y]?.[x]||"g";
-};
-pass=function(t){return !["w","#","H","T","s","C","K","F","k","m"].includes(t)};
-function phase3NPCAt(x,y){return game.area==="town"?phase3TownNPCs.find(n=>n.x===x&&n.y===y):null}
-function phase3Facing(){let fx=playerDraw.facingX||0,fy=playerDraw.facingY||0;if(!fx&&!fy)fy=1;return {x:fx,y:fy}}
-function phase3Ahead(){const f=phase3Facing();return {x:game.x+f.x,y:game.y+f.y,t:terrain(game.x+f.x,game.y+f.y)}}
-function phase3NpcAhead(){const a=phase3Ahead();return phase3NPCAt(a.x,a.y)}
-
-startMap=function(area,opts={}){
-  document.body.classList.remove("titleMode");document.body.classList.remove("battleMode");hideBattleCommandPanel&&hideBattleCommandPanel();mode="map";running=true;overlay.style.display="none";battleBtns.style.display="none";
-  const prev=game.area;game.area=area;phase3AreaFadeStart=performance.now();
-  if(area==="town"){game.x=opts.x??14;game.y=opts.y??18;playerDraw.facingX=0;playerDraw.facingY=-1;}
-  else if(area==="shop"){game.x=opts.x??14;game.y=opts.y??17;playerDraw.facingX=0;playerDraw.facingY=-1;}
-  else if(area==="dungeon"){game.x=opts.x??3;game.y=opts.y??10;playerDraw.facingX=1;playerDraw.facingY=0;}
-  else if(opts.x!=null){game.x=opts.x;game.y=opts.y;}
-  const label=area==="shop"?phase3ShopInfo().name:area==="town"?"Starbrook Town":area==="dungeon"?"Thorn Cave":"Meadowvale";ban(label);
-  playerDraw.x=game.x;playerDraw.y=game.y;playerDraw.fromX=game.x;playerDraw.fromY=game.y;playerDraw.toX=game.x;playerDraw.toY=game.y;playerDraw.start=performance.now();playerDraw.moving=false;playerDraw.ready=true;camDraw.ready=false;hud();syncScreenControls&&syncScreenControls();
-};
-
-function phase3ReturnWorld(){const r=game.worldReturn||{x:8,y:8};game.shopType="";startMap("overworld",{x:r.x,y:r.y});saveGame();toastMsg("Back on the Meadowvale road.")}
-function enterShopInterior(type){game.shopType=type;game.shopReturn={x:game.x,y:game.y};startMap("shop");saveGame();toastMsg(`${phase3ShopInfo(type).name} — walk to the counter.`)}
-function leaveShopInterior(){const r=game.shopReturn||{x:14,y:17};const type=game.shopType;startMap("town",{x:r.x,y:r.y});game.shopType="";saveGame();toastMsg(`Left ${phase3ShopInfo(type).name}.`)}
-
-move=function(dx,dy){
-  if(mode!=="map"||overlay.style.display==="flex"||moveLock>0)return;
-  if(dx||dy){playerDraw.facingX=dx>0?1:dx<0?-1:0;playerDraw.facingY=dy>0?1:dy<0?-1:0;}
-  const nx=game.x+dx,ny=game.y+dy,t=terrain(nx,ny);
-  if(phase3NPCAt(nx,ny)){toastMsg(`${phase3NPCAt(nx,ny).name} — press OK to talk.`);return}
-  if(!pass(t)){if(game.area==="shop"&&t==="K")toastMsg(`${phase3ShopInfo().keeper} is at the counter — press OK.`);else if(game.area==="town"&&t==="F")toastMsg("Starbrook Spring — press OK.");else toastMsg("Blocked.");return}
-  const oldX=game.x,oldY=game.y,nowMove=performance.now();playerDraw.fromX=playerDraw.x;playerDraw.fromY=playerDraw.y;game.x=nx;game.y=ny;playerDraw.toX=game.x;playerDraw.toY=game.y;playerDraw.start=nowMove;playerDraw.dur=330;playerDraw.moving=true;game.steps++;moveLock=18;
-  if(game.area==="overworld"){
-    if(t==="t"){game.worldReturn={x:oldX,y:oldY};startMap("town");saveGame();return}
-    if(t==="c"){game.worldReturn={x:oldX,y:oldY};startMap("dungeon");saveGame();return}
-    if(["g","f","m","r","q","b","l"].includes(t)&&Math.random()<(["r","b","l"].includes(t)?.075:.12))startRandomBattle(t);
-  }else if(game.area==="town")townHint(t);
-  else if(game.area==="shop")shopHint(t);
-  else if(game.area==="dungeon"){if(t==="B"){toastMsg(game.bossDead?"The crystal roots are calm.":"Thornroot heart — press OK to fight.");return}if(t==="E"){toastMsg("Cave mouth — press OK to leave.");return}if(t==="."&&Math.random()<.18)startRandomBattle("cave")}
-  hud();saveGame();
-};
-
-townHint=function(t){hud();if(t==="I")toastMsg("Willow Rest Inn — press OK to enter.");if(t==="S")toastMsg("Moonpetal Remedies — press OK to enter.");if(t==="W")toastMsg("Sunleaf Armory — press OK to enter.");if(t==="A")toastMsg("Brookstone Outfitters — press OK to enter.");if(t==="E")toastMsg("South Gate — press OK to return to Meadowvale.");if(t==="D")toastMsg("A warm Starbrook home.")};
-function shopHint(t){hud();if(t==="E")toastMsg("Door — press OK to return to town.")}
-
-townAction=function(t){
-  if(t==="E"){phase3ReturnWorld();return}
-  if(t==="I"){enterShopInterior("inn");return}if(t==="S"){enterShopInterior("item");return}if(t==="W"){enterShopInterior("weapon");return}if(t==="A"){enterShopInterior("armor");return}
-  if(t==="F"){toastMsg("Starbrook Spring sparkles with crystal-clear water.");return}
-  if(t==="D"){toastMsg("A private home. Someone has left meadowflowers in the window.");return}
-  toastMsg("Nothing to use here.");
-};
-function shopAction(t){if(t==="E"){leaveShopInterior();return}if(t==="K"){shop(game.shopType||"item");return}toastMsg("The shelves are neatly stocked.")}
-caveAction=function(t){if(t==="E"){phase3ReturnWorld();return}if(t==="B"){game.bossDead?toastMsg("The crystal roots are calm."):startBattle([bossDef.slice()],true);return}toastMsg("The cave echoes through mossy stone.")};
-
-function phase3NpcDialogue(n){
-  if(!n)return;
-  if(n.kind==="warden"){showWardenDialogue();return}
-  overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>${n.name}</h2>${(n.lines||[]).map(line=>`<div class="phase3NpcLine">${line}</div>`).join("")}<button class="menuBtn" onclick="closeOverlay()">Continue</button></div>`;
-}
-function showWardenDialogue(){
-  normalizeGame();
-  let body="",action="";
-  if(game.localQuest==="notStarted"){
-    body=`<div class="phase3NpcLine"><span class="phase3NpcName">Warden Mira:</span> Thorn beasts have pushed travelers off the east road. The roots seem to lead back to Thorn Cave.</div><div class="phase3NpcLine">Cross the stone bridge, follow the east road south, and defeat the Thornroot Guardian if you can.</div>`;
-    action='<button class="menuBtn" onclick="acceptLocalQuest()">I’ll investigate Thorn Cave</button>';
-  }else if((game.localQuest==="ready"||game.bossDead)&&game.localQuest!=="done"){
-    body=`<div class="phase3NpcLine"><span class="phase3NpcName">Warden Mira:</span> The roots are retreating—and the Meadow Crystal is shining again. You did it.</div><div class="phase3NpcLine">Starbrook can use the east road safely. Take these supplies with our thanks.</div>`;
-    action='<button class="menuBtn" onclick="claimLocalQuest()">Receive Starbrook reward</button>';
-  }else if(game.localQuest==="done"){
-    body=`<div class="phase3NpcLine"><span class="phase3NpcName">Warden Mira:</span> The east road is open again. When you are ready, the old roads beyond Meadowvale may have more stories for you.</div>`;
-  }else{
-    body=`<div class="phase3NpcLine"><span class="phase3NpcName">Warden Mira:</span> Follow the east road across the bridge. Thorn Cave lies where the road bends south.</div>`;
-  }
-  overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>Warden Mira</h2>${body}${action}<button class="menuBtn" onclick="closeOverlay()">Back to Starbrook</button></div>`;
-}
-function acceptLocalQuest(){game.localQuest="started";saveGame();toastMsg("Quest started: Roots on the East Road");showWardenDialogue()}
-function claimLocalQuest(){if(!game.bossDead){toastMsg("Thorn Cave is still dangerous.");return}if(game.localQuest==="done")return;game.localQuest="done";game.gold+=75;game.items.Potion=(game.items.Potion||0)+2;game.items.Ether=(game.items.Ether||0)+1;game.items["Starbrook Crest"]=1;saveGame();battleEnsureAudio();battleSfx("victory");toastMsg("Reward: 75 G, Potions, Ether, Starbrook Crest");showWardenDialogue()}
-window.acceptLocalQuest=acceptLocalQuest;window.claimLocalQuest=claimLocalQuest;window.showWardenDialogue=showWardenDialogue;
-
-function phase3InteractiveTile(t){return ["I","S","W","A","E","D","F","K","B","t","c","l"].includes(t)}
-function phase3OkAction(){
-  if(mode!=="map"||overlay.style.display==="flex")return;
-  const npc=phase3NpcAhead();if(npc){phase3NpcDialogue(npc);return}
-  const a=phase3Ahead(),here=terrain(game.x,game.y),t=phase3InteractiveTile(a.t)?a.t:here;
-  if(game.area==="town"){townAction(t);return}
-  if(game.area==="shop"){shopAction(t);return}
-  if(game.area==="dungeon"){caveAction(t);return}
-  if(game.area==="overworld"){
-    if(t==="t"){game.worldReturn={x:game.x,y:game.y};startMap("town");saveGame();return}
-    if(t==="c"){game.worldReturn={x:game.x,y:game.y};startMap("dungeon");saveGame();return}
-    if(t==="l"){toastMsg("Starflowers sway around an old crystal waystone.");return}
-    toastMsg(currentTileName()+" — the road is quiet.");
-  }
-}
-
-function phase3DeltaClass(d){return d>0?"phase3Up":d<0?"phase3Down":"phase3Same"}
-function phase3ShopListHtml(rows,type,selected){
-  if(!rows.length)return `<div class="commandBox">Nothing in stock.</div>`;
-  return `<div class="listGrid">${rows.map(r=>`<button class="itemRow ${r.name===selected?"selected":""}" onclick="selectShopItem('${type}','${String(r.name).replace(/'/g,"\\'")}')"><span>${r.name}</span><span>${r.cost} G</span></button>`).join("")}</div>`;
-}
-shopPreviewForItem=function(type,n){
-  if(type==="item")return `<div class="phase3Compare"><div class="phase3CompareRow"><b>Use</b><span>${invDescription("items",n)}</span></div></div>`;
-  const g=gear[n];if(!g)return "";const users=game.party.filter(h=>g.class.includes(h.class));if(!users.length)return "No one in the current party can use this.";
-  return `<div class="phase3Compare">${users.map(h=>{
-    const before={atk:stat(h,"atk"),def:stat(h,"def"),matk:stat(h,"matk")},oldW=h.weapon,oldA=h.armor;if(g.slot==="weapon")h.weapon=n;else h.armor=n;const after={atk:stat(h,"atk"),def:stat(h,"def"),matk:stat(h,"matk")};h.weapon=oldW;h.armor=oldA;
-    const ds=[after.atk-before.atk,after.def-before.def,after.matk-before.matk];
-    return `<div class="phase3CompareRow"><b>${h.name}</b><span>${g.slot==="weapon"?oldW:oldA} → <strong>${n}</strong><br><span class="${phase3DeltaClass(ds[0])}">ATK ${before.atk}→${after.atk}</span> • <span class="${phase3DeltaClass(ds[1])}">DEF ${before.def}→${after.def}</span> • <span class="${phase3DeltaClass(ds[2])}">MAG ${before.matk}→${after.matk}</span></span></div>`;
-  }).join("")}</div>`;
-};
-shopBuyButton=function(type,name){
-  if(!name)return "";const r=shopRows(type).find(x=>x.name===name);if(!r)return "";
-  if(type==="item")return `<button class="menuBtn miniCmd" onclick="buyShop('item','${name}',${r.cost})">Buy — ${r.cost} G</button>`;
-  const g=gear[name],users=game.party.map((h,i)=>({h,i})).filter(x=>g.class.includes(x.h.class));
-  return `<div class="phase3EquipQuick">${users.map(x=>`<button class="menuBtn miniCmd" onclick="buyGearForHero('${type}','${name}',${r.cost},${x.i})">Buy for ${x.h.name}<br>${r.cost} G</button>`).join("")}</div>`;
-};
-function buyGearForHero(type,n,cost,heroIndex){
-  const h=game.party[heroIndex],g=gear[n];if(!h||!g||!g.class.includes(h.class)){toastMsg("That hero cannot use this gear.");return}if(game.gold<cost){toastMsg("Need more gold.");return}
-  game.gold-=cost;if(!Array.isArray(h.gearBag))h.gearBag=[];h.gearBag.push(n);saveGame();toastMsg(`${n} sent to ${h.name}'s gear. Open Equipment to equip it.`);shop(type,n);
-}
-window.buyGearForHero=buyGearForHero;
-buyShop=function(type,n,cost){if(game.gold<cost){toastMsg("Need more gold.");return}game.gold-=cost;if(type==="item")game.items[n]=(game.items[n]||0)+1;else{const g=gear[n],idx=game.party.findIndex(h=>g&&g.class.includes(h.class));if(idx>=0){if(!Array.isArray(game.party[idx].gearBag))game.party[idx].gearBag=[];game.party[idx].gearBag.push(n)}else game.inventory.push(n)}saveGame();shop(type,n);toastMsg("Bought "+n)};
-window.buyShop=buyShop;
-shop=function(type,selected=null){
-  const info=phase3ShopInfo(type),title=info.name;ui.place.textContent=title;ui.item.textContent="Shopping";
-  if(type==="inn"){
-    overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>${title}</h2><div class="phase3ShopIntro"><div class="phase3Keeper">${info.icon}</div><div><strong>${info.keeper}, Innkeeper</strong><small>${info.line}</small></div></div><div class="commandBox">Restores all HP/MP for 25 gold.<br>Gold: ${game.gold} G</div><button class="menuBtn" onclick="buyInn()">Rest — 25 G</button><button class="menuBtn" onclick="closeOverlay();hud()">Close Counter</button></div>`;return;
-  }
-  const rows=shopRows(type);if(!selected&&rows.length)selected=rows[0].name;const cat=type==="item"?"items":type==="weapon"?"weapons":"armor";overlay.style.display="flex";
-  overlay.innerHTML=`<div class="panel classic"><h2>${title}</h2><div class="phase3ShopIntro"><div class="phase3Keeper">${info.icon}</div><div><strong>${info.keeper}, Shopkeeper</strong><small>${info.line}</small></div></div><div class="commandBox"><div class="statLine"><span>Gold</span><span>${game.gold} G</span></div></div><div class="twoPane"><div>${phase3ShopListHtml(rows,type,selected)}</div><div class="detailBox"><strong>${selected||"No Selection"}</strong><br>${shopDetail(type,selected)}<div style="margin-top:8px">${shopBuyButton(type,selected)}</div>${type!=="item"?'<button class="menuBtn miniCmd" style="margin-top:7px" onclick="showGearMenu(\''+type+'\',\'equip\')">Open Equipment</button>':''}</div></div><button class="menuBtn" onclick="closeOverlay();hud()">Close Counter</button></div>`;
-};
-window.shop=shop;
-
-showMenu=function(){
-  normalizeGame();overlay.style.display="flex";
-  overlay.innerHTML=`<div class="panel classic"><h2>${placeName()}</h2><div class="phase3RegionStrip"><div><strong>Meadowvale Region</strong><small>Starbrook • East Road • Thorn Cave</small></div><div class="phase3GoalTag">GOAL<br>${phase3QuestGoal()}</div></div><div class="ffMain"><div class="ffLeftStack"><div class="ffOrbBox">${orbHtml()}</div><div class="ffGoldBox">${game.gold} G</div><div class="ffCmdBox"><button class="menuBtn" onclick="showBag()">Inventory</button><button class="menuBtn" onclick="showMagicMenu()">Magic</button><button class="menuBtn" onclick="showGearMenu('weapon','equip')">Weapons</button><button class="menuBtn" onclick="showGearMenu('armor','equip')">Armor</button><button class="menuBtn" onclick="showStatus()">Characters</button><button class="menuBtn" onclick="showQuestLog()">Quest Log</button><button class="menuBtn" onclick="showSaveSlots('save')">Save</button><button class="menuBtn" onclick="showConfig()">Config</button><button class="menuBtn" onclick="closeOverlay()">Close</button></div></div>${game.party.map(h=>heroMenuBox(h)).join("")}</div></div>`;
-};
-window.showMenu=showMenu;
-
-showStatus=function(){
-  normalizeGame();overlay.style.display="flex";
-  overlay.innerHTML=`<div class="panel classic"><h2>Characters</h2><div class="phase3RegionStrip"><div><strong>${placeName()}</strong><small>${phase3QuestText()}</small></div><div class="phase3GoalTag">${phase3QuestStatus()}</div></div>${game.party.map((h,i)=>`<div class="commandBox heroMini"><div class="sprite">${classInfo[h.class][0]}</div><div><h3>${h.name} — ${h.class}</h3><div class="statLine"><span>Level / XP</span><span>${h.level} • ${h.xp}/${h.next}</span></div><div class="statLine"><span>HP / MP</span><span>${h.hp}/${stat(h,"maxHP")} • ${h.mp}/${stat(h,"maxMP")}</span></div><div class="statLine"><span>ATK / DEF / MAG</span><span>${stat(h,"atk")} / ${stat(h,"def")} / ${stat(h,"matk")}</span></div><div class="statLine"><span>Weapon</span><span>${h.weapon||"None"}</span></div><div class="statLine"><span>Armor</span><span>${h.armor||"None"}</span></div><div class="phase3EquipQuick"><button class="menuBtn miniCmd" onclick="showGearMenu('weapon','equip',${i},'')">Weapons</button><button class="menuBtn miniCmd" onclick="showGearMenu('armor','equip',${i},'')">Armor</button></div></div></div>`).join("")}<button class="menuBtn" onclick="showMenu()">Back</button></div>`;
-};
-window.showStatus=showStatus;
-
-showBag=function(cat='items',selected=null,mode='use'){
-  normalizeGame();const rows=inventoryRows(cat);if(!selected&&rows.length)selected=rows[0].key;const selectedName=selected?rowNameFromKey(selected):"",selectedKind=selected?rowKindFromKey(selected):"";overlay.style.display="flex";
-  overlay.innerHTML=`<div class="panel classic"><h2>Inventory</h2><div class="phase3InvTabs"><button class="tabBtn ${cat==='items'?'active':''}" onclick="showBag('items')">Items</button><button class="tabBtn ${cat==='weapons'?'active':''}" onclick="showBag('weapons')">Weapons</button><button class="tabBtn ${cat==='armor'?'active':''}" onclick="showBag('armor')">Armor</button><button class="tabBtn ${cat==='key'?'active':''}" onclick="showBag('key')">Key Items</button></div><div class="ffInvTopBar"><button class="ffInvCmd ${mode==='use'?'active':''}" onclick="showBag('${cat}','${selected||''}','use')">Use / Inspect</button><button class="ffInvCmd" onclick="sortInventoryCategory('${cat}');showBag('${cat}','','${mode}')">Sort</button></div>${ffBagColumns(rows,cat,selected,mode)}<div class="ffBagDesc">${selectedName?`<strong>${selectedName}</strong> — `:''}${invDescription(cat,selected)}${mode==='use'&&cat==='items'&&selectedKind==='consumable'?'<br><span class="hint">Tap the highlighted consumable again to use it.</span>':''}${selectedKind==='weapon'||selectedKind==='armor'?'<br><span class="hint">Open Weapons / Armor from the main menu to compare and equip gear.</span>':''}</div><div class="ffBagFooter"><button class="menuBtn" onclick="showMenu()">Back</button></div></div>`;
-};
-window.showBag=showBag;
-
-showHow=function(){overlay.style.display="flex";overlay.innerHTML=`<div class="panel classic"><h2>Meadowvale Guide</h2><ul><li>Follow roads and landmarks to navigate Meadowvale. Starbrook is west; Thorn Cave is south-east of the stone bridge.</li><li>In Starbrook, walk to a marked building door and press OK to enter. Inside, walk to the counter and speak to the shopkeeper.</li><li>Face an NPC and press OK to talk. Warden Mira at the town spring introduces the local Thorn Cave problem.</li><li>Shop gear shows stat changes before purchase. Purchased equipment goes directly to a compatible hero's gear space.</li><li>Inventory, Characters, Weapons, Armor, Quest Log, and Save are available from Menu.</li></ul><button class="menuBtn" onclick="closeOverlay()">Back</button></div>`};
-window.showHow=showHow;
-
-const _phase2DrawTile=drawTile;
-drawTile=function(x,y,s,t){
-  const d=dpr,area=game.area;
-  if(area==="town"){
-    const cobble=t==="R"||t==="F"||["I","S","W","A","E","D"].includes(t);ctx.fillStyle=cobble?"#b9a98d":"#79b85f";ctx.fillRect(x,y,s,s);
-    if(!cobble){ctx.fillStyle="#5b9d4c";ctx.fillRect(x+s*.1,y+s*.62,3*d,7*d);ctx.fillRect(x+s*.68,y+s*.26,3*d,8*d)}
-    if(t==="R"||t==="F"){ctx.strokeStyle="rgba(83,70,55,.22)";ctx.lineWidth=1*d;ctx.beginPath();ctx.moveTo(x,y+s*.5);ctx.lineTo(x+s,y+s*.45);ctx.stroke();ctx.beginPath();ctx.moveTo(x+s*.48,y);ctx.lineTo(x+s*.52,y+s);ctx.stroke()}
-    if(t==="H"){ctx.fillStyle="#dcc590";ctx.fillRect(x,y,s,s);ctx.fillStyle="#7a4053";ctx.fillRect(x,y,s,s*.28);ctx.strokeStyle="rgba(255,226,176,.35)";ctx.lineWidth=1*d;ctx.beginPath();ctx.moveTo(x,y+s*.14);ctx.lineTo(x+s,y+s*.14);ctx.stroke();ctx.fillStyle="#9bd9ef";ctx.fillRect(x+s*.33,y+s*.48,s*.34,s*.25);ctx.strokeStyle="#fff7d6";ctx.strokeRect(x+s*.33,y+s*.48,s*.34,s*.25)}
-    if(t==="T"){ctx.fillStyle="#5d4a34";ctx.fillRect(x+s*.46,y+s*.52,s*.1,s*.35);ctx.fillStyle="#3c8b49";ctx.beginPath();ctx.arc(x+s*.5,y+s*.38,s*.27,0,7);ctx.fill();ctx.fillStyle="#f7d5e8";ctx.beginPath();ctx.arc(x+s*.35,y+s*.35,2.5*d,0,7);ctx.arc(x+s*.63,y+s*.3,2.5*d,0,7);ctx.fill()}
-    if(t==="F"){ctx.fillStyle="#79cce8";ctx.beginPath();ctx.arc(x+s*.5,y+s*.55,s*.28,0,7);ctx.fill();ctx.strokeStyle="#f7f0d2";ctx.lineWidth=3*d;ctx.beginPath();ctx.arc(x+s*.5,y+s*.55,s*.31,0,7);ctx.stroke();ctx.fillStyle="#dff8ff";ctx.fillRect(x+s*.47,y+s*.18,s*.06,s*.3)}
-    if(["I","S","W","A","D","E"].includes(t)){const colors={I:"#d56bb8",S:"#4fc77a",W:"#e5a044",A:"#73b8db",D:"#a27055",E:"#e6cc56"};ctx.fillStyle="#dcc590";ctx.fillRect(x,y,s,s);ctx.fillStyle="#7a4053";ctx.fillRect(x,y,s,s*.28);ctx.fillStyle="#392c2a";ctx.fillRect(x+s*.3,y+s*.43,s*.4,s*.57);ctx.fillStyle=colors[t];ctx.fillRect(x+s*.22,y+s*.29,s*.56,s*.22);ctx.strokeStyle="#fff7d6";ctx.lineWidth=1.5*d;ctx.strokeRect(x+s*.22,y+s*.29,s*.56,s*.22);ctx.fillStyle="#fff";ctx.font=`900 ${s*.25}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(t==="D"?"⌂":t,x+s*.5,y+s*.4)}
-    ctx.strokeStyle="#0004";ctx.strokeRect(x,y,s,s);return;
-  }
-  if(area==="shop"){
-    const info=phase3ShopInfo(),accent=game.shopType==="weapon"?"#d99d4d":game.shopType==="armor"?"#7bbbdc":game.shopType==="inn"?"#d787b7":"#5fc681";ctx.fillStyle=t==="#"?"#202436":"#cba875";ctx.fillRect(x,y,s,s);
-    if(t!=="#"){ctx.strokeStyle="rgba(91,62,44,.23)";ctx.beginPath();ctx.moveTo(x,y+s*.5);ctx.lineTo(x+s,y+s*.5);ctx.stroke()}
-    if(t==="s"){ctx.fillStyle="#724f36";ctx.fillRect(x+s*.12,y+s*.18,s*.76,s*.68);ctx.fillStyle=accent;ctx.fillRect(x+s*.2,y+s*.28,s*.16,s*.22);ctx.fillRect(x+s*.55,y+s*.42,s*.18,s*.2)}
-    if(t==="C"||t==="K"){ctx.fillStyle="#7b563c";ctx.fillRect(x,y+s*.52,s,s*.48);if(t==="K"){ctx.fillStyle="#efbd98";ctx.beginPath();ctx.arc(x+s*.5,y+s*.35,s*.17,0,7);ctx.fill();ctx.fillStyle=accent;ctx.fillRect(x+s*.3,y+s*.45,s*.4,s*.28)}}
-    if(t==="R"){ctx.fillStyle="rgba(146,73,96,.55)";ctx.fillRect(x+s*.22,y,s*.56,s)}
-    if(t==="E"){ctx.fillStyle="#d9c189";ctx.fillRect(x+s*.16,y+s*.12,s*.68,s*.88);ctx.fillStyle="#44362e";ctx.fillRect(x+s*.36,y+s*.45,s*.28,s*.55)}
-    ctx.strokeStyle="#0004";ctx.strokeRect(x,y,s,s);return;
-  }
-  if(area==="overworld"&&["r","b","q","k","l"].includes(t)){
-    if(t==="r"){ctx.fillStyle="#b99b68";ctx.fillRect(x,y,s,s);ctx.fillStyle="#d6bc85";for(let i=0;i<4;i++)ctx.fillRect(x+(i*.23+.08)*s,y+((i%2)*.42+.2)*s,5*d,3*d)}
-    if(t==="q"){ctx.fillStyle="#d8c884";ctx.fillRect(x,y,s,s);ctx.fillStyle="#8bc96b";ctx.fillRect(x,y,s*.18,s)}
-    if(t==="b"){ctx.fillStyle="#397fb9";ctx.fillRect(x,y,s,s);ctx.fillStyle="#9f7146";for(let i=0;i<5;i++)ctx.fillRect(x+i*s*.2,y+s*.12,s*.15,s*.76);ctx.strokeStyle="#5d3e28";ctx.lineWidth=2*d;ctx.beginPath();ctx.moveTo(x,y+s*.12);ctx.lineTo(x+s,y+s*.12);ctx.moveTo(x,y+s*.88);ctx.lineTo(x+s,y+s*.88);ctx.stroke()}
-    if(t==="k"){ctx.fillStyle="#6db35c";ctx.fillRect(x,y,s,s);ctx.fillStyle="#857d73";ctx.beginPath();ctx.moveTo(x+s*.2,y+s*.75);ctx.lineTo(x+s*.4,y+s*.25);ctx.lineTo(x+s*.78,y+s*.48);ctx.lineTo(x+s*.82,y+s*.78);ctx.closePath();ctx.fill()}
-    if(t==="l"){ctx.fillStyle="#70ba5e";ctx.fillRect(x,y,s,s);ctx.fillStyle="#8dd8f2";ctx.beginPath();ctx.moveTo(x+s*.5,y+s*.14);ctx.lineTo(x+s*.66,y+s*.5);ctx.lineTo(x+s*.5,y+s*.82);ctx.lineTo(x+s*.34,y+s*.5);ctx.closePath();ctx.fill();ctx.fillStyle="#fff5ad";for(let i=0;i<4;i++){const a=i*Math.PI/2;ctx.beginPath();ctx.arc(x+s*.5+Math.cos(a)*s*.31,y+s*.5+Math.sin(a)*s*.28,2.5*d,0,7);ctx.fill()}}
-    ctx.strokeStyle="#0004";ctx.strokeRect(x,y,s,s);return;
-  }
-  _phase2DrawTile(x,y,s,t);
-  if(area==="overworld"){
-    const seed=((Math.floor(x/s)+Math.floor(y/s)*7+game.steps)%5);if(t==="g"&&seed===0){ctx.fillStyle="#f5e982";ctx.beginPath();ctx.arc(x+s*.72,y+s*.7,2*d,0,7);ctx.fill()}if(t==="f"){ctx.fillStyle="#2e643a";ctx.beginPath();ctx.arc(x+s*.28,y+s*.3,s*.12,0,7);ctx.arc(x+s*.62,y+s*.55,s*.14,0,7);ctx.fill()}if(t==="w"){ctx.strokeStyle="rgba(215,249,255,.35)";ctx.beginPath();ctx.moveTo(x+s*.12,y+s*.52);ctx.quadraticCurveTo(x+s*.42,y+s*.43,x+s*.72,y+s*.52);ctx.stroke()}}
-};
-
-function drawPhase3MapEntities(s,camX,camY){
-  if(game.area!=="town")return;const now=performance.now();phase3TownNPCs.forEach((n,i)=>{const x=(n.x-camX)*s+s/2,y=(n.y-camY)*s+s/2;if(x<-s||x>W+s||y<-s||y>H+s)return;ctx.save();ctx.translate(x,y);ctx.fillStyle="rgba(0,0,0,.24)";ctx.beginPath();ctx.ellipse(0,s*.31,s*.2,s*.07,0,0,7);ctx.fill();ctx.fillStyle=i%2?"#6a79c9":"#8e5fa9";ctx.fillRect(-s*.13,-s*.05,s*.26,s*.31);ctx.fillStyle="#efbd98";ctx.beginPath();ctx.arc(0,-s*.17,s*.12,0,7);ctx.fill();ctx.fillStyle="#5a4236";ctx.beginPath();ctx.arc(0,-s*.2,s*.13,Math.PI,Math.PI*2);ctx.fill();if(n.important&&game.localQuest!=="done"){ctx.fillStyle="#fff38b";ctx.font=`1000 ${s*.36}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(game.bossDead||game.localQuest==="ready"?"?":"!",0,-s*.52+Math.sin(now*.008)*2*dpr)}ctx.restore()})
-}
-
-function phase3BiomeForArea(){if(game.area==="dungeon")return "cave";if(game.area==="overworld"){const t=phase3LastTerrain||terrain(game.x,game.y);if(t==="f")return "forest";if(t==="m")return "highland";return "meadow"}return "meadow"}
-function drawRegionBattleBackdrop(d,biome){
-  const now=performance.now();
-  if(biome==="cave"){
-    const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#162b2c");bg.addColorStop(.52,"#263c37");bg.addColorStop(1,"#101716");ctx.fillStyle=bg;ctx.fillRect(-8*d,-8*d,W+16*d,H+16*d);ctx.fillStyle="#30473f";for(let y=0;y<H*.4;y+=30*d){for(let x=((y/(30*d))%2)*28*d;x<W;x+=56*d)ctx.fillRect(x,y,50*d,24*d)}ctx.strokeStyle="rgba(116,202,139,.22)";ctx.lineWidth=4*d;for(let x of [W*.15,W*.62,W*.87]){ctx.beginPath();ctx.moveTo(x,0);ctx.bezierCurveTo(x-25*d,H*.15,x+22*d,H*.25,x-8*d,H*.42);ctx.stroke()}ctx.fillStyle="#6e674f";ctx.fillRect(0,H*.38,W,H*.4);ctx.fillStyle="rgba(125,188,108,.25)";for(let i=0;i<18;i++){const x=(i*73*d)%W,y=H*.42+(i%5)*24*d;ctx.fillRect(x,y,18*d,5*d)}return;
-  }
-  if(biome==="highland"){
-    const sky=ctx.createLinearGradient(0,0,0,H*.45);sky.addColorStop(0,"#7faac5");sky.addColorStop(1,"#d5d6c0");ctx.fillStyle=sky;ctx.fillRect(0,0,W,H*.48);ctx.fillStyle="#6d706c";for(let i=0;i<5;i++){const x=i*W*.24-W*.08;ctx.beginPath();ctx.moveTo(x,H*.42);ctx.lineTo(x+W*.14,H*.13+(i%2)*H*.05);ctx.lineTo(x+W*.29,H*.42);ctx.fill()}ctx.fillStyle="#7d8c65";ctx.fillRect(0,H*.4,W,H*.38);ctx.fillStyle="#9b9481";for(let i=0;i<10;i++){ctx.beginPath();ctx.arc((i*.13+.07)*W,H*.46+(i%3)*35*d,8*d,0,7);ctx.fill()}return;
-  }
-  const forest=biome==="forest";const sky=ctx.createLinearGradient(0,0,0,H*.46);sky.addColorStop(0,forest?"#315b55":"#79c8ee");sky.addColorStop(1,forest?"#557965":"#d7efff");ctx.fillStyle=sky;ctx.fillRect(0,0,W,H*.5);
-  if(!forest){ctx.fillStyle="#7bb66a";ctx.beginPath();ctx.moveTo(0,H*.38);ctx.quadraticCurveTo(W*.22,H*.2,W*.42,H*.38);ctx.quadraticCurveTo(W*.69,H*.19,W,H*.37);ctx.lineTo(W,H*.5);ctx.lineTo(0,H*.5);ctx.fill()}
-  ctx.fillStyle=forest?"#355a39":"#67a94e";ctx.fillRect(0,H*.39,W,H*.4);for(let i=0;i<(forest?10:6);i++){const x=(i+.3)*W/(forest?10:6),base=H*.4;ctx.fillStyle="#66482f";ctx.fillRect(x-5*d,base-55*d,10*d,60*d);ctx.fillStyle=forest?"#244b32":"#3e8242";ctx.beginPath();ctx.arc(x,base-65*d,(forest?30:22)*d,0,7);ctx.fill()}
-  if(!forest){for(let i=0;i<16;i++){ctx.fillStyle=i%3===0?"#fff0a8":i%3===1?"#eeb6db":"#d9f4ff";ctx.beginPath();ctx.arc((i*.071+.02)*W,H*.5+(i%4)*21*d,2.2*d,0,7);ctx.fill()}}
-}
-
-startRandomBattle=function(t){
-  phase3LastTerrain=t;let biome=t==="cave"?"cave":t==="f"?"forest":t==="m"?"highland":"meadow",pool=phase3RegionalFoes[biome]||phase3RegionalFoes.meadow,n=biome==="cave"?2:Math.random()<.5?1:2,foes=[];for(let i=0;i<n;i++)foes.push(pool[Math.floor(Math.random()*pool.length)].slice());startBattle(foes,false);if(battle)battle.biome=biome;
-};
-const _phase2StartBattle=startBattle;
-startBattle=function(foes,boss){_phase2StartBattle(foes,boss);if(battle)battle.biome=boss||game.area==="dungeon"?"cave":phase3BiomeForArea()};
-
-const _phase2Transition=drawBattleTransitionOverlay;
-drawBattleTransitionOverlay=function(){_phase2Transition();if(!phase3AreaFadeStart)return;const t=(performance.now()-phase3AreaFadeStart)/300;if(t>=1){phase3AreaFadeStart=0;return}ctx.save();ctx.globalAlpha=Math.max(0,.62*(1-t));ctx.fillStyle="#07121b";ctx.fillRect(0,0,W,H);ctx.restore()};
-
-saveSlotSummary=function(n,mode){
-  const s=readSaveSlot(n);if(!s||!s.game)return `<button class="saveSlot empty" onclick="${mode==='save'?`saveToSlot(${n})`:`toastMsg('Slot ${n} is empty.')`}"><span class="slotNum">${n}</span><span class="slotInfo"><strong>Empty Slot</strong><br><span class="slotMeta">${mode==='save'?'Tap to save here':'No save data'}</span></span><span class="slotAction">${mode==='save'?'SAVE':'EMPTY'}</span></button>`;
-  const g=s.game,leader=(g.party&&g.party[0])?g.party[0]:{name:"Hero",level:1},area=g.area==="town"?"Starbrook":g.area==="shop"?(phase3Shops[g.shopType]?.name||"Starbrook Shop"):g.area==="dungeon"?"Thorn Cave":"Meadowvale",when=new Date(s.savedAt||Date.now()).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});return `<button class="saveSlot" onclick="${mode==='save'?`saveToSlot(${n})`:`loadFromSlot(${n})`}"><span class="slotNum">${n}</span><span class="slotInfo"><strong>${leader.name} Lv ${leader.level}</strong><br>${area} • ${g.gold||0} G<br><span class="slotMeta">${when}</span></span><span class="slotAction">${mode==='save'?'OVERWRITE':'LOAD'}</span></button>`;
-};
-loadFromSlot=function(n){const data=readSaveSlot(n);if(!data||!data.game){toastMsg("That slot is empty.");return}game=data.game;normalizeGame();saveGame();document.body.classList.remove("titleMode");overlay.style.display="none";startMap(["town","shop","dungeon","overworld"].includes(game.area)?game.area:"overworld");toastMsg("Loaded Slot "+n+".")};
-forceTitleStart=function(kind){try{if(kind==="new"){localStorage.removeItem(saveKey);game=defGame();normalizeGame();saveGame();document.body.classList.remove("titleMode");overlay.style.display="none";startMap("overworld");toastMsg("New game started.");return}const raw=localStorage.getItem(saveKey);game=raw?JSON.parse(raw):defGame();normalizeGame();if(!raw)saveGame();document.body.classList.remove("titleMode");overlay.style.display="none";startMap(["town","shop","dungeon","overworld"].includes(game.area)?game.area:"overworld");toastMsg(raw?"Save loaded.":"No save found. New game started.")}catch(err){console.error(err);game=defGame();normalizeGame();try{saveGame()}catch(e){}document.body.classList.remove("titleMode");overlay.style.display="none";startMap("overworld");toastMsg("Recovered with a new game.")}};
-startTitleContinue=function(){const hadSave=hasSavedGame();game=load();normalizeGame();document.body.classList.remove("titleMode");if(!hadSave){saveGame();startMap("overworld");toastMsg("No save found. New game started.");return}startMap(["town","shop","dungeon","overworld"].includes(game.area)?game.area:"overworld");toastMsg("Save loaded.")};
-window.forceTitleStart=forceTitleStart;window.startTitleContinue=startTitleContinue;window.continueGame=startTitleContinue;window.loadFromSlot=loadFromSlot;
-
-syncScreenControls=function(){const overlayOpen=overlay&&overlay.style.display!=="none";const onPlayableMap=mode==="map"&&!overlayOpen&&["overworld","town","shop","dungeon"].includes(game.area);document.body.classList.toggle("menuMode",overlayOpen);document.body.classList.toggle("mapMode",onPlayableMap)};
-if(document.getElementById("okBtn"))document.getElementById("okBtn").onclick=phase3OkAction;if(document.getElementById("menuBtn"))document.getElementById("menuBtn").onclick=showMenu;if(document.getElementById("bagBtn"))document.getElementById("bagBtn").onclick=showBag;if(document.getElementById("partyBtn"))document.getElementById("partyBtn").onclick=()=>showStatus();
-window.phase3OkAction=phase3OkAction;
-
 
 resize();hud();showTitleScreen();requestAnimationFrame(draw);requestAnimationFrame(loop);
 </script>
