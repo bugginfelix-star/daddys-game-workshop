@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Crystal Heroes v1.5.48 Phase 3C Reference Hovel Village</title>
+<title>Crystal Heroes v1.5.48 Phase 3D Village Pathing</title>
 <!-- Phase 3A: Starbrook hovel-village reconstruction -->
 <!-- Phase 1B: battle facing / lane / weapon-attachment correction -->
+<!-- Phase 3D: invisible Starbrook path/collision mask aligned to village artwork -->
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 html,body{margin:0;height:100%;overflow:hidden;background:#06111f;color:#fff;font-family:system-ui,Arial}
@@ -1921,7 +1922,7 @@ body.mapMode #controls{display:grid !important;}
 <div class="hud"><b>Context</b><span id="areaHud">Explore</span></div>
 <div class="hud"><b>Goal</b><span id="itemHud">Find Crystal</span></div>
 <div class="hud"><b>Save</b><span id="saveHud">Auto</span></div></div></header>
-<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Phase 3C Reference Hovel Village</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
+<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Phase 3D Village Pathing</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
 <div id="controls"><div id="dpad"><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="upBtn">⬆️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="leftBtn">⬅️</button><button class="dpadBtn ctrl" id="okBtn">OK</button><button class="dpadBtn ctrl gold" id="rightBtn">➡️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="downBtn">⬇️</button><button class="dpadBtn ctrl" disabled></button></div><div class="ctrl pink" id="partyBtn">👥 Party</div><div class="ctrl green" id="bagBtn">🎒 Bag</div><div class="ctrl" id="menuBtn">☰ Menu</div></div>
 </div>
 <script>
@@ -3456,6 +3457,9 @@ function drawStarbrookFunctionalMarkers(offX,offY,s,startX,startY){
   drawStarbrookShopMarker(offX,offY,s,startX,startY,20,16,"WEAPON","⚔");
 }
 
+const townWalkMask=["#############...############","#############...############","#############...############","#############...############","#############...############","######.######...###.#.######","#####..................#####","########.............#######","########.....###.....#######","########.....###.....#######","#####.##......##.....#.#####","####.........###........####","####....................####","####........####........####","#######.....####..##########","########....####..##########","########..........##.#######","########..............######","########..............######","############.....###########","############.....###########","############.....###########"];
+function townWalkable(x,y){return y>=0&&y<townWalkMask.length&&x>=0&&x<28&&townWalkMask[y][x]===".";}
+function canStepTo(x,y,t){return game.area==="town"?townWalkable(x,y):pass(t);}
 function terrain(x,y){
   if(x<0||y<0||x>=28||y>=22)return "w";
   let t;if(game.area==="town")t=townMap[y]?.[x]||"#";else if(game.area==="dungeon")t=caveMap[y]?.[x]||"#";else if(String(game.area).startsWith("shop_"))t=shopMap[y]?.[x]||"#";else t=worldMap[y]?.[x]||"g";
@@ -3469,7 +3473,7 @@ function enterShop(type){game.shopType=type;startMap("shop_"+type);toastMsg("Ent
 function leaveShop(){const type=game.shopType;game.shopType="";const door=type==="weapon"?{x:20,y:16}:type==="armor"?{x:21,y:5}:type==="item"?{x:22,y:10}:{x:5,y:10};startMap("town",door);toastMsg("Back in Starbrook.")}
 function move(dx,dy){if(mode!=="map"||overlay.style.display==="flex"||moveLock>0)return;
   if(dx||dy){playerDraw.facingX=dx>0?1:dx<0?-1:0;playerDraw.facingY=dy>0?1:dy<0?-1:0;}
-  let nx=game.x+dx,ny=game.y+dy,t=terrain(nx,ny);if(!pass(t)){toastMsg("Blocked.");return}
+  let nx=game.x+dx,ny=game.y+dy,t=terrain(nx,ny);if(!canStepTo(nx,ny,t)){toastMsg("Blocked.");return}
   playerDraw.fromX=playerDraw.x;playerDraw.fromY=playerDraw.y;game.x=nx;game.y=ny;playerDraw.toX=game.x;playerDraw.toY=game.y;playerDraw.start=performance.now();playerDraw.dur=300;playerDraw.moving=true;game.steps++;moveLock=18;
   if(game.area==="overworld"){
     if(t==="t"){game.lastWorldX=nx;game.lastWorldY=ny;startMap("town");return}
@@ -4662,7 +4666,7 @@ function showTitleScreen(){
       <button class="titleActionBtn" onclick="forceTitleStart('new')">New Game</button>
       <button class="titleActionBtn ${hasAnySave()?'':'disabled'}" onclick="showSaveSlots('load')">Continue</button>
     </div>
-    <div class="titleVersion">v1.5.48 • PHASE 3C • REFERENCE HOVEL VILLAGE</div>
+    <div class="titleVersion">v1.5.48 • PHASE 3D • VILLAGE PATHING</div>
   </div>`;
   if(typeof syncScreenControls==="function")syncScreenControls();
   bindTitleButtonFallbacks();
