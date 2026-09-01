@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Crystal Heroes v1.5.48 Phase 2 Battle Presentation</title>
+<title>Crystal Heroes v1.5.48 Phase 3A Town Reconstruction</title>
+<!-- Phase 3A: Starbrook starting-town visual reconstruction -->
 <!-- Phase 1B: battle facing / lane / weapon-attachment correction -->
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
@@ -1918,7 +1919,7 @@ body.mapMode #controls{display:grid !important;}
 <div class="hud"><b>Context</b><span id="areaHud">Explore</span></div>
 <div class="hud"><b>Goal</b><span id="itemHud">Find Crystal</span></div>
 <div class="hud"><b>Save</b><span id="saveHud">Auto</span></div></div></header>
-<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Phase 2 Battle Presentation</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
+<div id="stage"><canvas id="game"></canvas><div id="toast"></div><div id="banner"></div><button id="mapQuickMenu" onclick="showMenu()">☰</button><div id="touchHint">Slide and hold to walk 4-way • tap ☰ for menu</div><div id="battleBtns"><button onclick="battleAction('attack')">⚔️ Attack</button><button class="pink" onclick="battleAction('magic')">✨ Magic</button><button class="green" onclick="battleAction('item')">🧪 Item</button><button class="blue" onclick="battleAction('run')">🏃 Run</button></div><div id="battleCmdPanel" aria-label="Battle commands"></div><div id="overlay"><div class="panel"><div class="logo">Crystal<br>Heroes</div><h2>Crystal Heroes v1.5.48 Phase 3A Town Reconstruction</h2><p>Four heroes seek the Star Crystals. Explore, battle, level up, shop, and defeat the Thornroot Guardian.</p><div class="grid"><div class="tile">⚔️ Fighter</div><div class="tile">🌑 Dark Mage</div><div class="tile">🙏 Cleric</div><div class="tile">⚙️ Tinkerer</div><div class="tile">🗺️ Map</div><div class="tile">🏘️ Town</div><div class="tile">🕳️ Cave</div><div class="tile">👑 Boss</div></div><div class="row"><button onclick="newGame()">▶️ New Adventure</button><button class="green" onclick="continueGame()">💾 Continue</button><button class="blue" onclick="showHow()">❔ Instructions</button><button class="pink" onclick="openPartySafe()">👥 Party</button></div></div></div></div>
 <div id="controls"><div id="dpad"><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="upBtn">⬆️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="leftBtn">⬅️</button><button class="dpadBtn ctrl" id="okBtn">OK</button><button class="dpadBtn ctrl gold" id="rightBtn">➡️</button><button class="dpadBtn ctrl" disabled></button><button class="dpadBtn ctrl gold" id="downBtn">⬇️</button><button class="dpadBtn ctrl" disabled></button></div><div class="ctrl pink" id="partyBtn">👥 Party</div><div class="ctrl green" id="bagBtn">🎒 Bag</div><div class="ctrl" id="menuBtn">☰ Menu</div></div>
 </div>
 <script>
@@ -2497,7 +2498,7 @@ const enemyFamilies={
 function enemyByName(name){return enemies.find(e=>e[0]===name)}
 
 let worldMap=["wwwwwwwwwwwwwwwwwwwwwwwwwwww","wggggggggggggggggggggggggggw","wggfffgffggggggwggggmmgmmggw","wggffgfffggggggwgggmmgmmgggw","wggfgfffgggggggwgggmgmmgmggw","wgggfffgfggglggwggggmmgmmggw","wggfffgffggggggwgggggggggggw","wggffgfffggggggwggggfgffffgw","wggggggtrrrrrrrwggggffffgfgw","wgggggggggggggrwggggffgfffgw","wgggggggggggggrrrrrrrrrffggw","wgggggggggggggggwgggffrgffgw","wgggggggggggggggwgggfgrfffgw","wgggggggggggggggwgggffcfgfgw","wgggggggggggggggwgggffgfffgw","wgggggggggggggggwggggggggggw","wgggmgmmgmmgggggwggggggggggw","wggggmmgmmggggggwglggggggggw","wgggmmgmmgmgggggwggggggggggw","wgggmgmmgmmgggggwggggggggggw","wggggggggggggggggggggggggggw","wwwwwwwwwwwwwwwwwwwwwwwwwwww"];
-let townMap=["############################","############################","##........................##","##.#####..#####..###########","##.#####..#####..###########","##.#####..#####..###########","##.##I##..##S##..##W###A####","##........................##","##...............N........##","##..........Q.F...........##","##........................##","##........n.......n.......##","##.######..........######.##","##.######..........######.##","##.######.....N....######.##","##.######..........######.##","##.##H###..........##H###.##","##........................##","##........................##","##............E...........##","############################","############################"];
+let townMap=["mmmmmmmmmmmmmmmmmmmmmmmmmmmm","mmmmmmmmmmggggggggmmmmmmmmmm","mmgggg####ggrrrrgg####ggggmm","mmgggg####ggrrrrgg####ggggmm","mmgggg####ggrrrrgg####ggggmm","mmgggggI..ggrrrrgg..Sgggggmm","mmrrrrrrrrrrrrrrrrrrrrrrrrmm","mmrrr####rrr.FF.rrr####rrrmm","mmrrr####rrr.FF.rrr####rrrmm","mmrrr####rrr....rrr####rrrmm","mmrrrrWrrrrr....rrrrrArrrrmm","mmrrrrrrrrrrrQrrrrrrrrrrrrmm","mmggmgg####......####ggmggmm","mmggggg####..N...####gggggmm","mmggggg####......####gggggmm","mmggggggH....n.....Hggggggmm","mmggggggggggg..gggggggggggmm","mmggggggggggg..gggggggggggmm","mmrrrrrrrrrrrr..rrrrrrrrrrmm","mmggggggHgggggEgggggHgggggmm","mmggggggggggg..gggggggggggmm","mmmmmmmmmmmmmmmmmmmmmmmmmmmm"];
 let caveMap=["############################","############################","############################","#######################B####","#######################.####","#######################.####","#################...L...####","#################.##########","############T..##.....######","########...###.##.###L######","########.#........###.######","#####....#.###.######.######","#####.####.....######T######","#####.####.#################","###........#################","###.###.####################","###.###.####################","###.###.....T###############","###.########################","###E########################","############################","############################"];
 const shopMap=["############################","############################","############################","############################","#####..................#####","#####..................#####","#####.........K........#####","#####..................#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..s..s.......s..s.#####","#####..................#####","#####..................#####","#####..................#####","#####.........E........#####","############################","############################","############################"];
 function defGame(){return{gold:120,steps:0,area:"overworld",x:8,y:8,items:{Potion:5,Ether:1,"Smoke Bomb":1},inventory:["Iron Sword","Old Staff","Oak Club","Slingshot","Cloth Tunic","Cloth Tunic","Cloth Tunic","Cloth Tunic"],bossDead:false,crystal:false,localQuest:"not_started",openedChests:{},shopType:"",lastWorldX:8,lastWorldY:8,party:[
@@ -3956,7 +3957,7 @@ function drawMap(){
 
   for(let y=0;y<vh;y++){
     for(let x=0;x<vw;x++){
-      drawTile(offX+x*s,offY+y*s,s,terrain(startX+x,startY+y));
+      drawTile(offX+x*s,offY+y*s,s,terrain(startX+x,startY+y),startX+x,startY+y);
     }
   }
 
@@ -3996,13 +3997,138 @@ function drawMap(){
   ctx.fillText("🧙‍♂️",0,0);
   ctx.restore();
 }
-function drawTile(x,y,s,t){
+
+function townBuildingStyle(mx,my){
+  const styles={
+    I:{roof:"#9a3f3f",trim:"#f3e4c7",wall:"#d6c39a",sign:"inn"},
+    S:{roof:"#4e8c83",trim:"#dff8f1",wall:"#d9cab0",sign:"item"},
+    W:{roof:"#a86a2e",trim:"#f9ecd6",wall:"#dcc7a8",sign:"weapon"},
+    A:{roof:"#5b6f8f",trim:"#edf2ff",wall:"#d5c8b6",sign:"armor"},
+    H:{roof:"#7f5a43",trim:"#f3e6d0",wall:"#d8c7ab",sign:"home"}
+  };
+  let best=null,bestDist=99;
+  for(let yy=Math.max(0,my-3);yy<=Math.min(21,my+3);yy++){
+    for(let xx=Math.max(0,mx-3);xx<=Math.min(27,mx+3);xx++){
+      const tt=terrain(xx,yy);
+      if(styles[tt]){
+        const d=Math.abs(xx-mx)+Math.abs(yy-my);
+        if(d<bestDist){best=styles[tt];bestDist=d;}
+      }
+    }
+  }
+  return best||styles.H;
+}
+function townDrawCobble(x,y,s,edge=false){
+  ctx.fillStyle=edge?"#bea175":"#cbb086";ctx.fillRect(x,y,s,s);
+  ctx.strokeStyle="rgba(115,78,46,.18)";ctx.lineWidth=1*dpr;
+  for(let i=0;i<4;i++){
+    const rx=x+((i*11+5)%Math.max(8,s-10));
+    const ry=y+((i*7+9)%Math.max(8,s-10));
+    ctx.strokeRect(rx,ry,6*dpr,4*dpr);
+  }
+  ctx.fillStyle="rgba(255,255,255,.18)";
+  ctx.fillRect(x,y,s,.08*s);
+}
+function townDrawGrass(x,y,s,variant="grass"){
+  ctx.fillStyle=variant==="flower"?"#7abf63":"#6fb45d";ctx.fillRect(x,y,s,s);
+  ctx.fillStyle="#8fd276";ctx.fillRect(x,y,s,.14*s);
+  ctx.fillStyle="#4e8d45";
+  for(let i=0;i<3;i++)ctx.fillRect(x+((i*13+7)%Math.max(8,s-6)),y+((i*9+10)%Math.max(8,s-12)),2*dpr,7*dpr);
+  if(variant==="flower"){
+    ctx.fillStyle="#ffd6ea";ctx.fillRect(x+s*.24,y+s*.32,3*dpr,3*dpr);ctx.fillRect(x+s*.62,y+s*.56,3*dpr,3*dpr);
+    ctx.fillStyle="#fff48c";ctx.fillRect(x+s*.44,y+s*.42,3*dpr,3*dpr);
+  }
+}
+function townDrawTreeWall(x,y,s,mx,my){
+  townDrawGrass(x,y,s);
+  if((mx+my)%2===0){
+    ctx.fillStyle="#3e6e35";ctx.beginPath();ctx.arc(x+s*.5,y+s*.38,s*.28,0,7);ctx.fill();
+    ctx.fillStyle="#4b7f3e";ctx.beginPath();ctx.arc(x+s*.36,y+s*.46,s*.2,0,7);ctx.fill();ctx.beginPath();ctx.arc(x+s*.64,y+s*.46,s*.2,0,7);ctx.fill();
+    ctx.fillStyle="#6c4c34";ctx.fillRect(x+s*.44,y+s*.52,s*.12,s*.2);
+  }else{
+    ctx.fillStyle="#8d8b7e";ctx.beginPath();ctx.moveTo(x+s*.14,y+s*.8);ctx.lineTo(x+s*.36,y+s*.28);ctx.lineTo(x+s*.58,y+s*.55);ctx.lineTo(x+s*.84,y+s*.2);ctx.lineTo(x+s*.88,y+s*.8);ctx.fill();
+    ctx.fillStyle="#b5b2a5";ctx.fillRect(x+s*.2,y+s*.72,s*.55,s*.07);
+  }
+}
+function townDrawBuildingRoof(x,y,s,mx,my){
+  const north=terrain(mx,my-1)==="#", south=terrain(mx,my+1)==="#", east=terrain(mx+1,my)==="#", west=terrain(mx-1,my)==="#";
+  const style=townBuildingStyle(mx,my);
+  ctx.fillStyle=style.roof;ctx.fillRect(x,y,s,s);
+  ctx.fillStyle="rgba(255,255,255,.12)";ctx.fillRect(x,y,s,.14*s);
+  ctx.fillStyle="rgba(0,0,0,.12)";ctx.fillRect(x,y+s*.78,s,s*.22);
+  ctx.strokeStyle="rgba(71,37,24,.45)";ctx.lineWidth=1.2*dpr;
+  if(!north){ctx.beginPath();ctx.moveTo(x,y+s*.16);ctx.lineTo(x+s,y+s*.16);ctx.stroke();}
+  ctx.beginPath();ctx.moveTo(x+s*.5,y+.08*s);ctx.lineTo(x+s*.5,y+s*.78);ctx.stroke();
+  if(!south){
+    ctx.fillStyle=style.wall;ctx.fillRect(x,y+s*.74,s,s*.24);
+    ctx.fillStyle=style.trim;ctx.fillRect(x,y+s*.72,s,s*.05);
+    ctx.fillStyle="#8f6b4e";
+    if(!east)ctx.fillRect(x+s*.68,y+s*.8,s*.11,s*.1);
+    if(!west)ctx.fillRect(x+s*.21,y+s*.8,s*.11,s*.1);
+  }
+  if(!east){ctx.fillStyle="rgba(0,0,0,.16)";ctx.fillRect(x+s*.9,y+s*.08,s*.1,s*.84);}
+}
+function townDrawDoorTile(x,y,s,t,mx,my){
+  townDrawCobble(x,y,s,false);
+  const style={I:{roof:"#9a3f3f",trim:"#f3e4c7",icon:"INN"},S:{roof:"#4e8c83",trim:"#dff8f1",icon:"POT"},W:{roof:"#a86a2e",trim:"#f9ecd6",icon:"ARM"},A:{roof:"#5b6f8f",trim:"#edf2ff",icon:"DEF"},H:{roof:"#7f5a43",trim:"#f3e6d0",icon:"HOME"}}[t]||{roof:"#7f5a43",trim:"#fff",icon:""};
+  ctx.fillStyle=style.trim;ctx.fillRect(x+s*.18,y+s*.04,s*.64,s*.18);
+  ctx.fillStyle=style.roof;ctx.fillRect(x+s*.22,y+s*.08,s*.56,s*.1);
+  ctx.fillStyle="#d8c7ab";ctx.fillRect(x+s*.2,y+s*.26,s*.6,s*.52);
+  ctx.fillStyle="#7a5537";ctx.fillRect(x+s*.39,y+s*.4,s*.22,s*.38);
+  ctx.fillStyle="#e7f3ff";ctx.fillRect(x+s*.26,y+s*.42,s*.09,s*.14);ctx.fillRect(x+s*.65,y+s*.42,s*.09,s*.14);
+  ctx.fillStyle="#bea175";ctx.fillRect(x+s*.3,y+s*.78,s*.4,s*.08);
+  if(t!=="H"){
+    ctx.fillStyle="#f6e4ae";ctx.fillRect(x+s*.66,y+s*.26,s*.2,s*.2);
+    ctx.strokeStyle="#6a4a20";ctx.strokeRect(x+s*.66,y+s*.26,s*.2,s*.2);
+    ctx.fillStyle="#5c3d1d";ctx.font=`${Math.max(7,s*.13)}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(style.icon,x+s*.76,y+s*.36);
+  }
+}
+function townDrawNpc(x,y,s,t){
+  townDrawCobble(x,y,s,false);
+  const palette=t==="Q"?["#304d7c","#e8e2d0","#d4b06c"]:t==="N"?["#4b7a3d","#eadcc6","#985c42"]:["#7a4e88","#eedfca","#c06d56"];
+  ctx.fillStyle="rgba(0,0,0,.18)";ctx.beginPath();ctx.ellipse(x+s*.5,y+s*.8,s*.18,s*.08,0,0,7);ctx.fill();
+  ctx.fillStyle=palette[0];ctx.fillRect(x+s*.36,y+s*.42,s*.28,s*.24);
+  ctx.fillStyle=palette[1];ctx.beginPath();ctx.arc(x+s*.5,y+s*.34,s*.12,0,7);ctx.fill();
+  ctx.fillStyle=palette[2];ctx.fillRect(x+s*.4,y+s*.22,s*.2,s*.05);
+}
+function townDrawFountain(x,y,s){
+  townDrawCobble(x,y,s,true);
+  ctx.fillStyle="#7f8b92";ctx.beginPath();ctx.arc(x+s*.5,y+s*.55,s*.3,0,7);ctx.fill();
+  ctx.fillStyle="#d7e4ea";ctx.beginPath();ctx.arc(x+s*.5,y+s*.55,s*.22,0,7);ctx.fill();
+  ctx.fillStyle="#67b7dc";ctx.beginPath();ctx.arc(x+s*.5,y+s*.55,s*.17,0,7);ctx.fill();
+  ctx.fillStyle="#d9d4ca";ctx.fillRect(x+s*.44,y+s*.22,s*.12,s*.18);
+  ctx.fillStyle="#bfefff";ctx.fillRect(x+s*.485,y+s*.12,s*.03,s*.14);
+}
+function townDrawGate(x,y,s){
+  townDrawCobble(x,y,s,true);
+  ctx.fillStyle="#78634a";ctx.fillRect(x+s*.16,y+s*.14,s*.12,s*.6);ctx.fillRect(x+s*.72,y+s*.14,s*.12,s*.6);
+  ctx.fillStyle="#8f7658";ctx.fillRect(x+s*.16,y+s*.14,s*.68,s*.1);
+  ctx.fillStyle="#b79360";ctx.fillRect(x+s*.32,y+s*.34,s*.36,s*.34);
+  ctx.fillStyle="#5d4028";ctx.fillRect(x+s*.35,y+s*.34,s*.3,s*.05);ctx.fillRect(x+s*.35,y+s*.48,s*.3,s*.05);
+}
+function drawTile(x,y,s,t,mx,my){
   const area=game.area;
   let base="#4dbb4b";
   if(area==="overworld")base=t==="w"?"#347fbd":t==="f"?"#267542":t==="m"?"#746c66":t==="r"?"#b99463":t==="b"?"#a97e50":t==="t"?"#d6b06e":t==="c"?"#514b5c":t==="l"?"#77924c":"#55a84c";
   else if(area==="town")base=t==="#"?"#9a7557":t==="F"?"#67b7dc":t==="E"?"#d4b55e":"#c8b083";
   else if(area==="dungeon")base=t==="#"?"#262838":t==="L"?"#55476a":t==="B"?"#355e3c":"#4a4656";
   else base=t==="#"?"#6f5649":t==="s"?"#987353":t==="K"?"#d7aa66":t==="E"?"#d4b55e":"#b99a78";
+
+  if(area==="town"){
+    const roadSet=new Set([".","r","I","S","W","A","H","Q","N","n","E"]);
+    if(t==="m") townDrawTreeWall(x,y,s,mx,my);
+    else if(t==="g") townDrawGrass(x,y,s,(mx+my)%5===0?"flower":"grass");
+    else if(t==="#") townDrawBuildingRoof(x,y,s,mx,my);
+    else if(t==="F") townDrawFountain(x,y,s);
+    else if(["I","S","W","A","H"].includes(t)) townDrawDoorTile(x,y,s,t,mx,my);
+    else if(["Q","N","n"].includes(t)) townDrawNpc(x,y,s,t);
+    else if(t==="E") townDrawGate(x,y,s);
+    else if(roadSet.has(t)) townDrawCobble(x,y,s,t==="r");
+    else townDrawGrass(x,y,s);
+    ctx.strokeStyle="rgba(0,0,0,.06)";ctx.strokeRect(x,y,s,s);
+    return;
+  }
+
   ctx.fillStyle=base;ctx.fillRect(x,y,s,s);
   if(area==="overworld"){
     if(t==="w"){ctx.strokeStyle="#8de8ff88";ctx.lineWidth=2*dpr;ctx.beginPath();ctx.moveTo(x+s*.1,y+s*.38);ctx.quadraticCurveTo(x+s*.5,y+s*.23,x+s*.9,y+s*.38);ctx.stroke();}
@@ -4011,11 +4137,10 @@ function drawTile(x,y,s,t){
     if(t==="b"){ctx.fillStyle="#9c7147";ctx.fillRect(x,y+s*.15,s,s*.7);ctx.strokeStyle="#6d4d32";for(let k=0;k<4;k++){ctx.beginPath();ctx.moveTo(x+k*s/4,y+s*.15);ctx.lineTo(x+k*s/4,y+s*.85);ctx.stroke()}}
     if(t==="m"){ctx.fillStyle="#a39588";ctx.beginPath();ctx.moveTo(x+s*.12,y+s*.8);ctx.lineTo(x+s*.5,y+s*.18);ctx.lineTo(x+s*.86,y+s*.8);ctx.fill()}
   }
-  if(area==="town"&&t==="#"){ctx.fillStyle="#b88b63";ctx.fillRect(x+s*.08,y+s*.08,s*.84,s*.84);ctx.fillStyle="#77513e";ctx.fillRect(x+s*.08,y+s*.08,s*.84,s*.22)}
-  if(area==="dungeon"&&t==="#"){ctx.strokeStyle="#3e4055";ctx.strokeRect(x+s*.1,y+s*.1,s*.8,s*.8)}
+  if(area==="dungeon"&&t==="#")ctx.strokeStyle="#3e4055",ctx.strokeRect(x+s*.1,y+s*.1,s*.8,s*.8);
   if(String(area).startsWith("shop_")&&t==="s"){ctx.fillStyle="#7a583e";ctx.fillRect(x+s*.12,y+s*.1,s*.76,s*.8);ctx.fillStyle="#d4b06c";ctx.fillRect(x+s*.2,y+s*.25,s*.6,s*.12);ctx.fillRect(x+s*.2,y+s*.58,s*.6,s*.12)}
   ctx.strokeStyle="rgba(0,0,0,.18)";ctx.strokeRect(x,y,s,s);
-  let icon=t==="t"?"🏘️":t==="c"?"🕳️":t==="l"?"🪧":t==="I"?"🏨":t==="S"?"🧪":t==="W"?"⚔️":t==="A"?"🛡️":t==="Q"?"🧑‍✈️":t==="N"?"🧑":t==="n"?"🧑":t==="F"?"⛲":t==="H"?"🏠":t==="B"?"🌳":t==="T"?"🎁":t==="o"?"📭":t==="L"?"🪨":t==="K"?"🧑‍💼":t==="E"?"🚪":"";
+  let icon=t==="t"?"🏘️":t==="c"?"🕳️":t==="l"?"🪧":t==="B"?"🌳":t==="T"?"🎁":t==="o"?"📭":t==="L"?"🪨":t==="K"?"🧑‍💼":t==="E"?"🚪":"";
   if(icon){ctx.font=`${s*.48}px system-ui`;ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(icon,x+s/2,y+s/2)}
 }
 
