@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,maximum-scale=1">
+<meta name="theme-color" content="#ffd7ec">
+<title>Pet Dress Up — Gemma</title>
+<style>
+:root{
+  --ink:#533d61;--pink:#ff83bd;--pink2:#ffd5e9;--mint:#9be0cc;--sky:#9bdcf5;--gold:#ffd872;
+  --cream:#fff9ef;--glass:rgba(255,255,255,.92);--shadow:rgba(91,55,101,.18);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;overscroll-behavior:none;touch-action:none;background:#f4d9ee;font-family:ui-rounded,"SF Pro Rounded","Arial Rounded MT Bold",system-ui,sans-serif;color:var(--ink)}
+button{font:inherit;color:inherit;touch-action:manipulation}
+button:active{transform:translateY(2px)}
+#app{position:relative;width:100vw;height:100dvh;max-width:1120px;margin:auto;overflow:hidden;background:linear-gradient(180deg,#f7d7ec 0 18%,#e9fbff 18% 64%,#fde8cf 64% 100%)}
+.hidden{display:none!important}
+
+/* shop room */
+#room{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.wallDots{position:absolute;inset:0 0 36%;opacity:.28;background-image:radial-gradient(circle,#fff 0 3px,transparent 3.5px);background-size:27px 27px}
+.awning{position:absolute;left:0;right:0;top:15%;height:54px;background:repeating-linear-gradient(90deg,#ff9bc8 0 42px,#fff6fb 42px 84px);clip-path:polygon(0 0,100% 0,100% 64%,97% 100%,94% 64%,91% 100%,88% 64%,85% 100%,82% 64%,79% 100%,76% 64%,73% 100%,70% 64%,67% 100%,64% 64%,61% 100%,58% 64%,55% 100%,52% 64%,49% 100%,46% 64%,43% 100%,40% 64%,37% 100%,34% 64%,31% 100%,28% 64%,25% 100%,22% 64%,19% 100%,16% 64%,13% 100%,10% 64%,7% 100%,4% 64%,0 100%)}
+.shelf{position:absolute;top:26%;width:18%;height:30%;border:6px solid #bb8e67;border-radius:18px;background:linear-gradient(90deg,#efd4ad,#fff0d4,#efd4ad);box-shadow:0 8px 0 #8f654844}
+.shelf:before,.shelf:after{content:"";position:absolute;left:7%;right:7%;height:7px;background:#b47d56;border-radius:5px}.shelf:before{top:31%}.shelf:after{top:64%}
+.shelf.left{left:2%}.shelf.right{right:2%}
+.hanger{position:absolute;width:38px;height:30px;border:4px solid #7c6587;border-top:0;transform:rotate(45deg);border-radius:0 0 7px 0;opacity:.65}.h1{left:6%;top:29%}.h2{left:11%;top:35%;transform:rotate(20deg)}.h3{right:7%;top:31%;transform:rotate(65deg)}
+.mirror{position:absolute;right:6%;top:22%;width:15%;height:28%;border:8px solid #e8b95f;border-radius:50% 50% 42% 42%;background:linear-gradient(135deg,#d8f5ff,#fff);box-shadow:0 8px 0 #9e713f33}
+.rug{position:absolute;left:18%;right:18%;bottom:18%;height:20%;border-radius:50%;background:radial-gradient(ellipse,#ffd7e9 0 44%,#f2bcd4 45% 60%,transparent 61%);opacity:.78}
+.counter{position:absolute;left:2%;bottom:1%;width:26%;height:15%;border-radius:22px 22px 0 0;background:linear-gradient(#bc81aa,#8e638a);box-shadow:inset 0 9px #ddb5d0}
+#decorLayerRoom{position:absolute;inset:0}
+.room-flowerShelf:after{content:"";position:absolute;left:4%;top:42%;width:15%;height:9%;background:radial-gradient(circle at 10% 70%,#ff7fba 0 7px,transparent 8px),radial-gradient(circle at 30% 30%,#ffe073 0 7px,transparent 8px),radial-gradient(circle at 54% 62%,#9ae8d1 0 7px,transparent 8px),radial-gradient(circle at 78% 35%,#bda1ff 0 7px,transparent 8px)}
+.room-starMirror .mirror{box-shadow:0 0 0 8px #fff5b7,0 0 30px #ffe87d,0 8px 0 #9e713f33}
+.room-rainbowRug .rug{background:radial-gradient(ellipse,#fff 0 19%,#ff9cbb 20% 29%,#ffd777 30% 39%,#95e6c9 40% 49%,#9bdcf5 50% 59%,transparent 60%)}
+.room-goldRack .shelf{border-color:#e3b847;box-shadow:0 0 18px #ffdf7a99}
+
+/* HUD + request */
+#hud{position:absolute;left:0;right:0;top:0;z-index:12;display:flex;align-items:flex-start;justify-content:space-between;padding:max(7px,env(safe-area-inset-top)) 8px 0;pointer-events:none}
+.hudGroup{display:flex;gap:6px;align-items:center}
+.pill{pointer-events:auto;min-height:38px;display:flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #ffffffcc;border-radius:15px;background:var(--glass);box-shadow:0 5px 0 rgba(80,50,90,.08);font-size:11px;font-weight:1000;backdrop-filter:blur(8px)}
+.pill b{font-size:17px}.iconBtn{border:0;cursor:pointer}
+#request{position:absolute;z-index:11;left:8px;right:8px;top:calc(max(7px,env(safe-area-inset-top)) + 44px);min-height:80px;display:grid;grid-template-columns:64px 1fr auto;gap:9px;align-items:center;padding:8px 10px;border:2px solid #fff;border-radius:22px;background:rgba(255,255,255,.94);box-shadow:0 6px 0 rgba(90,55,95,.09);backdrop-filter:blur(7px)}
+.customerAvatar{position:relative;width:58px;height:58px;border-radius:50%;background:var(--shirt,#9fd9ee);overflow:hidden;border:3px solid #fff;box-shadow:0 3px 0 #d5c0da}
+.customerAvatar .face{position:absolute;left:15px;top:12px;width:29px;height:32px;border-radius:48% 48% 45% 45%;background:var(--skin,#f1c4a2)}
+.customerAvatar .hair{position:absolute;left:11px;top:5px;width:38px;height:22px;border-radius:50% 50% 35% 35%;background:var(--hair,#6b4635)}
+.customerAvatar .eye{position:absolute;top:25px;width:3px;height:4px;border-radius:50%;background:#604954}.customerAvatar .eye.l{left:22px}.customerAvatar .eye.r{left:34px}
+.customerAvatar .smile{position:absolute;left:27px;top:34px;width:10px;height:5px;border-bottom:2px solid #b7667b;border-radius:50%}
+.reqName{font-size:11px;font-weight:950;color:#8c6b95;margin-bottom:2px}.reqText{font-size:13px;line-height:1.22;font-weight:1000}.clues{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}.clue{padding:4px 6px;border-radius:10px;background:#f3e7f5;font-size:9px;font-weight:1000;white-space:nowrap}.clue.free{background:#dff8e7;color:#356b46}
+#requestPetBadge{font-size:11px;font-weight:1000;text-align:center;color:#806486;min-width:50px}.badgePet{display:block;font-size:28px;margin-bottom:2px}
+
+/* pet stage */
+#stage{position:absolute;left:0;right:0;top:calc(max(7px,env(safe-area-inset-top)) + 132px);bottom:238px;z-index:5;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#customerBubble{position:absolute;left:4%;top:10%;max-width:150px;padding:8px 10px;border-radius:15px 15px 15px 4px;background:white;border:2px solid #f0d7e8;font-size:10px;font-weight:950;opacity:0;transform:translateY(6px);transition:.22s;box-shadow:0 4px 0 #7f5b7430}
+#customerBubble.show{opacity:1;transform:translateY(0)}
+#pedestal{position:absolute;left:50%;bottom:1%;width:min(78vw,390px);height:17%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,#fff 0 45%,#e6cedb 46% 63%,transparent 64%);filter:drop-shadow(0 10px 7px #65475b22)}
+#petWrap{position:relative;width:min(78vw,410px);height:min(100%,430px);max-height:100%;transform-origin:center bottom;transition:.15s}
+#petWrap.react{animation:petHappy .52s cubic-bezier(.2,.8,.3,1)}
+#petWrap.shy{animation:petShy .5s ease}
+@keyframes petHappy{0%{transform:scale(1)}28%{transform:translateY(-10px) rotate(-3deg) scale(1.03)}52%{transform:translateY(-15px) rotate(4deg) scale(1.04)}100%{transform:scale(1)}}
+@keyframes petShy{0%,100%{transform:rotate(0)}30%{transform:rotate(-2deg) scale(.99)}60%{transform:rotate(2deg) scale(.99)}}
+#petSvg{width:100%;height:100%;filter:drop-shadow(0 9px 5px rgba(72,50,66,.16));overflow:visible}
+#stickers{position:absolute;inset:6% 8% 4%;z-index:8;pointer-events:none}
+.petSticker{position:absolute;transform:translate(-50%,-50%);font-size:clamp(22px,6vw,32px);filter:drop-shadow(0 2px 2px #6a446055);pointer-events:auto;touch-action:none;cursor:grab}.petSticker:active{cursor:grabbing}
+#sparkles{position:absolute;inset:0;pointer-events:none;z-index:9}.spark{position:absolute;font-size:18px;animation:spark .7s ease-out forwards}@keyframes spark{from{opacity:1;transform:translate(0,0) scale(.4) rotate(0)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.2) rotate(80deg)}}
+
+/* styling controls */
+#styler{position:absolute;left:0;right:0;bottom:0;height:238px;z-index:15;background:rgba(255,255,255,.96);border-top:1px solid #e6cadb;box-shadow:0 -8px 25px #6d4b6617;padding:7px 8px max(7px,env(safe-area-inset-bottom));backdrop-filter:blur(10px)}
+#tabs{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding-bottom:5px}#tabs::-webkit-scrollbar,#options::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;height:36px;border:0;border-radius:12px;padding:5px 10px;background:#f0e5f2;font-size:10px;font-weight:1000;white-space:nowrap}.tab.active{background:#72537f;color:#fff;box-shadow:0 3px 0 #51385d}
+#options{height:126px;display:flex;gap:7px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;padding:3px 1px 7px}
+.itemCard{position:relative;flex:0 0 82px;height:112px;border:2px solid transparent;border-radius:16px;background:#fff;padding:6px 4px;text-align:center;box-shadow:0 4px 0 #74596b14;scroll-snap-align:start;font-size:9px;font-weight:1000;overflow:hidden}
+.itemCard.active{border-color:#f2b94c;background:#fff9dc}.itemCard.locked{filter:saturate(.55);background:#f4eef3;color:#9c899d}.itemCard .preview{height:64px;display:grid;place-items:center;font-size:30px}.itemCard .name{line-height:1.08}.lockTag{position:absolute;right:4px;top:4px;padding:2px 5px;border-radius:8px;background:#715775;color:white;font-size:8px}.swatch{width:46px;height:46px;border-radius:50%;border:4px solid white;box-shadow:0 0 0 2px #d8bfd0;margin:auto}.patternPreview{width:50px;height:50px;border-radius:15px;border:3px solid white;box-shadow:0 0 0 2px #d8bfd0;margin:auto;background-color:var(--pc,#f39bc5)}
+.patternPreview.dots{background-image:radial-gradient(circle,#fff 0 3px,transparent 3.5px);background-size:14px 14px}.patternPreview.stripes{background-image:repeating-linear-gradient(125deg,rgba(255,255,255,.65) 0 7px,transparent 7px 15px)}.patternPreview.hearts{background-image:radial-gradient(circle at 35% 35%,#fff 0 3px,transparent 3.5px),radial-gradient(circle at 66% 66%,#fff2a7 0 3px,transparent 3.5px);background-size:18px 18px}.patternPreview.stars{background-image:radial-gradient(circle,#fff7a6 0 3px,transparent 3.5px);background-size:17px 17px}.patternPreview.confetti{background-image:linear-gradient(45deg,transparent 44%,#7fe2d1 45% 53%,transparent 54%),linear-gradient(-45deg,transparent 44%,#ffe17b 45% 53%,transparent 54%);background-size:16px 16px}.patternPreview.rainbow{background:linear-gradient(135deg,#ff8caf,#ffd56f,#8fe0c7,#91d7f7,#c5a1f2)}
+#actionRow{height:58px;display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:7px;padding-top:4px}.action{border:0;border-radius:15px;background:#efe5f1;font-size:10px;font-weight:1000;box-shadow:0 4px 0 #6e536618}.action.primary{background:linear-gradient(#ff9bc8,#f373ad);color:white;box-shadow:0 5px 0 #bc4c84;font-size:13px}.action.shop{background:linear-gradient(#fff0a5,#ffd365);color:#765119;box-shadow:0 5px 0 #d6a539}
+
+/* overlays */
+.overlay{position:absolute;inset:0;z-index:40;display:grid;place-items:center;padding:16px;background:linear-gradient(rgba(241,214,235,.88),rgba(217,244,248,.9));backdrop-filter:blur(5px)}
+.modal{width:min(94vw,620px);max-height:90dvh;overflow:auto;background:rgba(255,255,255,.98);border-radius:30px;padding:20px;text-align:center;box-shadow:0 12px 0 #9f75943a,0 25px 60px #60435d30;border:2px solid #fff}
+.logo{margin:0;color:#e46da8;font-size:clamp(43px,11vw,72px);line-height:.88;text-shadow:0 3px 0 #fff,0 6px 0 #d8a9ca;letter-spacing:-.04em}.logo small{display:block;font-size:.38em;color:#71567e;letter-spacing:.02em;margin-top:9px;text-shadow:none}
+.sub{font-size:13px;line-height:1.4;font-weight:850;color:#715f77}
+.bigBtn{width:100%;min-height:62px;border:0;border-radius:19px;background:linear-gradient(#ff9cca,#ed6ba9);color:white;font-size:18px;font-weight:1000;box-shadow:0 7px 0 #b94680}.bigBtn:active{box-shadow:0 3px 0 #b94680;transform:translateY(4px)}
+.startPets{height:125px;position:relative;margin:4px 0 10px}.startPets .mini{position:absolute;bottom:0;width:110px;height:110px}.startPets .m1{left:15%;transform:rotate(-7deg)}.startPets .m2{left:50%;transform:translateX(-50%) scale(1.08)}.startPets .m3{right:15%;transform:rotate(7deg)}
+.resultPet{width:190px;height:190px;margin:-10px auto -5px}.hearts{font-size:32px;letter-spacing:3px}.rewardBurst{display:flex;justify-content:center;gap:12px;margin:9px 0}.rewardChip{padding:8px 12px;background:#fff4d0;border-radius:14px;font-weight:1000}.feedback{padding:9px;border-radius:14px;background:#f6edf7;font-size:12px;font-weight:900;line-height:1.35;margin:8px 0}.unlockCallout{padding:10px;border-radius:15px;background:#e3faee;color:#326645;font-size:12px;font-weight:1000;margin:8px 0}
+
+/* boutique */
+#boutique .modal{text-align:left}.modalHead{display:flex;justify-content:space-between;align-items:center;gap:8px}.modalHead h2{margin:0;color:#80568a}.closeBtn{width:auto;min-width:48px;border:0;border-radius:12px;background:#eee3ef;padding:9px;font-weight:1000}.shopTabs{display:flex;gap:5px;overflow-x:auto;margin:10px 0 8px}.shopTab{flex:0 0 auto;border:0;border-radius:11px;padding:7px 9px;background:#eee4f0;font-size:10px;font-weight:1000}.shopTab.active{background:#765783;color:#fff}.shopGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.shopItem{border:2px solid #eee0ec;border-radius:17px;background:white;padding:9px;text-align:center;min-height:122px}.shopItem .shopPrev{font-size:32px;height:45px;display:grid;place-items:center}.shopItem h4{margin:2px 0;font-size:11px}.shopItem p{margin:3px 0;font-size:9px;color:#89758c}.buyBtn{width:100%;min-height:34px;border:0;border-radius:11px;background:#ffe083;color:#6e4e11;font-size:10px;font-weight:1000}.buyBtn.owned{background:#dff6e7;color:#356a46}.buyBtn.use{background:#dfe7ff;color:#4d5f91}
+
+/* royal show */
+#royalHeader{position:absolute;z-index:17;left:50%;top:calc(max(7px,env(safe-area-inset-top)) + 132px);transform:translateX(-50%);padding:5px 10px;border-radius:12px;background:#765386;color:white;font-size:10px;font-weight:1000;box-shadow:0 4px 0 #51365d;display:none}
+#royalHeader.show{display:block}.royalPets{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}.royalPet{height:180px;border-radius:18px;background:linear-gradient(#e8f8ff,#fff0f7);overflow:hidden;border:2px solid #fff}.royalPet svg{width:100%;height:100%}.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}.confetti i{position:absolute;top:-10%;width:10px;height:18px;border-radius:3px;animation:fall var(--d) linear infinite;transform:rotate(var(--r));background:var(--c)}@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+
+/* toast */
+#toast{position:absolute;z-index:60;left:50%;top:calc(max(10px,env(safe-area-inset-top)) + 10px);transform:translate(-50%,-12px);max-width:86%;padding:9px 14px;border-radius:14px;background:#644c70;color:white;font-size:11px;font-weight:1000;box-shadow:0 5px 0 #3d2e45;opacity:0;transition:.2s;pointer-events:none;text-align:center}#toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(max-width:430px){
+  #request{grid-template-columns:56px 1fr auto;min-height:76px}.customerAvatar{width:52px;height:52px;transform:scale(.9);transform-origin:left center}.reqText{font-size:11.5px}.clue{font-size:8.5px;padding:3px 5px}
+  #stage{top:calc(max(7px,env(safe-area-inset-top)) + 126px);bottom:232px}.shelf,.mirror{opacity:.48}#petWrap{width:min(88vw,380px)}#styler{height:232px}#options{height:121px}.itemCard{height:107px;flex-basis:77px}.itemCard .preview{height:60px}
+}
+@media(max-height:700px){#request{top:46px;min-height:68px}.customerAvatar{display:none}#request{grid-template-columns:1fr auto}.reqName{display:inline;margin-right:5px}#stage{top:118px;bottom:220px}#styler{height:220px}#options{height:111px}.itemCard{height:98px}.itemCard .preview{height:52px}.awning{display:none}}
+@media(min-width:760px){#stage{left:16%;right:16%}#request{left:10%;right:10%}#styler{left:7%;right:7%;bottom:8px;border-radius:24px;border:1px solid #e7cede}#options{justify-content:flex-start}.itemCard{flex-basis:96px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="room"><div class="wallDots"></div><div class="awning"></div><div class="shelf left"></div><div class="shelf right"></div><div class="hanger h1"></div><div class="hanger h2"></div><div class="hanger h3"></div><div class="mirror"></div><div class="rug"></div><div class="counter"></div><div id="decorLayerRoom"></div></div>
+  <div id="hud">
+    <div class="hudGroup"><div class="pill">🌸 Lv <b id="level">1</b></div><div class="pill">🪙 <b id="coins">0</b></div></div>
+    <div class="hudGroup"><button class="pill iconBtn" id="soundBtn" aria-label="Sound">🔊</button><button class="pill iconBtn" id="helpBtn" aria-label="Help">?</button></div>
+  </div>
+
+  <div id="request">
+    <div class="customerAvatar" id="customerAvatar"><div class="hair"></div><div class="face"></div><i class="eye l"></i><i class="eye r"></i><i class="smile"></i></div>
+    <div><div class="reqName" id="reqName">Customer</div><div class="reqText" id="reqText">Make my pet look adorable!</div><div class="clues" id="clues"></div></div>
+    <div id="requestPetBadge"><span class="badgePet" id="badgePet">🐶</span><span id="petName">Pip</span></div>
+  </div>
+
+  <div id="royalHeader">👑 ROYAL PET FASHION SHOW • LOOK <span id="royalRound">1</span>/4</div>
+
+  <div id="stage">
+    <div id="customerBubble">So cute!</div>
+    <div id="pedestal"></div>
+    <div id="petWrap"><svg id="petSvg" viewBox="0 0 360 360" aria-label="Pet makeover"></svg><div id="stickers"></div><div id="sparkles"></div></div>
+  </div>
+
+  <div id="styler">
+    <div id="tabs"></div>
+    <div id="options"></div>
+    <div id="actionRow"><button class="action shop" id="boutiqueBtn">Boutique ✨</button><button class="action" id="undoStickerBtn">Remove Charm</button><button class="action primary" id="finishBtn">Finish Makeover 💖</button></div>
+  </div>
+
+  <div id="toast"></div>
+
+  <div class="overlay" id="startScreen">
+    <div class="modal">
+      <h1 class="logo">Pet Dress Up<small>Gemma's Styling Shop</small></h1>
+      <div class="startPets" id="startPets"></div>
+      <p class="sub">Customers bring you cute pets. Dress each one piece by piece, match fun requests or create anything you want, and unlock more pets, clothes, colors, patterns, and accessories!</p>
+      <button class="bigBtn" id="startBtn">Meet My First Pet 🐾</button>
+      <p class="sub" style="font-size:10px">Progress saves automatically on this device.</p>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="resultScreen"><div class="modal" id="resultModal"></div></div>
+
+  <div class="overlay hidden" id="boutique"><div class="modal">
+    <div class="modalHead"><div><h2>✨ Pet Boutique</h2><div class="sub" style="margin:2px 0">Use makeover coins to unlock more creative choices.</div></div><button class="closeBtn" id="closeBoutique">✕</button></div>
+    <div class="shopTabs" id="shopTabs"></div><div class="shopGrid" id="shopGrid"></div>
+  </div></div>
+
+  <div class="overlay hidden" id="help"><div class="modal"><h2>How to Play</h2><p class="sub">1. Read the customer's style clues.<br>2. Use the tabs to mix clothes, hats, bows, collars, glasses, colors, patterns, and charms.<br>3. Charms can be dragged anywhere on the pet's outfit.<br>4. Finish the makeover to earn coins and reach the next level.<br><br>Some customers say <b>FREE DESIGN</b> — anything you create is perfect!</p><button class="bigBtn" id="closeHelp">Back to Styling</button><button class="action" id="resetBtn" style="margin-top:12px;width:100%">Reset Saved Progress</button></div></div>
+
+  <div class="overlay hidden" id="royalCelebration"><div class="modal"><h1 class="logo" style="font-size:45px">Royal Fashion Show!</h1><p class="sub">You styled every royal pet! The whole kingdom is cheering!</p><div class="royalPets" id="royalPets"></div><div class="hearts">💖 👑 💖</div><button class="bigBtn" id="royalContinue">Celebrate & Continue</button></div><div class="confetti" id="confetti"></div></div>
+</div>
+
+<script>
+(()=>{
+"use strict";
+const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
+const SAVE_KEY="gemmaPetDressUp_v1";
+const petMeta={
+ dog:{name:"Puppy",icon:"🐶",level:1},
+ cat:{name:"Kitten",icon:"🐱",level:4},
+ bunny:{name:"Bunny",icon:"🐰",level:8},
+ hamster:{name:"Hamster",icon:"🐹",level:14},
+ bird:{name:"Little Bird",icon:"🐦",level:22},
+ guinea:{name:"Guinea Pig",icon:"🐾",level:34}
+};
+const customers=["Maya","Zoe","Ruby","Lily","Ava","Nora","Theo","Leo","Mia","Sophie","Ben","Ivy"];
+const petNames=["Pip","Muffin","Biscuit","Coco","Sunny","Peanut","Poppy","Bean","Lulu","Nibbles","Teddy","Daisy","Bluebell","Sprinkles"];
+const styles={
+ princess:{label:"PRINCESS",icon:"👑",tags:["princess","fancy"],colors:["blush","lavender","rose"],say:"a sweet princess look"},
+ fancy:{label:"FANCY",icon:"✨",tags:["fancy"],colors:["gold","berry","lavender"],say:"something fancy and elegant"},
+ silly:{label:"SILLY",icon:"🤪",tags:["silly","colorful"],colors:["sunny","aqua","lime"],say:"a silly, funny outfit"},
+ colorful:{label:"COLORFUL",icon:"🌈",tags:["colorful","party"],colors:["aqua","sunny","rose","lime"],say:"a super colorful look"},
+ sporty:{label:"SPORTY",icon:"⚽",tags:["sporty"],colors:["sky","red","lime"],say:"a sporty outfit"},
+ party:{label:"PARTY",icon:"🎉",tags:["party","colorful"],colors:["rose","gold","aqua"],say:"a party-ready look"}
+};
+const colors=[
+ {id:"blush",name:"Blush Pink",hex:"#f39bc5",cost:0,level:1,tags:["princess","fancy"]},
+ {id:"sky",name:"Sky Blue",hex:"#78bfe8",cost:0,level:1,tags:["sporty"]},
+ {id:"mint",name:"Mint",hex:"#78c9a7",cost:0,level:1,tags:["fancy"]},
+ {id:"sunny",name:"Sunny Yellow",hex:"#f4c956",cost:45,level:3,tags:["silly","colorful","party"]},
+ {id:"lavender",name:"Lavender",hex:"#a986dc",cost:55,level:5,tags:["princess","fancy"]},
+ {id:"red",name:"Cherry Red",hex:"#df6876",cost:60,level:7,tags:["sporty","party"]},
+ {id:"aqua",name:"Aqua Pop",hex:"#54c9d6",cost:70,level:10,tags:["colorful","silly"]},
+ {id:"gold",name:"Royal Gold",hex:"#dbb341",cost:90,level:16,tags:["fancy","princess"]},
+ {id:"berry",name:"Berry",hex:"#a94e89",cost:85,level:18,tags:["fancy","party"]},
+ {id:"lime",name:"Lime Pop",hex:"#83c858",cost:75,level:12,tags:["sporty","silly","colorful"]},
+ {id:"rose",name:"Rose",hex:"#d96a9e",cost:95,level:24,tags:["princess","party"]},
+ {id:"midnight",name:"Midnight",hex:"#57639d",cost:110,level:30,tags:["fancy"]}
+];
+const patterns=[
+ {id:"plain",name:"Plain",cost:0,level:1,tags:[]},
+ {id:"dots",name:"Polka Dots",cost:35,level:2,tags:["silly","colorful"]},
+ {id:"stripes",name:"Stripes",cost:45,level:6,tags:["sporty"]},
+ {id:"hearts",name:"Hearts",cost:60,level:9,tags:["princess","party"]},
+ {id:"stars",name:"Stars",cost:70,level:13,tags:["party","fancy"]},
+ {id:"confetti",name:"Confetti",cost:85,level:20,tags:["party","colorful","silly"]},
+ {id:"rainbow",name:"Rainbow",cost:120,level:28,tags:["colorful","party"]}
+];
+const items={
+ clothes:[
+  {id:"none",name:"No Outfit",icon:"♡",cost:0,level:1,tags:[]},{id:"tee",name:"Cozy Tee",icon:"👕",cost:0,level:1,tags:["sporty"]},{id:"dress",name:"Sweet Dress",icon:"👗",cost:0,level:1,tags:["princess","fancy"]},{id:"vest",name:"Smart Vest",icon:"🦺",cost:35,level:2,tags:["fancy"]},{id:"tutu",name:"Party Tutu",icon:"🩰",cost:55,level:5,tags:["princess","party"]},{id:"jersey",name:"Sport Jersey",icon:"🏅",cost:65,level:7,tags:["sporty"]},{id:"hoodie",name:"Funny Hoodie",icon:"🧥",cost:70,level:11,tags:["silly","sporty"]},{id:"cape",name:"Star Cape",icon:"🦸",cost:85,level:15,tags:["party","fancy"]},{id:"tux",name:"Tiny Tuxedo",icon:"🎩",cost:110,level:23,tags:["fancy"]},{id:"pajamas",name:"Silly Pajamas",icon:"🌙",cost:95,level:27,tags:["silly"]},{id:"raincoat",name:"Sunny Raincoat",icon:"☔",cost:110,level:38,tags:["colorful"]},{id:"royal",name:"Royal Robe",icon:"👑",cost:170,level:55,tags:["princess","fancy"]}
+ ],
+ hats:[
+  {id:"none",name:"No Hat",icon:"♡",cost:0,level:1,tags:[]},{id:"cap",name:"Sport Cap",icon:"🧢",cost:0,level:1,tags:["sporty"]},{id:"sunhat",name:"Sunny Hat",icon:"👒",cost:40,level:3,tags:["fancy"]},{id:"partyhat",name:"Party Hat",icon:"🎉",cost:45,level:4,tags:["party","silly"]},{id:"tiara",name:"Sparkle Tiara",icon:"♕",cost:65,level:7,tags:["princess","fancy"]},{id:"tophat",name:"Top Hat",icon:"🎩",cost:75,level:12,tags:["fancy","silly"]},{id:"flowercrown",name:"Flower Crown",icon:"🌸",cost:90,level:19,tags:["princess","colorful"]},{id:"wizard",name:"Wizard Hat",icon:"⭐",cost:120,level:36,tags:["silly","fancy"]},{id:"crown",name:"Royal Crown",icon:"👑",cost:180,level:60,tags:["princess","fancy"]}
+ ],
+ bows:[
+  {id:"none",name:"No Bow",icon:"♡",cost:0,level:1,tags:[]},{id:"bow",name:"Big Bow",icon:"🎀",cost:0,level:1,tags:["princess","fancy"]},{id:"doublebow",name:"Double Bows",icon:"🎀🎀",cost:50,level:6,tags:["princess","colorful"]},{id:"pom",name:"Pom-Pom Bow",icon:"❇",cost:65,level:13,tags:["silly","party"]},{id:"royalbow",name:"Royal Bow",icon:"💝",cost:100,level:26,tags:["fancy","princess"]}
+ ],
+ collars:[
+  {id:"none",name:"No Collar",icon:"♡",cost:0,level:1,tags:[]},{id:"simple",name:"Color Collar",icon:"◯",cost:0,level:1,tags:["sporty"]},{id:"bell",name:"Bell Collar",icon:"🔔",cost:35,level:2,tags:["silly"]},{id:"bandana",name:"Bandana",icon:"🔺",cost:55,level:5,tags:["sporty","colorful"]},{id:"gem",name:"Gem Collar",icon:"💎",cost:75,level:10,tags:["fancy","princess"]},{id:"pearls",name:"Pearl Collar",icon:"⚪",cost:95,level:18,tags:["fancy"]},{id:"royalcollar",name:"Royal Collar",icon:"✨",cost:130,level:42,tags:["princess","fancy"]}
+ ],
+ glasses:[
+  {id:"none",name:"No Glasses",icon:"♡",cost:0,level:1,tags:[]},{id:"round",name:"Round Glasses",icon:"👓",cost:35,level:3,tags:["silly"]},{id:"shades",name:"Cool Shades",icon:"🕶",cost:50,level:6,tags:["sporty","silly"]},{id:"heart",name:"Heart Glasses",icon:"💗",cost:65,level:9,tags:["party","princess"]},{id:"star",name:"Star Glasses",icon:"⭐",cost:80,level:16,tags:["party","silly"]},{id:"fancy",name:"Fancy Frames",icon:"✨",cost:95,level:25,tags:["fancy"]}
+ ],
+ charms:[
+  {id:"flower",name:"Flower",icon:"🌸",cost:0,level:1,tags:["princess","colorful"]},{id:"star",name:"Star",icon:"⭐",cost:0,level:1,tags:["party","fancy"]},{id:"heart",name:"Heart",icon:"💖",cost:35,level:3,tags:["princess","party"]},{id:"rainbow",name:"Rainbow",icon:"🌈",cost:60,level:8,tags:["colorful"]},{id:"sparkle",name:"Sparkle",icon:"✨",cost:65,level:12,tags:["fancy","party"]},{id:"soccer",name:"Sport Ball",icon:"⚽",cost:70,level:17,tags:["sporty"]},{id:"cupcake",name:"Cupcake",icon:"🧁",cost:85,level:24,tags:["silly","party"]},{id:"diamond",name:"Diamond",icon:"💎",cost:110,level:40,tags:["fancy","princess"]}
+ ]
+};
+const shopDecor=[
+ {id:"flowerShelf",name:"Flower Shelf",icon:"🌷",cost:90,level:5},{id:"starMirror",name:"Star Mirror",icon:"⭐",cost:140,level:12},{id:"rainbowRug",name:"Rainbow Rug",icon:"🌈",cost:180,level:20},{id:"goldRack",name:"Golden Clothes Rack",icon:"✨",cost:240,level:32}
+];
+const royalLooks=[
+ {pet:"bunny",petName:"Princess Puff",customer:"Lady Lila",style:"princess",color:"blush",must:"bow",pattern:"hearts",text:"Pink princess • bow • hearts"},
+ {pet:"dog",petName:"Dash",customer:"Coach Max",style:"sporty",color:"sky",must:"cap",pattern:"stripes",text:"Blue sporty • cap • stripes"},
+ {pet:"cat",petName:"Confetti",customer:"Party Queen",style:"party",color:"aqua",must:"star",pattern:"confetti",text:"Aqua party • star glasses • confetti"},
+ {pet:"bird",petName:"Crownfeather",customer:"Queen Celeste",style:"fancy",color:"gold",must:"crown",pattern:"stars",extra:"gem",text:"GOLD • FANCY • CROWN • STARS • GEM COLLAR"}
+];
+let audioCtx=null,audioOn=true,tab="clothes",shopTab="clothes",appointment=null;
+let state=loadState();
+let look=blankLook();
+
+function defaults(){return{level:1,coins:80,purchased:[],shopDecor:[],activeDecor:[],royalRound:0,royalLooks:[],royalComplete:false,totalMakeovers:0}}
+function loadState(){try{return Object.assign(defaults(),JSON.parse(localStorage.getItem(SAVE_KEY))||{})}catch(e){return defaults()}}
+function saveState(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){} updateHud()}
+function blankLook(){return{clothes:"tee",hat:"none",bow:"none",collar:"simple",glasses:"none",color:"blush",pattern:"plain",stickers:[]}}
+function unlocked(obj){return obj.cost===0||state.purchased.includes(obj.id)||state.level===135}
+function allTags(){let tags=[];["clothes","hats","bows","collars","glasses"].forEach(cat=>{const o=items[cat].find(x=>x.id===look[cat==='hats'?'hat':cat==='bows'?'bow':cat==='collars'?'collar':cat==='glasses'?'glasses':'clothes']);if(o)tags.push(...o.tags)});const col=colors.find(x=>x.id===look.color);const pat=patterns.find(x=>x.id===look.pattern);if(col)tags.push(...col.tags);if(pat)tags.push(...pat.tags);look.stickers.forEach(s=>{const c=items.charms.find(x=>x.id===s.id);if(c)tags.push(...c.tags)});return tags}
+function updateHud(){$("#level").textContent=state.level;$("#coins").textContent=state.coins;applyDecor()}
+function applyDecor(){const room=$("#room");room.className="";(state.activeDecor||[]).forEach(id=>room.classList.add("room-"+id))}
+function ensureAudio(){if(!audioOn)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume()}catch(e){}}
+function tone(f,d=.09,type="triangle",v=.035,delay=0){if(!audioOn)return;ensureAudio();if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain(),t=audioCtx.currentTime+delay;o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+d+.02)}
+function happySound(){tone(620,.08,"triangle",.03);tone(820,.1,"sine",.025,.07)}
+function finishSound(){[523,659,784,1047].forEach((f,i)=>tone(f,.16,"triangle",.035,i*.07))}
+function royalSound(){[392,523,659,784,1047,1318].forEach((f,i)=>tone(f,.22,"triangle",.045,i*.09))}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),1600)}
+function petReact(text="So cute!",strong=true){const w=$("#petWrap"),b=$("#customerBubble");w.classList.remove("react","shy");void w.offsetWidth;w.classList.add(strong?"react":"shy");b.textContent=text;b.classList.add("show");clearTimeout(b._tm);b._tm=setTimeout(()=>b.classList.remove("show"),900);if(strong){happySound();sparkleBurst()}}
+function sparkleBurst(){const s=$("#sparkles");for(let i=0;i<8;i++){const e=document.createElement("span");e.className="spark";e.textContent=i%2?"✨":"✦";e.style.left=(35+Math.random()*30)+"%";e.style.top=(30+Math.random()*35)+"%";e.style.setProperty("--dx",(-45+Math.random()*90)+"px");e.style.setProperty("--dy",(-45-Math.random()*45)+"px");s.appendChild(e);setTimeout(()=>e.remove(),750)}}
+
+function seed(n){let x=(n*9301+49297)%233280;return()=>{x=(x*9301+49297)%233280;return x/233280}}
+function availablePets(level){return Object.keys(petMeta).filter(k=>level>=petMeta[k].level)}
+function makeAppointment(level){
+ if(level===135){const r=Math.min(3,state.royalRound||0),x=royalLooks[r];return{...x,free:false,royal:true,requiredAccessory:x.must,requestText:x.text}}
+ const rng=seed(level+17);const avail=availablePets(level);const pet=level===1?"dog":avail[Math.floor(rng()*avail.length)];const free=level>1&&level%4===0;const styleKeys=Object.keys(styles);const style=styleKeys[Math.floor(rng()*styleKeys.length)];const st=styles[style];let color=st.colors[Math.floor(rng()*st.colors.length)];if(!colors.find(c=>c.id===color&&unlocked(c)))color=colors.filter(unlocked)[Math.floor(rng()*colors.filter(unlocked).length)]?.id||"blush";
+ const mustOptions=style==="princess"?["bow","tiara"]:style==="sporty"?["cap","bandana","shades"]:style==="party"?["partyhat","heart","star"]:style==="fancy"?["gem","sunhat","fancy"]:style==="silly"?["round","partyhat","bell"]:["rainbow","heart","star"];
+ let requiredAccessory=mustOptions[Math.floor(rng()*mustOptions.length)];
+ if(level<5)requiredAccessory=style==="princess"?"bow":style==="sporty"?"cap":"star";
+ let pattern=null;if(level>=7&&rng()>.48){const valid=patterns.filter(p=>p.id!=="plain"&&unlocked(p));pattern=valid.length?valid[Math.floor(rng()*valid.length)].id:null}
+ return{pet,petName:petNames[Math.floor(rng()*petNames.length)],customer:customers[Math.floor(rng()*customers.length)],free,style,color,pattern,requiredAccessory,royal:false,requestText:free?"Anything you want — surprise me!":`Please make ${petNames[Math.floor(rng()*petNames.length)]} look ${st.say}.`};
+}
+function currentAccessorySatisfied(id){if(!id)return true;return look.hat===id||look.bow===id||look.collar===id||look.glasses===id||look.stickers.some(s=>s.id===id)}
+function buildAppointment(){appointment=makeAppointment(state.level);look=blankLook();const allowedColors=colors.filter(unlocked);if(!unlocked(colors.find(c=>c.id===look.color)))look.color=allowedColors[0]?.id||"blush";renderAppointment();renderTabs();renderOptions();renderPet();updateHud();$("#royalHeader").classList.toggle("show",!!appointment.royal);$("#royalRound").textContent=(state.royalRound||0)+1}
+function renderAppointment(){const a=appointment,r=seed(state.level+(state.royalRound||0)*91);const avatar=$("#customerAvatar");avatar.style.setProperty("--skin",["#f4c8a7","#d9a17d","#8e5b45","#efbd95"][Math.floor(r()*4)]);avatar.style.setProperty("--hair",["#5d3b2e","#2e2630","#a76c42","#d2a16a"][Math.floor(r()*4)]);avatar.style.setProperty("--shirt",["#93d8e9","#d2a2e8","#f6a9bd","#9bd5a7"][Math.floor(r()*4)]);$("#reqName").textContent=a.royal?`${a.customer} • Royal Show`:a.customer+" says:";$("#badgePet").textContent=petMeta[a.pet].icon;$("#petName").textContent=a.petName;
+ const clues=$("#clues");clues.innerHTML="";
+ if(a.free){$("#reqText").textContent="You choose EVERYTHING! Make a look you love.";addClue("🎨 FREE DESIGN","free");return}
+ $("#reqText").textContent=a.royal?`Very hard look: ${a.requestText}`:`I'd love ${styles[a.style].say}!`;
+ addClue(styles[a.style].icon+" "+styles[a.style].label);const col=colors.find(x=>x.id===a.color);if(col)addClue("● "+col.name);if(a.requiredAccessory)addClue(accessoryLabel(a.requiredAccessory));if(a.pattern)addClue("▧ "+patterns.find(x=>x.id===a.pattern)?.name);if(a.extra)addClue(accessoryLabel(a.extra));
+}
+function addClue(text,cls="") {const e=document.createElement("span");e.className="clue "+cls;e.textContent=text;$("#clues").appendChild(e)}
+function accessoryLabel(id){const all=[...items.hats,...items.bows,...items.collars,...items.glasses,...items.charms];const x=all.find(o=>o.id===id);return x?(x.icon+" "+x.name):id.toUpperCase()}
+
+const tabDefs=[["clothes","Clothes"],["hats","Hats"],["bows","Bows"],["collars","Collars"],["glasses","Glasses"],["colors","Colors"],["patterns","Patterns"],["charms","Charms"]];
+function renderTabs(){const t=$("#tabs");t.innerHTML="";tabDefs.forEach(([id,label])=>{const b=document.createElement("button");b.className="tab"+(tab===id?" active":"");b.textContent=label;b.onclick=()=>{tab=id;renderTabs();renderOptions()};t.appendChild(b)})}
+function renderOptions(){const o=$("#options");o.innerHTML="";if(tab==="colors"){colors.forEach(x=>optionColor(x));return}if(tab==="patterns"){patterns.forEach(x=>optionPattern(x));return}items[tab].forEach(x=>optionItem(tab,x))}
+function selectionKey(cat){return cat==="hats"?"hat":cat==="bows"?"bow":cat==="collars"?"collar":cat==="glasses"?"glasses":cat}
+function cardBase(x,active,locked){const b=document.createElement("button");b.className="itemCard"+(active?" active":"")+(locked?" locked":"");if(locked){const l=document.createElement("span");l.className="lockTag";l.textContent=state.level>=x.level?`${x.cost}🪙`:`Lv ${x.level}`;b.appendChild(l)}return b}
+function optionItem(cat,x){const key=selectionKey(cat),locked=!unlocked(x),b=cardBase(x,look[key]===x.id,locked);b.innerHTML+=("<div class='preview'>"+x.icon+"</div><div class='name'>"+x.name+"</div>");b.onclick=()=>{if(locked){openBoutique(cat,x.id);return}if(cat==="charms"){addSticker(x);return}look[key]=x.id;renderPet();renderOptions();petReact(["Love it!","Adorable!","Ooh!","Cute!"][Math.floor(Math.random()*4)])};$("#options").appendChild(b)}
+function optionColor(x){const locked=!unlocked(x),b=cardBase(x,look.color===x.id,locked);b.innerHTML+=`<div class="preview"><div class="swatch" style="background:${x.hex}"></div></div><div class="name">${x.name}</div>`;b.onclick=()=>{if(locked){openBoutique("colors",x.id);return}look.color=x.id;renderPet();renderOptions();petReact("Pretty color!")};$("#options").appendChild(b)}
+function optionPattern(x){const locked=!unlocked(x),b=cardBase(x,look.pattern===x.id,locked);b.innerHTML+=`<div class="preview"><div class="patternPreview ${x.id}" style="--pc:${colorHex()}"></div></div><div class="name">${x.name}</div>`;b.onclick=()=>{if(locked){openBoutique("patterns",x.id);return}look.pattern=x.id;renderPet();renderOptions();petReact("Fun pattern!")};$("#options").appendChild(b)}
+function addSticker(x){if(look.stickers.length>=5){toast("Up to 5 charms — drag them around or remove one!");return}look.stickers.push({id:x.id,icon:x.icon,x:50+(Math.random()*18-9),y:57+(Math.random()*18-9)});renderStickers();petReact("Sparkly!")}
+function renderStickers(){const s=$("#stickers");s.innerHTML="";look.stickers.forEach((st,i)=>{const e=document.createElement("span");e.className="petSticker";e.textContent=st.icon;e.style.left=st.x+"%";e.style.top=st.y+"%";e.dataset.i=i;let drag=false;e.onpointerdown=ev=>{drag=true;ev.preventDefault();e.setPointerCapture?.(ev.pointerId)};e.onpointermove=ev=>{if(!drag)return;const r=s.getBoundingClientRect();st.x=Math.max(7,Math.min(93,(ev.clientX-r.left)/r.width*100));st.y=Math.max(8,Math.min(92,(ev.clientY-r.top)/r.height*100));e.style.left=st.x+"%";e.style.top=st.y+"%"};e.onpointerup=()=>{drag=false};e.onpointercancel=()=>{drag=false};s.appendChild(e)})}
+function colorHex(){return colors.find(x=>x.id===look.color)?.hex||"#f39bc5"}
+function darker(hex,amt=.2){let n=parseInt(hex.slice(1),16),r=n>>16,g=n>>8&255,b=n&255;r=Math.max(0,Math.round(r*(1-amt)));g=Math.max(0,Math.round(g*(1-amt)));b=Math.max(0,Math.round(b*(1-amt)));return `rgb(${r},${g},${b})`}
+
+function svgDefs(){const c=colorHex();return `<defs><pattern id="pat-dots" width="18" height="18" patternUnits="userSpaceOnUse"><rect width="18" height="18" fill="${c}"/><circle cx="5" cy="5" r="3" fill="#fff" opacity=".7"/><circle cx="14" cy="14" r="2.5" fill="#fff5a8" opacity=".75"/></pattern><pattern id="pat-stripes" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="20" height="20" fill="${c}"/><rect width="7" height="20" fill="#fff" opacity=".48"/></pattern><pattern id="pat-hearts" width="23" height="23" patternUnits="userSpaceOnUse"><rect width="23" height="23" fill="${c}"/><text x="3" y="17" font-size="14" fill="#fff" opacity=".68">♥</text></pattern><pattern id="pat-stars" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="${c}"/><text x="3" y="18" font-size="16" fill="#fff5a8">★</text></pattern><pattern id="pat-confetti" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="${c}"/><path d="M3 5l6 3M14 4l3 6M5 16l5-3M15 17l4-4" stroke="#fff3a3" stroke-width="3"/><circle cx="13" cy="12" r="2" fill="#7ce0d0"/></pattern><linearGradient id="pat-rainbow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8caf"/><stop offset=".27" stop-color="#ffd56f"/><stop offset=".52" stop-color="#8fe0c7"/><stop offset=".77" stop-color="#91d7f7"/><stop offset="1" stop-color="#c5a1f2"/></linearGradient></defs>`}
+function garmentFill(){return look.pattern==="plain"?colorHex():look.pattern==="rainbow"?"url(#pat-rainbow)":`url(#pat-${look.pattern})`}
+function petBase(type){
+ const fur={dog:"#d7a96f",cat:"#b8a2d2",bunny:"#f1dfd5",hamster:"#d9ad76",bird:"#75c5cf",guinea:"#d6a179"}[type]||"#d7a96f",fur2=darker(fur,.15);let back="",body="",head="",features="";
+ if(type==="dog"){back=`<path d="M105 215 Q58 195 76 154 Q96 177 126 179" fill="${fur2}"/>`;body=`<ellipse cx="180" cy="230" rx="78" ry="84" fill="${fur}"/><ellipse cx="132" cy="283" rx="25" ry="50" fill="${fur}"/><ellipse cx="228" cy="283" rx="25" ry="50" fill="${fur}"/>`;head=`<path d="M127 93 Q93 59 89 113 Q91 160 126 152" fill="${fur2}"/><path d="M233 93 Q267 59 271 113 Q269 160 234 152" fill="${fur2}"/><circle cx="180" cy="119" r="70" fill="${fur}"/><ellipse cx="180" cy="151" rx="36" ry="25" fill="#efd2ad"/>`;features=`<circle cx="153" cy="116" r="7" fill="#4c3b3e"/><circle cx="207" cy="116" r="7" fill="#4c3b3e"/><ellipse cx="180" cy="144" rx="9" ry="7" fill="#5a4241"/><path d="M180 151q-10 16-22 2M180 151q10 16 22 2" stroke="#8b5b58" stroke-width="4" fill="none" stroke-linecap="round"/>`}
+ if(type==="cat"){back=`<path d="M245 244 Q310 207 285 284 Q268 310 248 286" stroke="${fur2}" stroke-width="21" fill="none" stroke-linecap="round"/>`;body=`<ellipse cx="180" cy="230" rx="72" ry="82" fill="${fur}"/><ellipse cx="137" cy="287" rx="23" ry="46" fill="${fur}"/><ellipse cx="223" cy="287" rx="23" ry="46" fill="${fur}"/>`;head=`<path d="M126 95 L128 35 L164 70 M234 95 L232 35 L196 70" fill="${fur}" stroke="${fur2}" stroke-width="5" stroke-linejoin="round"/><circle cx="180" cy="116" r="66" fill="${fur}"/>`;features=`<ellipse cx="153" cy="116" rx="8" ry="10" fill="#436058"/><ellipse cx="207" cy="116" rx="8" ry="10" fill="#436058"/><path d="M174 143l6 5 6-5" fill="#b66c7e"/><path d="M180 148q-9 12-18 4M180 148q9 12 18 4" stroke="#835961" stroke-width="3" fill="none"/><path d="M142 145l-34-5M142 151l-35 4M218 145l34-5M218 151l35 4" stroke="#8f778f" stroke-width="2"/>`}
+ if(type==="bunny"){back="";body=`<ellipse cx="180" cy="236" rx="72" ry="83" fill="${fur}"/><ellipse cx="137" cy="292" rx="25" ry="42" fill="${fur}"/><ellipse cx="223" cy="292" rx="25" ry="42" fill="${fur}"/>`;head=`<ellipse cx="146" cy="55" rx="23" ry="64" fill="${fur}" transform="rotate(-8 146 55)"/><ellipse cx="214" cy="55" rx="23" ry="64" fill="${fur}" transform="rotate(8 214 55)"/><ellipse cx="146" cy="55" rx="10" ry="47" fill="#e9b6c4" transform="rotate(-8 146 55)"/><ellipse cx="214" cy="55" rx="10" ry="47" fill="#e9b6c4" transform="rotate(8 214 55)"/><circle cx="180" cy="123" r="66" fill="${fur}"/>`;features=`<circle cx="154" cy="119" r="7" fill="#5b5054"/><circle cx="206" cy="119" r="7" fill="#5b5054"/><ellipse cx="180" cy="145" rx="8" ry="6" fill="#d8869e"/><path d="M180 151q-8 12-17 4M180 151q8 12 17 4" stroke="#a06a78" stroke-width="3" fill="none"/>`}
+ if(type==="hamster"||type==="guinea"){back="";body=`<ellipse cx="180" cy="232" rx="86" ry="89" fill="${fur}"/><ellipse cx="134" cy="286" rx="25" ry="34" fill="${fur2}"/><ellipse cx="226" cy="286" rx="25" ry="34" fill="${fur2}"/>`;head=`<circle cx="133" cy="80" r="25" fill="${fur2}"/><circle cx="227" cy="80" r="25" fill="${fur2}"/><circle cx="180" cy="125" r="71" fill="${fur}"/><ellipse cx="180" cy="151" rx="43" ry="29" fill="#eed1ad"/>`;features=`<circle cx="151" cy="118" r="7" fill="#493c3a"/><circle cx="209" cy="118" r="7" fill="#493c3a"/><ellipse cx="180" cy="143" rx="7" ry="5" fill="#986d6a"/><path d="M180 149q-8 10-15 3M180 149q8 10 15 3" stroke="#986d6a" stroke-width="3" fill="none"/>`;if(type==="guinea")features+=`<path d="M135 74 Q180 99 225 72" stroke="#fff" stroke-width="19" opacity=".58" fill="none"/>`}
+ if(type==="bird"){back=`<path d="M116 215q-44 30-57 73q42-8 75-42" fill="${fur2}"/>`;body=`<ellipse cx="180" cy="225" rx="69" ry="92" fill="${fur}"/><path d="M137 205q-45 28-43 75q47-14 64-56M223 205q45 28 43 75q-47-14-64-56" fill="${fur2}"/><path d="M157 307h46" stroke="#9a7144" stroke-width="7" stroke-linecap="round"/>`;head=`<circle cx="180" cy="123" r="62" fill="${fur}"/>`;features=`<circle cx="155" cy="116" r="7" fill="#39454b"/><circle cx="205" cy="116" r="7" fill="#39454b"/><path d="M164 140l16 12 16-12-16-8z" fill="#e6a94e"/>`}
+ return{fur,back,body,head,features}
+}
+function garmentSVG(){const f=garmentFill(),edge=darker(colorHex(),.22),id=look.clothes;if(id==="none")return"";if(id==="cape")return `<path d="M122 160 Q180 132 238 160 L270 306 Q180 334 90 306Z" fill="${f}" stroke="${edge}" stroke-width="5" opacity=".95"/>`;if(id==="dress")return `<path d="M122 171 Q180 150 238 171 L225 219 Q180 236 135 219Z" fill="${f}" stroke="${edge}" stroke-width="5"/><path d="M134 215 Q180 232 226 215 L257 304 Q180 328 103 304Z" fill="${f}" stroke="${edge}" stroke-width="5"/>`;if(id==="tutu")return `<path d="M122 177 Q180 153 238 177 L226 222 Q180 234 134 222Z" fill="${f}" stroke="${edge}" stroke-width="5"/><path d="M125 216 Q180 241 235 216 L265 263 Q180 286 95 263Z" fill="${f}" stroke="${edge}" stroke-width="5" opacity=".95"/><path d="M113 235 Q180 255 247 235" stroke="#fff" stroke-width="8" opacity=".5"/>`;if(id==="vest")return `<path d="M126 174 L157 162 L180 196 L203 162 L234 174 L222 275 Q180 294 138 275Z" fill="${f}" stroke="${edge}" stroke-width="5"/><path d="M180 196V282" stroke="#fff" stroke-width="4" opacity=".7"/><circle cx="180" cy="225" r="4" fill="#fff"/><circle cx="180" cy="245" r="4" fill="#fff"/>`;if(id==="jersey")return `<path d="M119 178 L144 161 L159 174 H201 L216 161 L241 178 L225 285 Q180 302 135 285Z" fill="${f}" stroke="${edge}" stroke-width="5"/><path d="M147 169h66" stroke="#fff" stroke-width="8" opacity=".7"/><text x="180" y="245" text-anchor="middle" font-size="44" font-weight="900" fill="#fff" opacity=".82">7</text>`;if(id==="hoodie")return `<path d="M121 181 Q180 145 239 181 L224 286 Q180 302 136 286Z" fill="${f}" stroke="${edge}" stroke-width="5"/><path d="M145 177 Q180 135 215 177" fill="none" stroke="${edge}" stroke-width="14"/><path d="M174 191v30M186 191v30" stroke="#fff" stroke-width="4"/>`;if(id==="tux")return `<path d="M122 176 Q180 151 238 176 L222 289 Q180 305 138 289Z" fill="#383342" stroke="#211d27" stroke-width="5"/><path d="M146 169l34 41 34-41" fill="#fff"/><path d="M164 200l16 11-16 11-10-11zM196 200l-16 11 16 11 10-11z" fill="${colorHex()}"/><circle cx="180" cy="237" r="4" fill="#fff"/><circle cx="180" cy="258" r="4" fill="#fff"/>`;if(id==="raincoat")return `<path d="M118 180 Q180 145 242 180 L229 292 Q180 309 131 292Z" fill="${f}" stroke="${edge}" stroke-width="6"/><path d="M144 174 Q180 133 216 174" fill="none" stroke="#fff" stroke-width="8" opacity=".55"/><circle cx="180" cy="220" r="5" fill="#fff"/><circle cx="180" cy="244" r="5" fill="#fff"/>`;if(id==="royal")return `<path d="M112 171 Q180 142 248 171 L239 306 Q180 330 121 306Z" fill="${f}" stroke="#c79d2d" stroke-width="7"/><path d="M128 182 Q180 160 232 182" stroke="#fff2a6" stroke-width="12"/><path d="M180 190V309" stroke="#fff2a6" stroke-width="5"/><circle cx="180" cy="213" r="9" fill="#8bdfff"/>`;if(id==="pajamas")return `<path d="M119 177 Q180 151 241 177 L230 292 Q180 307 130 292Z" fill="${f}" stroke="${edge}" stroke-width="5"/><path d="M130 249h100" stroke="#fff" stroke-width="5" opacity=".5"/>`;return `<path d="M120 178 Q180 151 240 178 L227 277 Q180 294 133 277Z" fill="${f}" stroke="${edge}" stroke-width="5"/><path d="M143 171 L123 188 M217 171 L237 188" stroke="${edge}" stroke-width="12" stroke-linecap="round"/>`}
+function collarSVG(){const c=colorHex(),id=look.collar;if(id==="none")return"";let base=`<path d="M135 169 Q180 184 225 169" stroke="${id==="pearls"?"#fff":id==="royalcollar"?"#d8b13f":c}" stroke-width="${id==="pearls"?12:10}" fill="none" stroke-linecap="round"/>`;if(id==="bell")base+=`<circle cx="180" cy="181" r="10" fill="#e3b448" stroke="#8f682b" stroke-width="3"/>`;if(id==="bandana")base+=`<path d="M153 176l27 45 27-45z" fill="${c}" stroke="${darker(c,.2)}" stroke-width="3"/>`;if(id==="gem")base+=`<path d="M180 175l12 11-12 16-12-16z" fill="#72d8ed" stroke="#fff" stroke-width="3"/>`;if(id==="pearls")for(let x=145;x<=215;x+=14)base+=`<circle cx="${x}" cy="174" r="6" fill="#fff" stroke="#d7c9db" stroke-width="2"/>`;if(id==="royalcollar")base+=`<path d="M154 174l8 14 18-8 18 8 8-14" fill="none" stroke="#fff1a8" stroke-width="6"/><circle cx="180" cy="184" r="7" fill="#de7bb2"/>`;return base}
+function bowSVG(){const c=colorHex(),id=look.bow;if(id==="none")return"";const one=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><path d="M0 0q-28-22-33 4q3 26 33 7M0 0q28-22 33 4q-3 26-33 7" fill="${c}" stroke="${darker(c,.2)}" stroke-width="3"/><circle cx="0" cy="6" r="9" fill="#fff2a8"/></g>`;if(id==="doublebow")return one(128,96,.78)+one(232,96,.78);if(id==="pom")return `<circle cx="125" cy="95" r="19" fill="${c}"/><circle cx="135" cy="91" r="14" fill="#fff" opacity=".45"/>`;if(id==="royalbow")return one(127,96,1)+`<circle cx="127" cy="102" r="6" fill="#7fd8ef"/>`;return one(126,96,1)}
+function hatSVG(){const c=colorHex(),id=look.hat;if(id==="none")return"";if(id==="cap")return `<path d="M126 72 Q180 26 234 72 L226 93 Q180 75 134 93Z" fill="${c}" stroke="${darker(c,.25)}" stroke-width="5"/><path d="M201 88q43 3 55 15q-43 2-66-4" fill="${c}"/>`;if(id==="sunhat")return `<ellipse cx="180" cy="79" rx="83" ry="18" fill="${c}" stroke="${darker(c,.2)}" stroke-width="4"/><path d="M137 77 Q144 25 180 22 Q216 25 223 77Z" fill="${c}"/><path d="M143 59h74" stroke="#fff" stroke-width="9" opacity=".65"/>`;if(id==="partyhat")return `<path d="M180 10L139 90H221Z" fill="${c}" stroke="${darker(c,.2)}" stroke-width="5"/><circle cx="180" cy="12" r="12" fill="#fff2a8"/><circle cx="160" cy="60" r="5" fill="#fff"/><circle cx="197" cy="45" r="5" fill="#91e4d0"/>`;if(id==="tiara")return `<path d="M135 78l15-35 27 24 18-39 18 39 27-24 15 35z" fill="#f3cf56" stroke="#9a7626" stroke-width="4"/><circle cx="195" cy="55" r="7" fill="#8de3f3"/>`;if(id==="tophat")return `<rect x="142" y="21" width="76" height="61" rx="8" fill="#3d3442"/><ellipse cx="180" cy="82" rx="64" ry="13" fill="#302934"/><rect x="142" y="62" width="76" height="12" fill="${c}"/>`;if(id==="flowercrown")return `<path d="M129 78q51-35 102 0" stroke="#5a9c4f" stroke-width="8" fill="none"/>${[140,160,182,205,223].map((x,i)=>`<circle cx="${x}" cy="${[67,57,54,58,68][i]}" r="12" fill="${["#ff9fc5","#ffe178","#fff","#9be0cf","#c7a5ef"][i]}"/>`).join("")}`;if(id==="wizard")return `<path d="M180 5L126 87H232Q207 58 180 5Z" fill="${c}" stroke="${darker(c,.25)}" stroke-width="5"/><ellipse cx="180" cy="87" rx="70" ry="14" fill="${c}"/><text x="163" y="62" font-size="27" fill="#fff1a6">★</text>`;if(id==="crown")return `<path d="M129 82l10-53 31 27 18-43 18 43 31-27 10 53z" fill="#e4b839" stroke="#8f6c21" stroke-width="5"/><circle cx="188" cy="55" r="8" fill="#7fdcf0"/>`;return""}
+function glassesSVG(){const id=look.glasses;if(id==="none")return"";if(id==="shades")return `<path d="M135 110h38l-5 24q-28 10-33-24M187 110h38q-5 34-33 24z" fill="#35313d"/><path d="M173 115h14" stroke="#35313d" stroke-width="5"/>`;if(id==="heart")return `<text x="126" y="139" font-size="45" fill="#e8629a">♥</text><text x="187" y="139" font-size="45" fill="#e8629a">♥</text><path d="M169 119h22" stroke="#8b4263" stroke-width="4"/>`;if(id==="star")return `<text x="128" y="138" font-size="43" fill="#efc94d">★</text><text x="190" y="138" font-size="43" fill="#efc94d">★</text><path d="M170 120h20" stroke="#8a6a24" stroke-width="4"/>`;const col=id==="fancy"?"#d99abf":"#65586b";return `<circle cx="151" cy="119" r="19" fill="none" stroke="${col}" stroke-width="5"/><circle cx="209" cy="119" r="19" fill="none" stroke="${col}" stroke-width="5"/><path d="M170 119h20M132 116l-18-6M228 116l18-6" stroke="${col}" stroke-width="5"/>`}
+function renderPetSVG(type=appointment?.pet||"dog",customLook=look){const prev=look;look=customLook;const p=petBase(type),defs=svgDefs();const cape=look.clothes==="cape"?garmentSVG():"";let svg=`${defs}<g>${p.back}${cape}${p.body}${look.clothes!=="cape"?garmentSVG():""}${p.head}${p.features}${collarSVG()}${bowSVG()}${hatSVG()}${glassesSVG()}</g>`;look=prev;return svg}
+function renderPet(){$("#petSvg").innerHTML=renderPetSVG();renderStickers()}
+
+function evaluate(){if(appointment.free)return{hearts:3,score:99,matches:["Creative freedom — perfect!"],miss:[]};const tags=allTags(),matches=[],miss=[];let score=0,total=2;if(tags.includes(appointment.style)||styles[appointment.style].tags.some(t=>tags.includes(t))){score++;matches.push(styles[appointment.style].label+" style")}else miss.push(styles[appointment.style].label+" style");if(look.color===appointment.color){score++;matches.push(colors.find(x=>x.id===look.color)?.name||"color")}else miss.push(colors.find(x=>x.id===appointment.color)?.name||"color");if(appointment.requiredAccessory){total++;if(currentAccessorySatisfied(appointment.requiredAccessory)){score++;matches.push(accessoryLabel(appointment.requiredAccessory))}else miss.push(accessoryLabel(appointment.requiredAccessory))}if(appointment.pattern){total++;if(look.pattern===appointment.pattern){score++;matches.push(patterns.find(x=>x.id===appointment.pattern)?.name)}else miss.push(patterns.find(x=>x.id===appointment.pattern)?.name)}if(appointment.extra){total++;if(currentAccessorySatisfied(appointment.extra)){score++;matches.push(accessoryLabel(appointment.extra))}else miss.push(accessoryLabel(appointment.extra))}let hearts=score>=total?3:score>=Math.ceil(total*.55)?2:1;return{hearts,score,total,matches,miss}}
+function finishMakeover(){ensureAudio();const res=evaluate();if(appointment.royal){const threshold=state.royalRound===3?res.total:Math.max(3,res.total-1);if(res.score<threshold){showResult(res,true);return}}showResult(res,false)}
+function showResult(res,retry){const r=$("#resultScreen"),m=$("#resultModal");const hearts="💖".repeat(res.hearts)+"♡".repeat(3-res.hearts),reward=retry?0:(appointment.free?30:22+res.hearts*12+Math.min(20,state.level));m.innerHTML=`<h2 style="margin:0;color:#80568a">${retry?"The Royal Judges Need One More Try!":appointment.free?"Creative Makeover!":"Makeover Complete!"}</h2><div class="resultPet">${miniPetHTML(appointment.pet,look)}</div><div class="hearts">${hearts}</div><div class="feedback">${retry?`You matched ${res.score} clue${res.score===1?"":"s"}. For this Royal Show look, match more clues before moving on.<br><b>Still needed:</b> ${res.miss.join(", ")||"one more detail"}`:res.hearts===3?"Perfect match! The customer LOVES every detail!":res.hearts===2?"Great makeover! You matched the request really well.":"Cute creation! The customer is happy — next time, try a few more clue matches."}</div>${retry?"":`<div class="rewardBurst"><div class="rewardChip">🪙 +${reward}</div><div class="rewardChip">🌸 Level ${appointment.royal?135:state.level}</div></div>`}<button class="bigBtn" id="resultNext">${retry?"Try This Look Again":"Next Customer →"}</button>`;r.classList.remove("hidden");$("#resultNext").onclick=()=>{r.classList.add("hidden");if(retry)return;if(appointment.royal){state.coins+=reward;state.royalLooks.push({pet:appointment.pet,look:JSON.parse(JSON.stringify(look))});state.royalRound++;saveState();if(state.royalRound>=4){showRoyalCelebration();return}buildAppointment();return}state.coins+=reward;state.totalMakeovers++;state.level++;saveState();const msg=milestoneMessage(state.level);if(msg)toast(msg);buildAppointment()};finishSound()}
+function miniPetHTML(pet,l){return `<svg viewBox="0 0 360 360" style="width:100%;height:100%">${renderPetSVG(pet,l)}</svg>`}
+function milestoneMessage(level){const p=Object.entries(petMeta).find(([k,v])=>v.level===level);if(p)return `New pet unlocked: ${p[1].name}! 🐾`;const x=[...Object.values(items).flat(),...colors,...patterns].find(o=>o.level===level&&o.cost>0);return x?`New boutique choice available: ${x.name}! ✨`:null}
+
+function openBoutique(cat=shopTab,focus=null){shopTab=cat==="colors"||cat==="patterns"||cat==="decor"?cat:cat;$("#boutique").classList.remove("hidden");renderShopTabs();renderShop(focus)}
+function renderShopTabs(){const t=$("#shopTabs");t.innerHTML="";[...tabDefs,["decor","Shop Decor"]].forEach(([id,label])=>{const b=document.createElement("button");b.className="shopTab"+(shopTab===id?" active":"");b.textContent=label;b.onclick=()=>{shopTab=id;renderShopTabs();renderShop()};t.appendChild(b)})}
+function shopList(){if(shopTab==="colors")return colors;if(shopTab==="patterns")return patterns;if(shopTab==="decor")return shopDecor;return items[shopTab]||[]}
+function renderShop(focus=null){const g=$("#shopGrid");g.innerHTML="";shopList().filter(x=>x.cost>0).forEach(x=>{const owned=shopTab==="decor"?state.shopDecor.includes(x.id):unlocked(x),available=state.level>=x.level||owned,active=shopTab==="decor"&&(state.activeDecor||[]).includes(x.id),d=document.createElement("div");d.className="shopItem";d.innerHTML=`<div class="shopPrev">${x.icon||previewFor(x)}</div><h4>${x.name}</h4><p>${owned?(shopTab==="decor"?active?"Decorating your shop":"Owned":"Unlocked"):`${available?x.cost+" coins":"Unlocks at Level "+x.level}`}</p><button class="buyBtn ${owned?(shopTab==="decor"?"use":"owned"):""}" ${!available?"disabled":""}>${owned?(shopTab==="decor"?(active?"Remove":"Use Decor"):"Owned"):(state.coins>=x.cost?`Buy • ${x.cost}🪙`:`Need ${x.cost}🪙`)}</button>`;const btn=d.querySelector("button");btn.onclick=()=>{if(shopTab==="decor"&&owned){state.activeDecor=state.activeDecor||[];state.activeDecor=active?state.activeDecor.filter(id=>id!==x.id):[...state.activeDecor,x.id];saveState();renderShop();return}if(owned)return;if(!available){toast(`Reach Level ${x.level} first!`);return}if(state.coins<x.cost){toast("You need more makeover coins!");return}state.coins-=x.cost;if(shopTab==="decor")state.shopDecor.push(x.id);else state.purchased.push(x.id);saveState();happySound();renderShop();renderOptions();toast(x.name+" unlocked!")};g.appendChild(d);if(focus===x.id)d.style.outline="3px solid #f1c24e"})}
+function previewFor(x){if(colors.includes(x))return"🎨";if(patterns.includes(x))return"▧";return"✨"}
+
+function showRoyalCelebration(){state.level=136;state.royalComplete=true;state.coins+=500;state.royalRound=0;saveState();const g=$("#royalPets");g.innerHTML="";state.royalLooks.slice(-4).forEach(x=>{const d=document.createElement("div");d.className="royalPet";d.innerHTML=miniPetHTML(x.pet,x.look);g.appendChild(d)});makeConfetti();$("#royalCelebration").classList.remove("hidden");royalSound()}
+function makeConfetti(){const c=$("#confetti");c.innerHTML="";const cols=["#ff7eb5","#ffda67","#8be1cf","#8dcdf4","#c8a3ec"];for(let i=0;i<55;i++){const e=document.createElement("i");e.style.left=Math.random()*100+"%";e.style.setProperty("--d",(2.5+Math.random()*3)+"s");e.style.setProperty("--r",Math.random()*180+"deg");e.style.setProperty("--c",cols[i%cols.length]);e.style.animationDelay=(-Math.random()*3)+"s";c.appendChild(e)}}
+
+function renderStartPets(){const pets=["dog","cat","bunny"];$("#startPets").innerHTML=pets.map((p,i)=>`<div class="mini m${i+1}">${miniPetHTML(p,{...blankLook(),clothes:i===1?"dress":"tee",hat:i===2?"partyhat":"none",bow:i===0?"bow":"none",color:["sky","blush","lavender"][i]})}</div>`).join("")}
+
+$("#startBtn").onclick=()=>{ensureAudio();$("#startScreen").classList.add("hidden");buildAppointment();happySound()};
+$("#finishBtn").onclick=finishMakeover;
+$("#boutiqueBtn").onclick=()=>openBoutique("clothes");
+$("#closeBoutique").onclick=()=>$("#boutique").classList.add("hidden");
+$("#undoStickerBtn").onclick=()=>{if(!look.stickers.length){toast("No charms to remove yet.");return}look.stickers.pop();renderStickers();petReact("Changed it!",false)};
+$("#soundBtn").onclick=()=>{audioOn=!audioOn;$("#soundBtn").textContent=audioOn?"🔊":"🔇";if(audioOn)happySound()};
+$("#helpBtn").onclick=()=>$("#help").classList.remove("hidden");$("#closeHelp").onclick=()=>$("#help").classList.add("hidden");
+$("#resetBtn").onclick=()=>{if(confirm("Reset Pet Dress Up progress on this device?")){localStorage.removeItem(SAVE_KEY);state=defaults();saveState();$("#help").classList.add("hidden");buildAppointment();toast("Fresh start!")}};
+$("#royalContinue").onclick=()=>{$("#royalCelebration").classList.add("hidden");state.royalLooks=[];saveState();buildAppointment()};
+
+renderStartPets();updateHud();renderTabs();renderOptions();
+})();
+</script>
+</body>
+</html>
