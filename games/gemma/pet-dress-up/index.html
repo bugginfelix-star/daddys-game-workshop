@@ -68,7 +68,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer}butto
 <div id="app">
   <div class="room" id="room"><i class="wallDot d1"></i><i class="wallDot d2"></i><i class="shelf"></i><i class="plant"></i><i class="mirrorDec"></i><i class="lightsDec"></i><i class="rackDec"></i></div>
   <header class="topbar">
-    <div class="brand"><span class="logoMark"><i></i><b></b></span><span class="brandText"><strong>Gemma's Pet Dress Up</strong><span id="buildLabel">Boutique Build 1.0</span></span></div>
+    <div class="brand"><span class="logoMark"><i></i><b></b></span><span class="brandText"><strong>Gemma's Pet Dress Up</strong><span id="buildLabel">Boutique Build 1.0.1</span></span></div>
     <div class="stats"><span class="statPill"><b>LEVEL</b><span id="levelText">1</span></span><span class="statPill"><b>COINS</b><span id="coinText">0</span></span></div>
   </header>
   <main class="main">
@@ -92,7 +92,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer}butto
 (()=>{
 "use strict";
 const SAVE_KEY="gemmaPetDressUpV2";
-const BUILD="1.0.0";
+const BUILD="1.0.1";
 const $=s=>document.querySelector(s);
 const els={room:$("#room"),overlay:$("#overlay"),petSvg:$("#petSvg"),stage:$("#stageWrap"),tabs:$("#tabs"),grid:$("#optionGrid"),level:$("#levelText"),coins:$("#coinText"),customerFace:$("#customerFace"),hello:$("#customerHello"),petName:$("#petName"),request:$("#requestLine"),clues:$("#clues"),stageLabel:$("#stageLabel"),mood:$("#petMood"),sound:$("#soundBtn"),finish:$("#finishBtn"),shop:$("#shopBtn"),random:$("#randomBtn"),confetti:$("#confetti")};
 
@@ -144,6 +144,7 @@ const royalRequests=[
  {id:"royal3",line:"Royal guest #3 wants princess style with a crown or bow.",tags:["princess"],clues:["Princess","Crown / Bow"],headIds:["crown","bow","flowers"]},
  {id:"royalFinal",line:"FINAL LOOK: princess + colorful + matching colors, with a fancy accessory!",tags:["princess","colorful","fancy","match"],clues:["Princess","Colorful","Match","Fancy"],hard:true}
 ];
+const ROYAL_AVG_REQUIRED=95,ROYAL_MIN_REQUIRED=90;
 
 const shopItems=[
  {id:"mirror",name:"Heart Mirror",cost:90,desc:"A cute mirror for the boutique.",type:"decor"},{id:"plant",name:"Rainbow Plant",cost:130,desc:"Makes the styling room extra cheerful.",type:"decor"},{id:"lights",name:"Twinkle Lights",cost:180,desc:"Adds sparkling shop lights.",type:"decor"},{id:"goldRack",name:"Golden Clothes Rack",cost:240,desc:"A fancy rack for Gemma's designs.",type:"decor"}
@@ -300,8 +301,16 @@ function customerReaction(score){return score>=94?`${appointment.customer}: “W
 function snapshotLook(){return{species:appointment.species.id,pet:appointment.pet,outfit:structuredClone(outfit),charms:structuredClone(dragCharms)}}
 function getUnlocks(level){const all=[...colors,...patterns,...Object.values(categories).flat(),...species];return all.filter(x=>x.level===level).map(x=>x.name)}
 function completeRoyalShow(){
- const avg=Math.round(royal.scores.reduce((a,b)=>a+b,0)/royal.scores.length);save.royalComplete=true;save.coins+=250;save.level=136;save.totalMakeovers++;persist();updateStats();sound("royal");
- els.overlay.classList.remove("hidden");els.overlay.innerHTML=`<div class="panel"><div class="rewardBurst">👑</div><h1>Royal Pet Fashion Show!</h1><div class="showBanner">Level 135 Complete • ${avg}% average style match</div><div class="showGrid">${royal.looks.map((l,i)=>`<div class="showPet">${miniPetSvg(l)}<strong>${l.pet}</strong><br><span>${royal.scores[i]}%</span></div>`).join("")}</div><p>All four pets walk the runway together while the crowd cheers!</p><div class="rewardGrid"><div class="rewardBox"><b>+250</b>Coins</div><div class="rewardBox"><b>136</b>Level</div><div class="rewardBox"><b>ROYAL</b>Stylist</div></div><button class="startBtn" id="royalDone">Keep Styling!</button></div>`;confetti(80);$("#royalDone").onclick=()=>{royal=null;els.overlay.classList.add("hidden");makeAppointment()};
+ const avg=Math.round(royal.scores.reduce((a,b)=>a+b,0)/royal.scores.length),lowest=Math.min(...royal.scores);
+ const passed=avg>=ROYAL_AVG_REQUIRED&&lowest>=ROYAL_MIN_REQUIRED;
+ els.overlay.classList.remove("hidden");
+ if(!passed){
+  sound("no");
+  els.overlay.innerHTML=`<div class="panel"><div class="rewardBurst">👑</div><h1>So Close, Royal Stylist!</h1><div class="showBanner">Level 135 Challenge • ${avg}% average • lowest look ${lowest}%</div><div class="showGrid">${royal.looks.map((l,i)=>`<div class="showPet">${miniPetSvg(l)}<strong>${l.pet}</strong><br><span>${royal.scores[i]}%</span></div>`).join("")}</div><p>This is Gemma's super-hard challenge: earn at least <strong>${ROYAL_AVG_REQUIRED}% average</strong> and keep <strong>every look at ${ROYAL_MIN_REQUIRED}% or higher</strong>.</p><p>Match every clue carefully, then try the whole four-pet fashion show again.</p><button class="startBtn" id="royalRetry">Retry Royal Show</button></div>`;
+  $("#royalRetry").onclick=()=>{els.overlay.classList.add("hidden");startRoyal()};return;
+ }
+ save.royalComplete=true;save.coins+=250;save.level=136;save.totalMakeovers++;persist();updateStats();sound("royal");
+ els.overlay.innerHTML=`<div class="panel"><div class="rewardBurst">👑</div><h1>Royal Pet Fashion Show!</h1><div class="showBanner">Level 135 Complete • ${avg}% average style match</div><div class="showGrid">${royal.looks.map((l,i)=>`<div class="showPet">${miniPetSvg(l)}<strong>${l.pet}</strong><br><span>${royal.scores[i]}%</span></div>`).join("")}</div><p>You cleared Gemma's super-hard Royal challenge! All four pets walk the runway while the crowd cheers!</p><div class="rewardGrid"><div class="rewardBox"><b>+250</b>Coins</div><div class="rewardBox"><b>136</b>Level</div><div class="rewardBox"><b>ROYAL</b>Stylist</div></div><button class="startBtn" id="royalDone">Keep Styling!</button></div>`;confetti(80);$("#royalDone").onclick=()=>{royal=null;els.overlay.classList.add("hidden");makeAppointment()};
 }
 function miniPetSvg(l){const sp=species.find(s=>s.id===l.species)||species[0];const old=outfit;outfit=l.outfit;const html=`<svg viewBox="0 0 320 320"><defs>${patternDef(outfit.pattern,colorHex(outfit.color),colorHex(outfit.accent))}</defs>${petBase(sp,sp.fur)}${outfitSvg()}</svg>`;outfit=old;return html}
 function confetti(n=30){els.confetti.innerHTML="";els.confetti.classList.remove("hidden");for(let i=0;i<n;i++){const x=document.createElement("i");x.style.left=Math.random()*100+"%";x.style.setProperty("--dur",(1.8+Math.random()*1.7)+"s");x.style.setProperty("--rot",Math.random()*180+"deg");x.style.setProperty("--c",["#ff6fa8","#ffd45f","#7ed9c2","#77c9f2","#b895ec"][i%5]);x.style.animationDelay=Math.random()*.5+"s";els.confetti.appendChild(x)}setTimeout(()=>els.confetti.classList.add("hidden"),3600)}
