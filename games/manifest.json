@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-30",
+  "updated": "2026-09-27",
   "games": {
     "quinton": [
       {
@@ -103,6 +103,12 @@
         "slug": "fruit-ninja-class",
         "path": "games/gemma/fruit-ninja-class/",
         "index_html": "games/gemma/fruit-ninja-class/index.html"
+      },
+      {
+        "title": "Pet Dress Up",
+        "slug": "pet-dress-up",
+        "path": "games/gemma/pet-dress-up/",
+        "index_html": "games/gemma/pet-dress-up/index.html"
       },
       {
         "title": "Princess Tea Party",
