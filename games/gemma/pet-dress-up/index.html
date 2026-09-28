@@ -68,7 +68,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer}butto
 <div id="app">
   <div class="room" id="room"><i class="wallDot d1"></i><i class="wallDot d2"></i><i class="shelf"></i><i class="plant"></i><i class="mirrorDec"></i><i class="lightsDec"></i><i class="rackDec"></i></div>
   <header class="topbar">
-    <div class="brand"><span class="logoMark"><i></i><b></b></span><span class="brandText"><strong>Gemma's Pet Dress Up</strong><span id="buildLabel">Boutique Build 1.0.1</span></span></div>
+    <div class="brand"><span class="logoMark"><i></i><b></b></span><span class="brandText"><strong>Gemma's Pet Dress Up</strong><span id="buildLabel">Boutique Build 1.0.2</span></span></div>
     <div class="stats"><span class="statPill"><b>LEVEL</b><span id="levelText">1</span></span><span class="statPill"><b>COINS</b><span id="coinText">0</span></span></div>
   </header>
   <main class="main">
@@ -92,7 +92,7 @@ button{font:inherit;color:inherit;touch-action:manipulation;cursor:pointer}butto
 (()=>{
 "use strict";
 const SAVE_KEY="gemmaPetDressUpV2";
-const BUILD="1.0.1";
+const BUILD="1.0.2";
 const $=s=>document.querySelector(s);
 const els={room:$("#room"),overlay:$("#overlay"),petSvg:$("#petSvg"),stage:$("#stageWrap"),tabs:$("#tabs"),grid:$("#optionGrid"),level:$("#levelText"),coins:$("#coinText"),customerFace:$("#customerFace"),hello:$("#customerHello"),petName:$("#petName"),request:$("#requestLine"),clues:$("#clues"),stageLabel:$("#stageLabel"),mood:$("#petMood"),sound:$("#soundBtn"),finish:$("#finishBtn"),shop:$("#shopBtn"),random:$("#randomBtn"),confetti:$("#confetti")};
 
@@ -205,42 +205,72 @@ function petBase(sp,fur){
  if(sp.id==="guinea")return `<g class="petbody"><ellipse cx="160" cy="208" rx="88" ry="70" fill="${fur}"/><ellipse cx="119" cy="109" rx="25" ry="27" fill="#9c684d"/><ellipse cx="201" cy="109" rx="25" ry="27" fill="#9c684d"/><ellipse cx="160" cy="137" rx="68" ry="54" fill="${fur}"/><path d="M115 101q45 24 91 0q-8 73-90 78z" fill="#fff0d8" opacity=".7"/><ellipse cx="160" cy="160" rx="6" ry="5" fill="#694954"/>${eye}<ellipse cx="112" cy="258" rx="27" ry="13" fill="${fur}"/><ellipse cx="208" cy="258" rx="27" ry="13" fill="${fur}"/></g>`;
  return `<g class="petbody"><ellipse cx="160" cy="195" rx="65" ry="80" fill="${fur}"/><circle cx="160" cy="112" r="54" fill="${fur}"/><path d="M146 145l14 18 14-18z" fill="#f4b94e"/><ellipse cx="130" cy="117" rx="7" ry="9" fill="#3f3850"/><ellipse cx="190" cy="117" rx="7" ry="9" fill="#3f3850"/><circle cx="128" cy="114" r="2" fill="#fff"/><circle cx="188" cy="114" r="2" fill="#fff"/><path d="M101 186q-45 25-38 71q41-16 68-50M219 186q45 25 38 71q-41-16-68-50" fill="${colorHex(outfit.accent)}" opacity=".7"/><path d="M143 269v18M177 269v18" stroke="#d39842" stroke-width="7" stroke-linecap="round"/><path d="M136 287h-13M184 287h13" stroke="#d39842" stroke-width="6" stroke-linecap="round"/></g>`;
 }
+function fitPart(kind,html){
+ if(!html)return "";
+ const id=appointment?.species?.id||"dog";
+ const fits={
+  dog:{
+   body:{sx:1,sy:1,dx:0,dy:0},neck:{sx:1,sy:1,dx:0,dy:0},head:{sx:1,sy:1,dx:0,dy:0},face:{sx:1,sy:1,dx:0,dy:0},extra:{sx:1,sy:1,dx:0,dy:0}
+  },
+  cat:{
+   body:{sx:.96,sy:.98,dx:0,dy:2},neck:{sx:.96,sy:1,dx:0,dy:1},head:{sx:.98,sy:.98,dx:0,dy:1},face:{sx:.98,sy:.98,dx:0,dy:0},extra:{sx:.96,sy:.98,dx:0,dy:2}
+  },
+  bunny:{
+   body:{sx:.93,sy:.96,dx:0,dy:5},neck:{sx:.94,sy:.98,dx:0,dy:5},head:{sx:.96,sy:.96,dx:0,dy:-1},face:{sx:.97,sy:.98,dx:0,dy:2},extra:{sx:.94,sy:.97,dx:0,dy:4}
+  },
+  guinea:{
+   body:{sx:1.13,sy:.88,dx:0,dy:12},neck:{sx:1.10,sy:.92,dx:0,dy:11},head:{sx:1.04,sy:.95,dx:0,dy:9},face:{sx:1.02,sy:.94,dx:0,dy:8},extra:{sx:1.12,sy:.90,dx:0,dy:8}
+  },
+  bird:{
+   body:{sx:.82,sy:1.06,dx:0,dy:-6},neck:{sx:.84,sy:1,dx:0,dy:-12},head:{sx:.88,sy:.90,dx:0,dy:-8},face:{sx:.92,sy:.92,dx:0,dy:-13},extra:{sx:.90,sy:1,dx:0,dy:-4}
+  }
+ };
+ const origins={body:[160,210],neck:[160,170],head:[160,92],face:[160,130],extra:[160,205]};
+ const f=(fits[id]||fits.dog)[kind],o=origins[kind]||origins.body,cx=o[0],cy=o[1];
+ return \`<g class="fit-\${kind}" transform="translate(\${f.dx} \${f.dy}) translate(\${cx} \${cy}) scale(\${f.sx} \${f.sy}) translate(\${-cx} \${-cy})">\${html}</g>\`;
+}
 function outfitSvg(){
- const c=colorHex(outfit.color),a=colorHex(outfit.accent),fill=outfit.pattern==="plain"?c:"url(#pat)";let s="";
- if(outfit.extra==="wings")s+=`<g opacity=".88"><path d="M93 184q-45-46-58 9q16 34 61 18" fill="#d9c8ff" stroke="#997fca" stroke-width="4"/><path d="M227 184q45-46 58 9q-16 34-61 18" fill="#d9c8ff" stroke="#997fca" stroke-width="4"/></g>`;
- if(outfit.extra==="backpack")s+=`<rect x="210" y="173" width="46" height="63" rx="14" fill="${a}" stroke="#684c6f" stroke-width="4"/>`;
- if(outfit.extra==="ribbon")s+=`<path d="M110 223q-48 42-18 71q29-26 69-35q39 8 67 35q29-30-18-72" fill="${a}" opacity=".86"/>`;
- if(outfit.extra==="pom")s+=`<g fill="${a}"><circle cx="85" cy="202" r="15"/><circle cx="235" cy="202" r="15"/></g>`;
- if(outfit.extra==="balloons")s+=`<g stroke="#74537b" stroke-width="2"><line x1="220" y1="195" x2="270" y2="77"/><circle cx="270" cy="65" r="17" fill="#ff7faa"/><line x1="217" y1="195" x2="245" y2="48"/><circle cx="245" cy="37" r="16" fill="#7ed9f3"/></g>`;
+ const c=colorHex(outfit.color),a=colorHex(outfit.accent),fill=outfit.pattern==="plain"?c:"url(#pat)";
+ let extra="",body="",neck="",head="",face="";
+ if(outfit.extra==="wings")extra+=\`<g opacity=".88"><path d="M93 184q-45-46-58 9q16 34 61 18" fill="#d9c8ff" stroke="#997fca" stroke-width="4"/><path d="M227 184q45-46 58 9q-16 34-61 18" fill="#d9c8ff" stroke="#997fca" stroke-width="4"/></g>\`;
+ if(outfit.extra==="backpack")extra+=\`<rect x="210" y="173" width="46" height="63" rx="14" fill="\${a}" stroke="#684c6f" stroke-width="4"/>\`;
+ if(outfit.extra==="ribbon")extra+=\`<path d="M110 223q-48 42-18 71q29-26 69-35q39 8 67 35q29-30-18-72" fill="\${a}" opacity=".86"/>\`;
+ if(outfit.extra==="pom")extra+=\`<g fill="\${a}"><circle cx="85" cy="202" r="15"/><circle cx="235" cy="202" r="15"/></g>\`;
+ if(outfit.extra==="balloons")extra+=\`<g stroke="#74537b" stroke-width="2"><line x1="220" y1="195" x2="270" y2="77"/><circle cx="270" cy="65" r="17" fill="#ff7faa"/><line x1="217" y1="195" x2="245" y2="48"/><circle cx="245" cy="37" r="16" fill="#7ed9f3"/></g>\`;
+
  if(outfit.outfit!=="none"){
-  if(outfit.outfit==="dress")s+=`<path d="M111 170q49-22 98 0l5 45 32 54q-84 31-172 0l32-54z" fill="${fill}" stroke="#fff" stroke-width="5"/><path d="M108 213q52 19 105 0" stroke="${a}" stroke-width="8"/>`;
-  else if(outfit.outfit==="tutu")s+=`<path d="M112 169q48-20 96 0l5 51h-106z" fill="${fill}" stroke="#fff" stroke-width="5"/><path d="M105 215q55 30 110 0l27 29q-82 39-164 0z" fill="#ffc6e5" stroke="#fff" stroke-width="4"/>`;
-  else if(outfit.outfit==="cape")s+=`<path d="M112 164q48-17 96 0l27 113q-76 35-150 0z" fill="${fill}" stroke="#fff" stroke-width="5"/><circle cx="160" cy="168" r="7" fill="${a}"/>`;
-  else if(outfit.outfit==="overalls")s+=`<path d="M113 169q47-18 94 0l3 98h-43l-7-52-7 52h-43z" fill="${fill}" stroke="#fff" stroke-width="5"/><path d="M133 165v58M187 165v58" stroke="${a}" stroke-width="10"/>`;
-  else s+=`<path d="M108 169q52-22 104 0l8 70q-59 22-120 0z" fill="${fill}" stroke="#fff" stroke-width="5"/>`;
-  if(outfit.outfit==="jersey")s+=`<text x="160" y="218" text-anchor="middle" font-size="38" font-weight="900" fill="${a}">7</text>`;
-  if(outfit.outfit==="hoodie")s+=`<path d="M113 169q4-35 47-35t47 35" fill="${fill}" stroke="#fff" stroke-width="5"/>`;
-  if(outfit.outfit==="sweater")s+=`<path d="M100 184l-29 37 23 15 25-31M220 184l29 37-23 15-25-31" fill="${fill}" stroke="#fff" stroke-width="4"/>`;
+  if(outfit.outfit==="dress")body+=\`<path d="M111 170q49-22 98 0l5 45 32 54q-84 31-172 0l32-54z" fill="\${fill}" stroke="#fff" stroke-width="5"/><path d="M108 213q52 19 105 0" stroke="\${a}" stroke-width="8"/>\`;
+  else if(outfit.outfit==="tutu")body+=\`<path d="M112 169q48-20 96 0l5 51h-106z" fill="\${fill}" stroke="#fff" stroke-width="5"/><path d="M105 215q55 30 110 0l27 29q-82 39-164 0z" fill="#ffc6e5" stroke="#fff" stroke-width="4"/>\`;
+  else if(outfit.outfit==="cape")body+=\`<path d="M112 164q48-17 96 0l27 113q-76 35-150 0z" fill="\${fill}" stroke="#fff" stroke-width="5"/><circle cx="160" cy="168" r="7" fill="\${a}"/>\`;
+  else if(outfit.outfit==="overalls")body+=\`<path d="M113 169q47-18 94 0l3 98h-43l-7-52-7 52h-43z" fill="\${fill}" stroke="#fff" stroke-width="5"/><path d="M133 165v58M187 165v58" stroke="\${a}" stroke-width="10"/>\`;
+  else body+=\`<path d="M108 169q52-22 104 0l8 70q-59 22-120 0z" fill="\${fill}" stroke="#fff" stroke-width="5"/>\`;
+  if(outfit.outfit==="jersey")body+=\`<text x="160" y="218" text-anchor="middle" font-size="38" font-weight="900" fill="\${a}">7</text>\`;
+  if(outfit.outfit==="hoodie")body+=\`<path d="M113 169q4-35 47-35t47 35" fill="\${fill}" stroke="#fff" stroke-width="5"/>\`;
+  if(outfit.outfit==="sweater")body+=\`<path d="M100 184l-29 37 23 15 25-31M220 184l29 37-23 15-25-31" fill="\${fill}" stroke="#fff" stroke-width="4"/>\`;
  }
- if(outfit.neck==="collar")s+=`<path d="M112 166q48 22 96 0" fill="none" stroke="${a}" stroke-width="12"/><circle cx="160" cy="179" r="8" fill="#ffd65f"/>`;
- if(outfit.neck==="bowtie")s+=`<path d="M160 174l-28-17v34zM160 174l28-17v34z" fill="${a}" stroke="#fff" stroke-width="3"/><circle cx="160" cy="174" r="8" fill="${c}"/>`;
- if(outfit.neck==="scarf")s+=`<path d="M111 164q48 23 98 0" fill="none" stroke="${a}" stroke-width="15"/><path d="M189 172l8 62 24-7-13-62" fill="${a}"/>`;
- if(outfit.neck==="pearls")s+=Array.from({length:9},(_,i)=>`<circle cx="${119+i*10}" cy="${168+Math.abs(4-i)*2}" r="5" fill="#fffbe7" stroke="#d4c7bd"/>`).join("");
- if(outfit.neck==="medal")s+=`<path d="M148 164l12 31 12-31" fill="none" stroke="#5577bd" stroke-width="7"/><circle cx="160" cy="197" r="12" fill="#ffd65f" stroke="#d59b28" stroke-width="3"/>`;
- if(outfit.neck==="bells")s+=`<path d="M114 166q46 20 92 0" fill="none" stroke="#df536f" stroke-width="8"/><g fill="#ffd45f"><circle cx="132" cy="172" r="6"/><circle cx="160" cy="177" r="6"/><circle cx="188" cy="172" r="6"/></g>`;
- if(outfit.head==="bow")s+=`<g transform="translate(160 77)"><path d="M0 0l-35-18q-16 27 4 38zM0 0l35-18q16 27-4 38z" fill="${a}" stroke="#fff" stroke-width="3"/><circle r="10" fill="${c}"/></g>`;
- if(outfit.head==="cap")s+=`<path d="M119 85q41-35 82 0v20h-82z" fill="${a}" stroke="#fff" stroke-width="4"/><path d="M157 101q51-7 63 11q-46 10-69 1" fill="${a}"/>`;
- if(outfit.head==="partyhat")s+=`<path d="M160 35l-35 72h70z" fill="${fill}" stroke="#fff" stroke-width="4"/><circle cx="160" cy="34" r="9" fill="${a}"/>`;
- if(outfit.head==="crown")s+=`<path d="M125 91l7-39 20 21 12-29 14 29 18-21 5 39z" fill="#ffd45f" stroke="#fff" stroke-width="4"/><circle cx="163" cy="75" r="5" fill="#ff6fa8"/>`;
- if(outfit.head==="flowers")s+=`<g>${[126,143,160,177,194].map((x,i)=>`<circle cx="${x}" cy="84" r="10" fill="${["#ff88b8","#ffcf62","#8fdba9"][i%3]}"/><circle cx="${x}" cy="84" r="3" fill="#fff"/>`).join("")}</g>`;
- if(outfit.head==="tophat")s+=`<path d="M131 85h58l-7-45h-44z" fill="#5a4668" stroke="#fff" stroke-width="3"/><rect x="123" y="82" width="74" height="13" rx="5" fill="#5a4668"/>`;
- if(outfit.head==="antenna")s+=`<path d="M143 83q-15-38-29-42M177 83q15-38 29-42" fill="none" stroke="#785d83" stroke-width="4"/><circle cx="114" cy="41" r="9" fill="${c}"/><circle cx="206" cy="41" r="9" fill="${a}"/>`;
- if(outfit.face==="round")s+=`<g fill="none" stroke="#5d4b68" stroke-width="5"><circle cx="128" cy="131" r="20"/><circle cx="192" cy="131" r="20"/><path d="M148 131h24"/></g>`;
- if(outfit.face==="heart")s+=`<g fill="${a}" opacity=".78"><path d="M128 148c-34-24-27-51-10-51q10 0 15 10q5-10 15-10c18 0 23 27-20 51z"/><path d="M192 148c-34-24-27-51-10-51q10 0 15 10q5-10 15-10c18 0 23 27-20 51z"/></g>`;
- if(outfit.face==="shades")s+=`<g fill="#4d536e" stroke="#fff" stroke-width="3"><path d="M104 116h49l-5 31q-36 10-40-13z"/><path d="M167 116h49l-4 18q-4 23-40 13z"/><rect x="150" y="120" width="20" height="5"/></g>`;
- if(outfit.face==="stars")s+=`<g fill="${a}" stroke="#fff" stroke-width="2"><path d="M128 108l7 14 16 2-12 11 4 16-15-8-15 8 4-16-12-11 16-2z"/><path d="M192 108l7 14 16 2-12 11 4 16-15-8-15 8 4-16-12-11 16-2z"/></g>`;
- if(outfit.face==="mask")s+=`<path d="M103 117q56-24 114 0l-11 29q-25 19-46-5q-23 24-46 5z" fill="${a}" opacity=".82" stroke="#fff" stroke-width="3"/>`;
- return s;
+
+ if(outfit.neck==="collar")neck+=\`<path d="M112 166q48 22 96 0" fill="none" stroke="\${a}" stroke-width="12"/><circle cx="160" cy="179" r="8" fill="#ffd65f"/>\`;
+ if(outfit.neck==="bowtie")neck+=\`<path d="M160 174l-28-17v34zM160 174l28-17v34z" fill="\${a}" stroke="#fff" stroke-width="3"/><circle cx="160" cy="174" r="8" fill="\${c}"/>\`;
+ if(outfit.neck==="scarf")neck+=\`<path d="M111 164q48 23 98 0" fill="none" stroke="\${a}" stroke-width="15"/><path d="M189 172l8 62 24-7-13-62" fill="\${a}"/>\`;
+ if(outfit.neck==="pearls")neck+=Array.from({length:9},(_,i)=>\`<circle cx="\${119+i*10}" cy="\${168+Math.abs(4-i)*2}" r="5" fill="#fffbe7" stroke="#d4c7bd"/>\`).join("");
+ if(outfit.neck==="medal")neck+=\`<path d="M148 164l12 31 12-31" fill="none" stroke="#5577bd" stroke-width="7"/><circle cx="160" cy="197" r="12" fill="#ffd65f" stroke="#d59b28" stroke-width="3"/>\`;
+ if(outfit.neck==="bells")neck+=\`<path d="M114 166q46 20 92 0" fill="none" stroke="#df536f" stroke-width="8"/><g fill="#ffd45f"><circle cx="132" cy="172" r="6"/><circle cx="160" cy="177" r="6"/><circle cx="188" cy="172" r="6"/></g>\`;
+
+ if(outfit.head==="bow")head+=\`<g transform="translate(160 77)"><path d="M0 0l-35-18q-16 27 4 38zM0 0l35-18q16 27-4 38z" fill="\${a}" stroke="#fff" stroke-width="3"/><circle r="10" fill="\${c}"/></g>\`;
+ if(outfit.head==="cap")head+=\`<path d="M119 85q41-35 82 0v20h-82z" fill="\${a}" stroke="#fff" stroke-width="4"/><path d="M157 101q51-7 63 11q-46 10-69 1" fill="\${a}"/>\`;
+ if(outfit.head==="partyhat")head+=\`<path d="M160 35l-35 72h70z" fill="\${fill}" stroke="#fff" stroke-width="4"/><circle cx="160" cy="34" r="9" fill="\${a}"/>\`;
+ if(outfit.head==="crown")head+=\`<path d="M125 91l7-39 20 21 12-29 14 29 18-21 5 39z" fill="#ffd45f" stroke="#fff" stroke-width="4"/><circle cx="163" cy="75" r="5" fill="#ff6fa8"/>\`;
+ if(outfit.head==="flowers")head+=\`<g>\${[126,143,160,177,194].map((x,i)=>\`<circle cx="\${x}" cy="84" r="10" fill="\${["#ff88b8","#ffcf62","#8fdba9"][i%3]}"/><circle cx="\${x}" cy="84" r="3" fill="#fff"/>\`).join("")}</g>\`;
+ if(outfit.head==="tophat")head+=\`<path d="M131 85h58l-7-45h-44z" fill="#5a4668" stroke="#fff" stroke-width="3"/><rect x="123" y="82" width="74" height="13" rx="5" fill="#5a4668"/>\`;
+ if(outfit.head==="antenna")head+=\`<path d="M143 83q-15-38-29-42M177 83q15-38 29-42" fill="none" stroke="#785d83" stroke-width="4"/><circle cx="114" cy="41" r="9" fill="\${c}"/><circle cx="206" cy="41" r="9" fill="\${a}"/>\`;
+
+ if(outfit.face==="round")face+=\`<g fill="none" stroke="#5d4b68" stroke-width="5"><circle cx="128" cy="131" r="20"/><circle cx="192" cy="131" r="20"/><path d="M148 131h24"/></g>\`;
+ if(outfit.face==="heart")face+=\`<g fill="\${a}" opacity=".78"><path d="M128 148c-34-24-27-51-10-51q10 0 15 10q5-10 15-10c18 0 23 27-20 51z"/><path d="M192 148c-34-24-27-51-10-51q10 0 15 10q5-10 15-10c18 0 23 27-20 51z"/></g>\`;
+ if(outfit.face==="shades")face+=\`<g fill="#4d536e" stroke="#fff" stroke-width="3"><path d="M104 116h49l-5 31q-36 10-40-13z"/><path d="M167 116h49l-4 18q-4 23-40 13z"/><rect x="150" y="120" width="20" height="5"/></g>\`;
+ if(outfit.face==="stars")face+=\`<g fill="\${a}" stroke="#fff" stroke-width="2"><path d="M128 108l7 14 16 2-12 11 4 16-15-8-15 8 4-16-12-11 16-2z"/><path d="M192 108l7 14 16 2-12 11 4 16-15-8-15 8 4-16-12-11 16-2z"/></g>\`;
+ if(outfit.face==="mask")face+=\`<path d="M103 117q56-24 114 0l-11 29q-25 19-46-5q-23 24-46 5z" fill="\${a}" opacity=".82" stroke="#fff" stroke-width="3"/>\`;
+
+ return fitPart("extra",extra)+fitPart("body",body)+fitPart("neck",neck)+fitPart("head",head)+fitPart("face",face);
 }
 function renderPet(){
  if(!appointment)return; const sp=appointment.species; const fur=sp.fur; const c=colorHex(outfit.color),a=colorHex(outfit.accent);
