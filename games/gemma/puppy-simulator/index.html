@@ -24,10 +24,10 @@ button{font:inherit}
 #toast{position:absolute;left:50%;top:26%;transform:translate(-50%,-12px);z-index:60;opacity:0;transition:.22s;pointer-events:none;max-width:82vw;text-align:center;background:#fff9ecf4;border:3px solid white;border-radius:18px;padding:10px 14px;font-weight:1000;box-shadow:0 10px 25px #1234;color:#34415d}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 #controls{position:absolute;left:0;right:0;bottom:0;z-index:12;height:154px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none;background:linear-gradient(transparent,#6bb5d628 30%,#6bb5d65c)}
-#dpad{pointer-events:auto;position:relative;width:126px;height:126px;display:grid;grid-template-columns:42px 42px 42px;grid-template-rows:42px 42px 42px;grid-template-areas:". up ." "left center right" ". down .";touch-action:none;user-select:none}
-.dpadBtn{border:3px solid #fff;border-radius:14px;background:linear-gradient(#ff9fd3,#ff6ebd);color:white;font-weight:1000;font-size:20px;box-shadow:0 5px 0 #bb4789,0 7px 14px #7c285844;touch-action:none;padding:0;display:flex;align-items:center;justify-content:center}
-.dpadBtn:active,.dpadBtn.pressed{transform:translateY(3px);box-shadow:0 2px 0 #bb4789}
-.dpadBtn.up{grid-area:up}.dpadBtn.left{grid-area:left}.dpadBtn.center{grid-area:center;pointer-events:none;background:#fff9e69c;box-shadow:inset 0 0 0 5px #63b8df45;border-color:#ffffffd9}.dpadBtn.right{grid-area:right}.dpadBtn.down{grid-area:down}
+#movePad{pointer-events:auto;position:relative;width:132px;height:132px;touch-action:none;user-select:none}
+#moveRing{position:absolute;inset:3px;border-radius:50%;background:#fff9e69c;border:3px solid #ffffffdf;box-shadow:inset 0 0 0 9px #63b8df3d,0 7px 18px #224b6a44}
+#moveKnob{pointer-events:none;position:absolute;width:56px;height:56px;left:35px;top:35px;border-radius:50%;background:linear-gradient(#ff9fd3,#ff6ebd);border:3px solid #fff;box-shadow:0 5px 10px #7c285846;transform:translate(0,0);will-change:transform}
+#movePad.active #moveRing{box-shadow:inset 0 0 0 9px #63b8df55,0 7px 20px #224b6a55}
 #actionCluster{pointer-events:auto;display:grid;grid-template-columns:70px 82px;grid-template-rows:54px 54px;gap:7px;align-items:end}
 .ctrlBtn{border:3px solid #fff;border-radius:18px;background:linear-gradient(#7bd0ff,#4b9fea);color:white;font-weight:1000;box-shadow:0 6px 0 #3678af,0 8px 18px #24577844;text-shadow:0 2px 1px #3c6f98;min-height:54px;padding:4px 6px;font-size:12px}
 .ctrlBtn:active{transform:translateY(3px);box-shadow:0 3px 0 #3678af}
@@ -57,8 +57,8 @@ button{font:inherit}
 #sleepOverlay{background:linear-gradient(#16294d,#644f84);color:white}.sleepScene{height:250px;border-radius:25px;background:linear-gradient(#243f69,#5e5b8d);position:relative;overflow:hidden;border:3px solid #a8b7ff}.moon{position:absolute;right:34px;top:24px;width:55px;height:55px;border-radius:50%;background:#fff6c7;box-shadow:0 0 30px #fff3b5}.stars i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff}.sleepBed{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:220px;height:78px;border-radius:42px;background:#f0a8ce;border:7px solid #ffd8eb}.sleepPup{position:absolute;left:50%;bottom:55px;transform:translateX(-50%) rotate(-7deg);width:105px;height:72px;border-radius:50%;background:#c98e58;border:5px solid #784d2d}.sleepPup:after{content:"";position:absolute;right:-13px;top:5px;width:48px;height:30px;border:5px solid #784d2d;border-left:0;border-radius:0 45px 45px 0;background:#c98e58}.zzz{position:absolute;left:64%;bottom:145px;font-size:26px;font-weight:1000;color:#e9e5ff;animation:floatZ 1.8s ease-in-out infinite}@keyframes floatZ{50%{transform:translateY(-12px);opacity:.65}}
 #summaryList{font-weight:900;line-height:1.6;background:#ffffff1d;border-radius:14px;padding:9px}
 #debugBadge{display:none}
-@media(max-width:430px){#hud{gap:4px}.hudPill{font-size:10px;padding:4px 6px}.hudPill strong{font-size:11px}#energyWrap{padding:4px 5px}#controls{height:145px}#dpad{width:114px;height:114px;grid-template-columns:38px 38px 38px;grid-template-rows:38px 38px 38px}.dpadBtn{font-size:18px}#actionCluster{grid-template-columns:66px 78px}.panel{padding:12px}.optionsGrid,.shopGrid{grid-template-columns:1fr 1fr}}
-@media(min-width:700px){#controls{height:175px;padding-left:26px;padding-right:26px}#dpad{width:144px;height:144px;grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px 48px}.dpadBtn{font-size:22px}#actionCluster{grid-template-columns:88px 100px;grid-template-rows:62px 62px}.ctrlBtn{font-size:15px}.panel{padding:20px}.optionsGrid,.shopGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:430px){#hud{gap:4px}.hudPill{font-size:10px;padding:4px 6px}.hudPill strong{font-size:11px}#energyWrap{padding:4px 5px}#controls{height:145px}#movePad{width:116px;height:116px}#moveKnob{width:50px;height:50px;left:30px;top:30px}#actionCluster{grid-template-columns:66px 78px}.panel{padding:12px}.optionsGrid,.shopGrid{grid-template-columns:1fr 1fr}}
+@media(min-width:700px){#controls{height:175px;padding-left:26px;padding-right:26px}#movePad{width:148px;height:148px}#moveKnob{width:62px;height:62px;left:40px;top:40px}#actionCluster{grid-template-columns:88px 100px;grid-template-rows:62px 62px}.ctrlBtn{font-size:15px}.panel{padding:20px}.optionsGrid,.shopGrid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -74,7 +74,7 @@ button{font:inherit}
   <div id="miniBtns"><button class="miniBtn" id="shopMini">SHOP</button><button class="miniBtn" id="dressMini">DRESS</button></div>
   <div id="toast"></div>
   <div id="controls">
-    <div id="dpad" aria-label="Movement"><button class="dpadBtn up" data-dx="0" data-dy="-1" aria-label="Move up">▲</button><button class="dpadBtn left" data-dx="-1" data-dy="0" aria-label="Move left">◀</button><button class="dpadBtn center" type="button" tabindex="-1" aria-hidden="true"></button><button class="dpadBtn right" data-dx="1" data-dy="0" aria-label="Move right">▶</button><button class="dpadBtn down" data-dx="0" data-dy="1" aria-label="Move down">▼</button></div>
+    <div id="movePad" aria-label="Movement joystick"><div id="moveRing"><div id="moveKnob"></div></div></div>
     <div id="actionCluster">
       <button class="ctrlBtn" id="jumpBtn">JUMP</button>
       <button class="ctrlBtn" id="barkBtn">BARK</button>
@@ -86,7 +86,7 @@ button{font:inherit}
     <div class="titlePup"><div class="bed"></div><div class="pup"><span class="eye l"></span><span class="eye r"></span><span class="nose"></span><span class="smile"></span></div></div>
     <h1>Puppy Simulator</h1>
     <div class="sub">Wake up. Run around. Get muddy. Make friends. Dress cute. Dream about tomorrow.</div>
-    <div class="version">Gemma's Puppy Simulator • v1.4</div>
+    <div class="version">Gemma's Puppy Simulator • v1.5</div>
     <div class="startRow"><button class="bigBtn" id="wakeBtn">WAKE UP!</button><button class="closeBtn" id="continueBtn">CONTINUE</button></div>
     <button class="miniBtn" id="resetBtn" style="margin-top:10px">Reset Save</button>
   </div></div>
@@ -168,7 +168,7 @@ const walls=[
   {x:0,y:0,w:720,h:35},{x:0,y:0,w:35,h:750},{x:0,y:715,w:720,h:35},
   {x:370,y:35,w:20,h:275},{x:35,y:310,w:655,h:20},
   {x:690,y:35,w:30,h:440},{x:690,y:585,w:30,h:165},
-  {x:720,y:0,w:760,h:30},{x:720,y:870,w:760,h:30},{x:720,y:0,w:25,h:900},{x:1455,y:0,w:25,h:360},{x:1455,y:520,w:25,h:380},
+  {x:720,y:0,w:760,h:30},{x:720,y:870,w:760,h:30},{x:720,y:0,w:25,h:445},{x:720,y:610,w:25,h:290},{x:1455,y:0,w:25,h:360},{x:1455,y:520,w:25,h:380},
   {x:1510,y:0,w:760,h:30},{x:1510,y:870,w:760,h:30},{x:1510,y:0,w:25,h:330},{x:1510,y:520,w:25,h:380},{x:2245,y:0,w:25,h:360},{x:2245,y:520,w:25,h:380},
   {x:2300,y:0,w:850,h:30},{x:2300,y:870,w:850,h:30},{x:2300,y:0,w:25,h:340},{x:2300,y:520,w:25,h:380},{x:3120,y:0,w:30,h:900}
 ];
@@ -176,7 +176,13 @@ const obstacles=[
   {x:880,y:360,w:90,h:55},{x:1260,y:700,w:120,h:50},{x:1060,y:555,w:75,h:55},
   {x:1740,y:270,w:110,h:90},{x:2020,y:500,w:120,h:80},{x:2440,y:360,w:100,h:80},{x:2730,y:490,w:120,h:90}
 ];
-function blocked(nx,ny){const r=22;const rects=walls.concat(obstacles);for(const o of rects)if(nx+r>o.x&&nx-r<o.x+o.w&&ny+r>o.y&&ny-r<o.y+o.h)return true;if(nx>1460&&nx<1530&&!areaUnlocked('park'))return true;if(nx>2245&&nx<2325&&!areaUnlocked('garden'))return true;return false}
+function blocked(nx,ny){
+ const r=16;
+ for(const o of walls)if(nx+r>o.x&&nx-r<o.x+o.w&&ny+r>o.y&&ny-r<o.y+o.h)return true;
+ if(nx>1460&&nx<1530&&!areaUnlocked('park'))return true;
+ if(nx>2245&&nx<2325&&!areaUnlocked('garden'))return true;
+ return false
+}
 const camera={x:state.x,y:state.y};
 function sx(wx){return (wx-camera.x)*DPR+W*.5}function sy(wy){return (wy-camera.y)*DPR+H*.56}
 function drawRounded(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y)}
@@ -206,7 +212,7 @@ function drawStructures(){
   // living rug/sofa/bowl
   ctx.fillStyle='#9ad3ee';roundedWorld(255,470,220,140,30);ctx.fill();ctx.fillStyle='#81bd95';roundedWorld(465,395,145,75,22);ctx.fill();drawBowl(590,610);
   // yard fence
-  drawFence(740,60,700,0);drawFence(740,840,700,0);drawFence(750,70,0,760);drawFence(1440,70,0,300);drawFence(1440,560,0,280);
+  drawFence(740,60,700,0);drawFence(740,840,700,0);drawFence(750,70,0,360);drawFence(750,610,0,220);drawFence(1440,70,0,300);drawFence(1440,560,0,280);
   // shop kiosk
   shadowRect(1280,175,125,100,15);ctx.fillStyle='#ffcf73';roundedWorld(1275,125,135,110,18);ctx.fill();ctx.fillStyle='#ff8fc8';ctx.beginPath();ctx.moveTo(sx(1265),sy(140));ctx.lineTo(sx(1343),sy(85));ctx.lineTo(sx(1420),sy(140));ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.font=`${15*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('PUPPY SHOP',sx(1342),sy(175));
   // challenge board
@@ -249,62 +255,94 @@ function drawPuppy(){const x=sx(state.x),ground=sy(state.y),z=state.z*DPR;ctx.sa
   ctx.restore()}
 function drawWorn(){const c={'Pink':'#ff5ea5','Blue':'#5a9fff','Green':'#65c96b','Rainbow':'#ff9f4f'}[state.worn.collar]||'#ff5ea5';ctx.strokeStyle=c;ctx.lineWidth=7*DPR;ctx.beginPath();ctx.arc(9*DPR,-3*DPR,25*DPR,.15,2.95);ctx.stroke();if(state.worn.hat&&state.worn.hat!=='None'){ctx.fillStyle=state.worn.hat==='Sun Hat'?'#ffd667':state.worn.hat==='Party Hat'?'#9f78ff':'#6fb7ec';ctx.beginPath();if(state.worn.hat==='Party Hat'){ctx.moveTo(11*DPR,-48*DPR);ctx.lineTo(30*DPR,-78*DPR);ctx.lineTo(43*DPR,-46*DPR)}else{ctx.ellipse(24*DPR,-49*DPR,28*DPR,11*DPR,0,0,7)}ctx.fill()}if(state.worn.accessory==='Bow'){ctx.fillStyle='#ff72bf';ctx.beginPath();ctx.ellipse(46*DPR,-27*DPR,10*DPR,7*DPR,.4,0,7);ctx.ellipse(56*DPR,-27*DPR,10*DPR,7*DPR,-.4,0,7);ctx.fill()}if(state.worn.accessory==='Bandana'){ctx.fillStyle='#75d0ef';ctx.beginPath();ctx.moveTo(-4*DPR,3*DPR);ctx.lineTo(10*DPR,25*DPR);ctx.lineTo(23*DPR,3*DPR);ctx.closePath();ctx.fill()}}
 function drawAreaGateHints(){if(!areaUnlocked('park')){ctx.fillStyle='#fff3d5';ctx.font=`${11*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('Park unlocks on Day 3',sx(1490),sy(430))}if(areaUnlocked('park')&&!areaUnlocked('garden')){ctx.fillStyle='#fff3d5';ctx.fillText('Garden unlocks on Day 5',sx(2270),sy(430))}}
-let pad={x:0,y:0,active:false,timer:null,lastPress:0};
-const dpadButtons=[...document.querySelectorAll('.dpadBtn[data-dx]')];
-function moveByPad(dx,dy,ms=42){
-  if(!running)return;
-  const speed=state.energy<20?75:120;
-  const nx=state.x+dx*speed*ms/1000,ny=state.y+dy*speed*ms/1000;
-  if(!blocked(nx,state.y))state.x=nx;
-  if(!blocked(state.x,ny))state.y=ny;
-  if(dx||dy){state.faceX=dx;state.faceY=dy}
-  state.energy=Math.max(0,state.energy-ms*.0017);
-  if(currentArea()!=='home'){
-    state.clean=Math.max(0,state.clean-ms*.0012);
-    if(state.clean<65)state.dirtyPatches=3;
-  }
+let stick={x:0,y:0,active:false,id:null};
+const movePad=$('movePad'),moveKnob=$('moveKnob');
+function setStickPoint(clientX,clientY){
+ const b=movePad.getBoundingClientRect(),cx=b.left+b.width/2,cy=b.top+b.height/2;
+ let dx=clientX-cx,dy=clientY-cy;
+ const max=Math.max(30,b.width*.31),d=Math.hypot(dx,dy)||1;
+ if(d>max){dx*=max/d;dy*=max/d}
+ let x=dx/max,y=dy/max;
+ const dead=.10;
+ if(Math.abs(x)<dead)x=0;
+ if(Math.abs(y)<dead)y=0;
+ stick.x=x;stick.y=y;
+ moveKnob.style.transform=`translate(${dx}px,${dy}px)`;
 }
-function stopPad(){
-  if(pad.timer){clearInterval(pad.timer);pad.timer=null}
-  pad.active=false;pad.x=0;pad.y=0;
-  dpadButtons.forEach(b=>b.classList.remove('pressed'));
+function stopStick(){
+ stick.active=false;stick.id=null;stick.x=0;stick.y=0;
+ moveKnob.style.transform='translate(0,0)';
+ movePad.classList.remove('active');
 }
-function startPad(btn){
-  stopPad();
-  pad.active=true;
-  pad.x=Number(btn.dataset.dx)||0;
-  pad.y=Number(btn.dataset.dy)||0;
-  pad.lastPress=performance.now();
-  btn.classList.add('pressed');
-  moveByPad(pad.x,pad.y,70);
-  pad.timer=setInterval(()=>moveByPad(pad.x,pad.y,42),42);
-}
-if('ontouchstart' in window){
-  dpadButtons.forEach(btn=>{
-    btn.addEventListener('touchstart',e=>{startPad(btn);e.preventDefault()},{passive:false});
-    btn.addEventListener('click',e=>{
-      if(performance.now()-pad.lastPress>350)moveByPad(Number(btn.dataset.dx)||0,Number(btn.dataset.dy)||0,180);
-      e.preventDefault();
-    });
-  });
-  window.addEventListener('touchend',()=>stopPad(),{passive:true});
-  window.addEventListener('touchcancel',()=>stopPad(),{passive:true});
+const touchDevice=('ontouchstart' in window)||(navigator.maxTouchPoints>0);
+if(touchDevice){
+ movePad.addEventListener('touchstart',e=>{
+   if(stick.active)return;
+   const t=e.changedTouches[0];if(!t)return;
+   stick.active=true;stick.id=t.identifier;movePad.classList.add('active');
+   setStickPoint(t.clientX,t.clientY);e.preventDefault();
+ },{passive:false});
+ window.addEventListener('touchmove',e=>{
+   if(!stick.active)return;
+   const t=[...e.touches].find(t=>t.identifier===stick.id);
+   if(!t)return;
+   setStickPoint(t.clientX,t.clientY);e.preventDefault();
+ },{passive:false});
+ window.addEventListener('touchend',e=>{
+   if(!stick.active)return;
+   if([...e.changedTouches].some(t=>t.identifier===stick.id))stopStick();
+ },{passive:true});
+ window.addEventListener('touchcancel',e=>{
+   if(!stick.active)return;
+   if([...e.changedTouches].some(t=>t.identifier===stick.id))stopStick();
+ },{passive:true});
 }else{
-  dpadButtons.forEach(btn=>{
-    btn.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;startPad(btn);e.preventDefault()});
-    btn.addEventListener('click',e=>{
-      if(performance.now()-pad.lastPress>250)moveByPad(Number(btn.dataset.dx)||0,Number(btn.dataset.dy)||0,180);
-      e.preventDefault();
-    });
-  });
-  window.addEventListener('pointerup',()=>stopPad());
-  window.addEventListener('pointercancel',()=>stopPad());
+ movePad.addEventListener('pointerdown',e=>{
+   if(e.button!==undefined&&e.button!==0)return;
+   stick.active=true;stick.id=e.pointerId;movePad.classList.add('active');
+   setStickPoint(e.clientX,e.clientY);e.preventDefault();
+ });
+ window.addEventListener('pointermove',e=>{
+   if(!stick.active||e.pointerId!==stick.id)return;
+   setStickPoint(e.clientX,e.clientY);e.preventDefault();
+ },{passive:false});
+ window.addEventListener('pointerup',e=>{if(stick.active&&e.pointerId===stick.id)stopStick()});
+ window.addEventListener('pointercancel',e=>{if(stick.active&&e.pointerId===stick.id)stopStick()});
 }
-window.addEventListener('blur',stopPad);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopPad()});
+window.addEventListener('blur',stopStick);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopStick()});
 const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
-function inputVec(){let x=0,y=0;if(keys['arrowleft']||keys['a'])x=-1;if(keys['arrowright']||keys['d'])x=1;if(keys['arrowup']||keys['w'])y=-1;if(keys['arrowdown']||keys['s'])y=1;const d=Math.hypot(x,y);return d>1?{x:x/d,y:y/d}:{x,y}}
-function update(dt){if(!running)return;const v=inputVec();state.walking=pad.active||Math.abs(v.x)+Math.abs(v.y)>.08;if(state.walking){const speed=state.energy<20?75:120;const nx=state.x+v.x*speed*dt/1000,ny=state.y+v.y*speed*dt/1000;if(!blocked(nx,state.y))state.x=nx;if(!blocked(state.x,ny))state.y=ny;state.faceX=v.x;state.faceY=v.y;state.energy=Math.max(0,state.energy-dt*.0017);if(currentArea()!=='home'){state.clean=Math.max(0,state.clean-dt*.0012);if(state.clean<65)state.dirtyPatches=3}}
+function inputVec(){
+ let x=stick.x,y=stick.y;
+ if(keys['arrowleft']||keys['a'])x=-1;
+ if(keys['arrowright']||keys['d'])x=1;
+ if(keys['arrowup']||keys['w'])y=-1;
+ if(keys['arrowdown']||keys['s'])y=1;
+ const d=Math.hypot(x,y);
+ return d>1?{x:x/d,y:y/d}:{x,y}
+}
+function movePlayer(v,dt){
+ if(Math.abs(v.x)+Math.abs(v.y)<=.06)return false;
+ const speed=state.energy<20?75:120;
+ const totalX=v.x*speed*dt/1000,totalY=v.y*speed*dt/1000;
+ const steps=Math.max(1,Math.ceil(Math.max(Math.abs(totalX),Math.abs(totalY))/4));
+ const sxStep=totalX/steps,syStep=totalY/steps;
+ let moved=false;
+ for(let i=0;i<steps;i++){
+   if(!blocked(state.x+sxStep,state.y)){state.x+=sxStep;moved=true}
+   if(!blocked(state.x,state.y+syStep)){state.y+=syStep;moved=true}
+ }
+ if(moved){
+   state.faceX=v.x;state.faceY=v.y;
+   state.energy=Math.max(0,state.energy-dt*.0017);
+   if(currentArea()!=='home'){
+     state.clean=Math.max(0,state.clean-dt*.0012);
+     if(state.clean<65)state.dirtyPatches=3;
+   }
+ }
+ return moved
+}
+function update(dt){if(!running)return;const v=inputVec();state.walking=movePlayer(v,dt);
   if(state.z>0||state.vz!==0){state.vz-=450*dt/1000;state.z+=state.vz*dt/1000;if(state.z<=0){state.z=0;state.vz=0}}
   // obstacle course checkpoint when jumping near active gate
   if(state.activeChallenge==='obstacle'&&state.z>8){const it=challengeItems.find(q=>q.type==='gate'&&q.index===state.challengeProgress);if(it&&dist(state.x,state.y,it.x,it.y)<58){it.done=true;state.challengeProgress++;beep(700,.09,'square',.04);toast('Nice jump!');if(state.challengeProgress>=4)completeChallenge()}}
@@ -315,7 +353,12 @@ function nearestInteraction(){if(!started||!running)return null;let best=null,bd
 function act(){const o=nearestInteraction();if(!o){if(state.carrying){toast('Carry it to where it belongs!')}else{state.energy=Math.max(0,state.energy-1);beep(440,.05,'triangle',.03);toast('Happy puppy wiggle!')}return}beep(560,.06,'triangle',.04);if(o.type==='bed')bedAction();else if(o.type==='morningToy')morningToyAction();else if(o.type==='bath')openBath();else if(o.type==='dress')openDress();else if(o.type==='board')startChallenge();else if(o.type==='shop')openShop();else if(o.type==='friend')friendAction(o);else if(o.type==='basket')basketAction();else challengeItemAction(o)}
 function jump(){if(state.z===0){state.vz=220;beep(620,.05,'triangle',.03);state.energy=Math.max(0,state.energy-1)}}
 function bark(){beep(250,.08,'square',.035);setTimeout(()=>beep(320,.07,'square',.03),70);toast(['Woof!','Arf arf!','Happy bark!'][Math.floor(Math.random()*3)]);state.energy=Math.max(0,state.energy-.5)}
-$('actBtn').onclick=act;$('jumpBtn').onclick=jump;$('barkBtn').onclick=bark;
+function bindGameButton(id,fn){
+ const btn=$(id);let lastTouch=0;
+ btn.addEventListener('touchstart',e=>{lastTouch=performance.now();fn();e.preventDefault()},{passive:false});
+ btn.addEventListener('click',e=>{if(performance.now()-lastTouch<450){e.preventDefault();return}fn()});
+}
+bindGameButton('actBtn',act);bindGameButton('jumpBtn',jump);bindGameButton('barkBtn',bark);
 function morningToyAction(){if(state.tutorialDone){toast('Squeak squeak!');return}state.tutorialDone=true;reward(2,0,'Squeak! +2 puppy coins');beep(700,.08,'triangle',.04);save();syncHud()}
 function startChallenge(){if(state.challengeDone){toast('Today\'s challenge is complete!');return}if(!state.activeChallenge){state.activeChallenge=challengeForDay(state.day);state.challengeProgress=0;state.carrying=null;buildChallengeItems();toast('Challenge started: '+challengeName(state.activeChallenge)+'!');beep(760,.12,'triangle',.055);syncHud()}else toast(challengeGoalText())}
 function challengeName(c){return {fetch:'Fetch Frenzy',scent:'Super Sniffer',hidden:'Hidden Toy Hunt',obstacle:'Puppy Obstacle Course',kitten:'Help the Kitten'}[c]||'Puppy Challenge'}
