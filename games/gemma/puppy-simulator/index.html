@@ -86,7 +86,7 @@ button{font:inherit}
     <div class="titlePup"><div class="bed"></div><div class="pup"><span class="eye l"></span><span class="eye r"></span><span class="nose"></span><span class="smile"></span></div></div>
     <h1>Puppy Simulator</h1>
     <div class="sub">Wake up. Run around. Get muddy. Make friends. Dress cute. Dream about tomorrow.</div>
-    <div class="version">Gemma's Puppy Simulator • v1.3</div>
+    <div class="version">Gemma's Puppy Simulator • v1.4</div>
     <div class="startRow"><button class="bigBtn" id="wakeBtn">WAKE UP!</button><button class="closeBtn" id="continueBtn">CONTINUE</button></div>
     <button class="miniBtn" id="resetBtn" style="margin-top:10px">Reset Save</button>
   </div></div>
@@ -249,37 +249,62 @@ function drawPuppy(){const x=sx(state.x),ground=sy(state.y),z=state.z*DPR;ctx.sa
   ctx.restore()}
 function drawWorn(){const c={'Pink':'#ff5ea5','Blue':'#5a9fff','Green':'#65c96b','Rainbow':'#ff9f4f'}[state.worn.collar]||'#ff5ea5';ctx.strokeStyle=c;ctx.lineWidth=7*DPR;ctx.beginPath();ctx.arc(9*DPR,-3*DPR,25*DPR,.15,2.95);ctx.stroke();if(state.worn.hat&&state.worn.hat!=='None'){ctx.fillStyle=state.worn.hat==='Sun Hat'?'#ffd667':state.worn.hat==='Party Hat'?'#9f78ff':'#6fb7ec';ctx.beginPath();if(state.worn.hat==='Party Hat'){ctx.moveTo(11*DPR,-48*DPR);ctx.lineTo(30*DPR,-78*DPR);ctx.lineTo(43*DPR,-46*DPR)}else{ctx.ellipse(24*DPR,-49*DPR,28*DPR,11*DPR,0,0,7)}ctx.fill()}if(state.worn.accessory==='Bow'){ctx.fillStyle='#ff72bf';ctx.beginPath();ctx.ellipse(46*DPR,-27*DPR,10*DPR,7*DPR,.4,0,7);ctx.ellipse(56*DPR,-27*DPR,10*DPR,7*DPR,-.4,0,7);ctx.fill()}if(state.worn.accessory==='Bandana'){ctx.fillStyle='#75d0ef';ctx.beginPath();ctx.moveTo(-4*DPR,3*DPR);ctx.lineTo(10*DPR,25*DPR);ctx.lineTo(23*DPR,3*DPR);ctx.closePath();ctx.fill()}}
 function drawAreaGateHints(){if(!areaUnlocked('park')){ctx.fillStyle='#fff3d5';ctx.font=`${11*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('Park unlocks on Day 3',sx(1490),sy(430))}if(areaUnlocked('park')&&!areaUnlocked('garden')){ctx.fillStyle='#fff3d5';ctx.fillText('Garden unlocks on Day 5',sx(2270),sy(430))}}
-let pad={x:0,y:0,active:false};
+let pad={x:0,y:0,active:false,timer:null,lastPress:0};
 const dpadButtons=[...document.querySelectorAll('.dpadBtn[data-dx]')];
-function setPad(btn,on){
-  if(on){
-    pad.active=true;
-    pad.x=Number(btn.dataset.dx)||0;
-    pad.y=Number(btn.dataset.dy)||0;
-    dpadButtons.forEach(b=>b.classList.toggle('pressed',b===btn));
-  }else{
-    pad.active=false;pad.x=0;pad.y=0;
-    dpadButtons.forEach(b=>b.classList.remove('pressed'));
+function moveByPad(dx,dy,ms=42){
+  if(!running)return;
+  const speed=state.energy<20?75:120;
+  const nx=state.x+dx*speed*ms/1000,ny=state.y+dy*speed*ms/1000;
+  if(!blocked(nx,state.y))state.x=nx;
+  if(!blocked(state.x,ny))state.y=ny;
+  if(dx||dy){state.faceX=dx;state.faceY=dy}
+  state.energy=Math.max(0,state.energy-ms*.0017);
+  if(currentArea()!=='home'){
+    state.clean=Math.max(0,state.clean-ms*.0012);
+    if(state.clean<65)state.dirtyPatches=3;
   }
+}
+function stopPad(){
+  if(pad.timer){clearInterval(pad.timer);pad.timer=null}
+  pad.active=false;pad.x=0;pad.y=0;
+  dpadButtons.forEach(b=>b.classList.remove('pressed'));
+}
+function startPad(btn){
+  stopPad();
+  pad.active=true;
+  pad.x=Number(btn.dataset.dx)||0;
+  pad.y=Number(btn.dataset.dy)||0;
+  pad.lastPress=performance.now();
+  btn.classList.add('pressed');
+  moveByPad(pad.x,pad.y,70);
+  pad.timer=setInterval(()=>moveByPad(pad.x,pad.y,42),42);
 }
 if('ontouchstart' in window){
   dpadButtons.forEach(btn=>{
-    btn.addEventListener('touchstart',e=>{setPad(btn,true);e.preventDefault()},{passive:false});
+    btn.addEventListener('touchstart',e=>{startPad(btn);e.preventDefault()},{passive:false});
+    btn.addEventListener('click',e=>{
+      if(performance.now()-pad.lastPress>350)moveByPad(Number(btn.dataset.dx)||0,Number(btn.dataset.dy)||0,180);
+      e.preventDefault();
+    });
   });
-  window.addEventListener('touchend',e=>{if(pad.active){setPad(null,false);e.preventDefault()}},{passive:false});
-  window.addEventListener('touchcancel',()=>setPad(null,false),{passive:false});
+  window.addEventListener('touchend',()=>stopPad(),{passive:true});
+  window.addEventListener('touchcancel',()=>stopPad(),{passive:true});
 }else{
   dpadButtons.forEach(btn=>{
-    btn.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;setPad(btn,true);e.preventDefault()});
+    btn.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;startPad(btn);e.preventDefault()});
+    btn.addEventListener('click',e=>{
+      if(performance.now()-pad.lastPress>250)moveByPad(Number(btn.dataset.dx)||0,Number(btn.dataset.dy)||0,180);
+      e.preventDefault();
+    });
   });
-  window.addEventListener('pointerup',()=>setPad(null,false));
-  window.addEventListener('pointercancel',()=>setPad(null,false));
+  window.addEventListener('pointerup',()=>stopPad());
+  window.addEventListener('pointercancel',()=>stopPad());
 }
-window.addEventListener('blur',()=>setPad(null,false));
-document.addEventListener('visibilitychange',()=>{if(document.hidden)setPad(null,false)});
+window.addEventListener('blur',stopPad);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopPad()});
 const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
-function inputVec(){let x=pad.x,y=pad.y;if(keys['arrowleft']||keys['a'])x=-1;if(keys['arrowright']||keys['d'])x=1;if(keys['arrowup']||keys['w'])y=-1;if(keys['arrowdown']||keys['s'])y=1;const d=Math.hypot(x,y);return d>1?{x:x/d,y:y/d}:{x,y}}
-function update(dt){if(!running)return;const v=inputVec();state.walking=Math.abs(v.x)+Math.abs(v.y)>.08;if(state.walking){const speed=state.energy<20?75:120;const nx=state.x+v.x*speed*dt/1000,ny=state.y+v.y*speed*dt/1000;if(!blocked(nx,state.y))state.x=nx;if(!blocked(state.x,ny))state.y=ny;state.faceX=v.x;state.faceY=v.y;state.energy=Math.max(0,state.energy-dt*.0017);if(currentArea()!=='home'){state.clean=Math.max(0,state.clean-dt*.0012);if(state.clean<65)state.dirtyPatches=3}}
+function inputVec(){let x=0,y=0;if(keys['arrowleft']||keys['a'])x=-1;if(keys['arrowright']||keys['d'])x=1;if(keys['arrowup']||keys['w'])y=-1;if(keys['arrowdown']||keys['s'])y=1;const d=Math.hypot(x,y);return d>1?{x:x/d,y:y/d}:{x,y}}
+function update(dt){if(!running)return;const v=inputVec();state.walking=pad.active||Math.abs(v.x)+Math.abs(v.y)>.08;if(state.walking){const speed=state.energy<20?75:120;const nx=state.x+v.x*speed*dt/1000,ny=state.y+v.y*speed*dt/1000;if(!blocked(nx,state.y))state.x=nx;if(!blocked(state.x,ny))state.y=ny;state.faceX=v.x;state.faceY=v.y;state.energy=Math.max(0,state.energy-dt*.0017);if(currentArea()!=='home'){state.clean=Math.max(0,state.clean-dt*.0012);if(state.clean<65)state.dirtyPatches=3}}
   if(state.z>0||state.vz!==0){state.vz-=450*dt/1000;state.z+=state.vz*dt/1000;if(state.z<=0){state.z=0;state.vz=0}}
   // obstacle course checkpoint when jumping near active gate
   if(state.activeChallenge==='obstacle'&&state.z>8){const it=challengeItems.find(q=>q.type==='gate'&&q.index===state.challengeProgress);if(it&&dist(state.x,state.y,it.x,it.y)<58){it.done=true;state.challengeProgress++;beep(700,.09,'square',.04);toast('Nice jump!');if(state.challengeProgress>=4)completeChallenge()}}
