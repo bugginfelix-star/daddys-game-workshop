@@ -24,8 +24,10 @@ button{font:inherit}
 #toast{position:absolute;left:50%;top:26%;transform:translate(-50%,-12px);z-index:60;opacity:0;transition:.22s;pointer-events:none;max-width:82vw;text-align:center;background:#fff9ecf4;border:3px solid white;border-radius:18px;padding:10px 14px;font-weight:1000;box-shadow:0 10px 25px #1234;color:#34415d}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 #controls{position:absolute;left:0;right:0;bottom:0;z-index:12;height:154px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none;background:linear-gradient(transparent,#6bb5d628 30%,#6bb5d65c)}
-#joyBase{pointer-events:auto;position:relative;width:122px;height:122px;border-radius:50%;background:#fff9e69c;border:3px solid #ffffffd9;box-shadow:inset 0 0 0 8px #63b8df45,0 7px 18px #224b6a44;touch-action:none}
-#joyKnob{pointer-events:none;position:absolute;width:52px;height:52px;border-radius:50%;left:32px;top:32px;background:linear-gradient(#ff9fd3,#ff6ebd);border:3px solid #fff;box-shadow:0 5px 10px #7c285846;transform:translate(0,0)}
+#dpad{pointer-events:auto;position:relative;width:126px;height:126px;display:grid;grid-template-columns:42px 42px 42px;grid-template-rows:42px 42px 42px;grid-template-areas:". up ." "left center right" ". down .";touch-action:none;user-select:none}
+.dpadBtn{border:3px solid #fff;border-radius:14px;background:linear-gradient(#ff9fd3,#ff6ebd);color:white;font-weight:1000;font-size:20px;box-shadow:0 5px 0 #bb4789,0 7px 14px #7c285844;touch-action:none;padding:0;display:flex;align-items:center;justify-content:center}
+.dpadBtn:active,.dpadBtn.pressed{transform:translateY(3px);box-shadow:0 2px 0 #bb4789}
+.dpadBtn.up{grid-area:up}.dpadBtn.left{grid-area:left}.dpadBtn.center{grid-area:center;pointer-events:none;background:#fff9e69c;box-shadow:inset 0 0 0 5px #63b8df45;border-color:#ffffffd9}.dpadBtn.right{grid-area:right}.dpadBtn.down{grid-area:down}
 #actionCluster{pointer-events:auto;display:grid;grid-template-columns:70px 82px;grid-template-rows:54px 54px;gap:7px;align-items:end}
 .ctrlBtn{border:3px solid #fff;border-radius:18px;background:linear-gradient(#7bd0ff,#4b9fea);color:white;font-weight:1000;box-shadow:0 6px 0 #3678af,0 8px 18px #24577844;text-shadow:0 2px 1px #3c6f98;min-height:54px;padding:4px 6px;font-size:12px}
 .ctrlBtn:active{transform:translateY(3px);box-shadow:0 3px 0 #3678af}
@@ -55,8 +57,8 @@ button{font:inherit}
 #sleepOverlay{background:linear-gradient(#16294d,#644f84);color:white}.sleepScene{height:250px;border-radius:25px;background:linear-gradient(#243f69,#5e5b8d);position:relative;overflow:hidden;border:3px solid #a8b7ff}.moon{position:absolute;right:34px;top:24px;width:55px;height:55px;border-radius:50%;background:#fff6c7;box-shadow:0 0 30px #fff3b5}.stars i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff}.sleepBed{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:220px;height:78px;border-radius:42px;background:#f0a8ce;border:7px solid #ffd8eb}.sleepPup{position:absolute;left:50%;bottom:55px;transform:translateX(-50%) rotate(-7deg);width:105px;height:72px;border-radius:50%;background:#c98e58;border:5px solid #784d2d}.sleepPup:after{content:"";position:absolute;right:-13px;top:5px;width:48px;height:30px;border:5px solid #784d2d;border-left:0;border-radius:0 45px 45px 0;background:#c98e58}.zzz{position:absolute;left:64%;bottom:145px;font-size:26px;font-weight:1000;color:#e9e5ff;animation:floatZ 1.8s ease-in-out infinite}@keyframes floatZ{50%{transform:translateY(-12px);opacity:.65}}
 #summaryList{font-weight:900;line-height:1.6;background:#ffffff1d;border-radius:14px;padding:9px}
 #debugBadge{display:none}
-@media(max-width:430px){#hud{gap:4px}.hudPill{font-size:10px;padding:4px 6px}.hudPill strong{font-size:11px}#energyWrap{padding:4px 5px}#controls{height:145px}#joyBase{width:112px;height:112px}#joyKnob{left:29px;top:29px;width:48px;height:48px}#actionCluster{grid-template-columns:66px 78px}.panel{padding:12px}.optionsGrid,.shopGrid{grid-template-columns:1fr 1fr}}
-@media(min-width:700px){#controls{height:175px;padding-left:26px;padding-right:26px}#joyBase{width:145px;height:145px}#joyKnob{width:60px;height:60px;left:39px;top:39px}#actionCluster{grid-template-columns:88px 100px;grid-template-rows:62px 62px}.ctrlBtn{font-size:15px}.panel{padding:20px}.optionsGrid,.shopGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:430px){#hud{gap:4px}.hudPill{font-size:10px;padding:4px 6px}.hudPill strong{font-size:11px}#energyWrap{padding:4px 5px}#controls{height:145px}#dpad{width:114px;height:114px;grid-template-columns:38px 38px 38px;grid-template-rows:38px 38px 38px}.dpadBtn{font-size:18px}#actionCluster{grid-template-columns:66px 78px}.panel{padding:12px}.optionsGrid,.shopGrid{grid-template-columns:1fr 1fr}}
+@media(min-width:700px){#controls{height:175px;padding-left:26px;padding-right:26px}#dpad{width:144px;height:144px;grid-template-columns:48px 48px 48px;grid-template-rows:48px 48px 48px}.dpadBtn{font-size:22px}#actionCluster{grid-template-columns:88px 100px;grid-template-rows:62px 62px}.ctrlBtn{font-size:15px}.panel{padding:20px}.optionsGrid,.shopGrid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -72,7 +74,7 @@ button{font:inherit}
   <div id="miniBtns"><button class="miniBtn" id="shopMini">SHOP</button><button class="miniBtn" id="dressMini">DRESS</button></div>
   <div id="toast"></div>
   <div id="controls">
-    <div id="joyBase"><div id="joyKnob"></div></div>
+    <div id="dpad" aria-label="Movement"><button class="dpadBtn up" data-dx="0" data-dy="-1" aria-label="Move up">▲</button><button class="dpadBtn left" data-dx="-1" data-dy="0" aria-label="Move left">◀</button><button class="dpadBtn center" type="button" tabindex="-1" aria-hidden="true"></button><button class="dpadBtn right" data-dx="1" data-dy="0" aria-label="Move right">▶</button><button class="dpadBtn down" data-dx="0" data-dy="1" aria-label="Move down">▼</button></div>
     <div id="actionCluster">
       <button class="ctrlBtn" id="jumpBtn">JUMP</button>
       <button class="ctrlBtn" id="barkBtn">BARK</button>
@@ -84,7 +86,7 @@ button{font:inherit}
     <div class="titlePup"><div class="bed"></div><div class="pup"><span class="eye l"></span><span class="eye r"></span><span class="nose"></span><span class="smile"></span></div></div>
     <h1>Puppy Simulator</h1>
     <div class="sub">Wake up. Run around. Get muddy. Make friends. Dress cute. Dream about tomorrow.</div>
-    <div class="version">Gemma's Puppy Simulator • v1.2</div>
+    <div class="version">Gemma's Puppy Simulator • v1.3</div>
     <div class="startRow"><button class="bigBtn" id="wakeBtn">WAKE UP!</button><button class="closeBtn" id="continueBtn">CONTINUE</button></div>
     <button class="miniBtn" id="resetBtn" style="margin-top:10px">Reset Save</button>
   </div></div>
@@ -247,68 +249,36 @@ function drawPuppy(){const x=sx(state.x),ground=sy(state.y),z=state.z*DPR;ctx.sa
   ctx.restore()}
 function drawWorn(){const c={'Pink':'#ff5ea5','Blue':'#5a9fff','Green':'#65c96b','Rainbow':'#ff9f4f'}[state.worn.collar]||'#ff5ea5';ctx.strokeStyle=c;ctx.lineWidth=7*DPR;ctx.beginPath();ctx.arc(9*DPR,-3*DPR,25*DPR,.15,2.95);ctx.stroke();if(state.worn.hat&&state.worn.hat!=='None'){ctx.fillStyle=state.worn.hat==='Sun Hat'?'#ffd667':state.worn.hat==='Party Hat'?'#9f78ff':'#6fb7ec';ctx.beginPath();if(state.worn.hat==='Party Hat'){ctx.moveTo(11*DPR,-48*DPR);ctx.lineTo(30*DPR,-78*DPR);ctx.lineTo(43*DPR,-46*DPR)}else{ctx.ellipse(24*DPR,-49*DPR,28*DPR,11*DPR,0,0,7)}ctx.fill()}if(state.worn.accessory==='Bow'){ctx.fillStyle='#ff72bf';ctx.beginPath();ctx.ellipse(46*DPR,-27*DPR,10*DPR,7*DPR,.4,0,7);ctx.ellipse(56*DPR,-27*DPR,10*DPR,7*DPR,-.4,0,7);ctx.fill()}if(state.worn.accessory==='Bandana'){ctx.fillStyle='#75d0ef';ctx.beginPath();ctx.moveTo(-4*DPR,3*DPR);ctx.lineTo(10*DPR,25*DPR);ctx.lineTo(23*DPR,3*DPR);ctx.closePath();ctx.fill()}}
 function drawAreaGateHints(){if(!areaUnlocked('park')){ctx.fillStyle='#fff3d5';ctx.font=`${11*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('Park unlocks on Day 3',sx(1490),sy(430))}if(areaUnlocked('park')&&!areaUnlocked('garden')){ctx.fillStyle='#fff3d5';ctx.fillText('Garden unlocks on Day 5',sx(2270),sy(430))}}
-let joy={x:0,y:0,active:false,id:null};
-const joyBase=$('joyBase'),joyKnob=$('joyKnob');
-function setJoyPoint(clientX,clientY){
-  const b=joyBase.getBoundingClientRect();
-  let dx=clientX-(b.left+b.width/2),dy=clientY-(b.top+b.height/2);
-  const max=Math.max(28,b.width*.34),d=Math.hypot(dx,dy)||1;
-  if(d>max){dx*=max/d;dy*=max/d}
-  const dead=.10;
-  let nx=dx/max,ny=dy/max;
-  if(Math.abs(nx)<dead)nx=0;
-  if(Math.abs(ny)<dead)ny=0;
-  joy.x=nx;joy.y=ny;
-  joyKnob.style.transform=`translate(${dx}px,${dy}px)`;
+let pad={x:0,y:0,active:false};
+const dpadButtons=[...document.querySelectorAll('.dpadBtn[data-dx]')];
+function setPad(btn,on){
+  if(on){
+    pad.active=true;
+    pad.x=Number(btn.dataset.dx)||0;
+    pad.y=Number(btn.dataset.dy)||0;
+    dpadButtons.forEach(b=>b.classList.toggle('pressed',b===btn));
+  }else{
+    pad.active=false;pad.x=0;pad.y=0;
+    dpadButtons.forEach(b=>b.classList.remove('pressed'));
+  }
 }
-function resetJoy(){
-  joy.active=false;joy.id=null;joy.x=0;joy.y=0;
-  joyKnob.style.transform='translate(0,0)';
-}
-function joyPointerDown(e){
-  if(e.pointerType==='mouse'&&e.button!==0)return;
-  if(joy.active&&e.pointerId!==joy.id)return;
-  joy.active=true;joy.id=e.pointerId;
-  setJoyPoint(e.clientX,e.clientY);
-  e.preventDefault();
-}
-function joyPointerMove(e){
-  if(!joy.active||e.pointerId!==joy.id)return;
-  setJoyPoint(e.clientX,e.clientY);
-  e.preventDefault();
-}
-function joyPointerEnd(e){
-  if(!joy.active||e.pointerId!==joy.id)return;
-  resetJoy();
-  e.preventDefault();
-}
-if(window.PointerEvent){
-  joyBase.addEventListener('pointerdown',joyPointerDown,{passive:false});
-  window.addEventListener('pointermove',joyPointerMove,{passive:false});
-  window.addEventListener('pointerup',joyPointerEnd,{passive:false});
-  window.addEventListener('pointercancel',joyPointerEnd,{passive:false});
+if('ontouchstart' in window){
+  dpadButtons.forEach(btn=>{
+    btn.addEventListener('touchstart',e=>{setPad(btn,true);e.preventDefault()},{passive:false});
+  });
+  window.addEventListener('touchend',e=>{if(pad.active){setPad(null,false);e.preventDefault()}},{passive:false});
+  window.addEventListener('touchcancel',()=>setPad(null,false),{passive:false});
 }else{
-  const firstTouch=e=>e.changedTouches?.[0]||e.touches?.[0];
-  joyBase.addEventListener('touchstart',e=>{
-    const p=firstTouch(e);if(!p)return;
-    joy.active=true;joy.id=p.identifier;setJoyPoint(p.clientX,p.clientY);e.preventDefault();
-  },{passive:false});
-  window.addEventListener('touchmove',e=>{
-    if(!joy.active)return;
-    const p=[...e.touches].find(t=>t.identifier===joy.id);if(!p)return;
-    setJoyPoint(p.clientX,p.clientY);e.preventDefault();
-  },{passive:false});
-  window.addEventListener('touchend',e=>{
-    const p=[...e.changedTouches].find(t=>t.identifier===joy.id);
-    if(p){resetJoy();e.preventDefault()}
-  },{passive:false});
-  window.addEventListener('touchcancel',resetJoy,{passive:false});
+  dpadButtons.forEach(btn=>{
+    btn.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;setPad(btn,true);e.preventDefault()});
+  });
+  window.addEventListener('pointerup',()=>setPad(null,false));
+  window.addEventListener('pointercancel',()=>setPad(null,false));
 }
-window.addEventListener('blur',resetJoy);
-document.addEventListener('visibilitychange',()=>{if(document.hidden)resetJoy()});
-joyBase.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('blur',()=>setPad(null,false));
+document.addEventListener('visibilitychange',()=>{if(document.hidden)setPad(null,false)});
 const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
-function inputVec(){let x=joy.x,y=joy.y;if(keys['arrowleft']||keys['a'])x=-1;if(keys['arrowright']||keys['d'])x=1;if(keys['arrowup']||keys['w'])y=-1;if(keys['arrowdown']||keys['s'])y=1;const d=Math.hypot(x,y);return d>1?{x:x/d,y:y/d}:{x,y}}
+function inputVec(){let x=pad.x,y=pad.y;if(keys['arrowleft']||keys['a'])x=-1;if(keys['arrowright']||keys['d'])x=1;if(keys['arrowup']||keys['w'])y=-1;if(keys['arrowdown']||keys['s'])y=1;const d=Math.hypot(x,y);return d>1?{x:x/d,y:y/d}:{x,y}}
 function update(dt){if(!running)return;const v=inputVec();state.walking=Math.abs(v.x)+Math.abs(v.y)>.08;if(state.walking){const speed=state.energy<20?75:120;const nx=state.x+v.x*speed*dt/1000,ny=state.y+v.y*speed*dt/1000;if(!blocked(nx,state.y))state.x=nx;if(!blocked(state.x,ny))state.y=ny;state.faceX=v.x;state.faceY=v.y;state.energy=Math.max(0,state.energy-dt*.0017);if(currentArea()!=='home'){state.clean=Math.max(0,state.clean-dt*.0012);if(state.clean<65)state.dirtyPatches=3}}
   if(state.z>0||state.vz!==0){state.vz-=450*dt/1000;state.z+=state.vz*dt/1000;if(state.z<=0){state.z=0;state.vz=0}}
   // obstacle course checkpoint when jumping near active gate
