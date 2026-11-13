@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#8fd9ff">
+<title>Puppy Simulator — Gemma</title>
+<style>
+:root{
+  --sky:#8fd9ff;--ink:#24344d;--cream:#fff8e8;--gold:#ffd45f;--pink:#ff8bc9;--green:#7fd27b;--blue:#69b8ff;--panel:#fffaf2ee;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#8fd9ff;font-family:ui-rounded,"SF Pro Rounded",system-ui,-apple-system,Arial;color:var(--ink);touch-action:none}
+button{font:inherit}
+#app{position:fixed;inset:0;overflow:hidden;background:linear-gradient(#94ddff,#dff5ff)}
+#game{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+#hud{position:absolute;left:8px;right:8px;top:calc(7px + env(safe-area-inset-top));display:flex;gap:6px;align-items:center;z-index:10;pointer-events:none}
+.hudPill{min-height:34px;padding:5px 9px;border-radius:14px;background:#fffaf0e8;border:2px solid #fff;box-shadow:0 4px 12px #2b55752d;font-weight:900;font-size:12px;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.hudPill strong{font-size:13px}.coinDot,.starDot{width:15px;height:15px;border-radius:50%;display:inline-block;border:2px solid #c58922;background:#ffd45f}.starDot{clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 94%,50% 72%,21% 94%,32% 57%,2% 35%,39% 35%);border:0;background:#ffb62e}
+#energyWrap{flex:1;min-width:80px;height:34px;border-radius:14px;background:#fffaf0e8;border:2px solid white;padding:5px 7px;box-shadow:0 4px 12px #2b55752d}
+#energyLabel{font-size:9px;font-weight:1000;line-height:9px;margin-bottom:3px}.bar{height:10px;border-radius:999px;background:#d7e2e8;overflow:hidden;border:1px solid #93a7b0}.bar>i{display:block;height:100%;border-radius:999px;transition:width .25s;background:linear-gradient(90deg,#7adf7c,#d9ef75)}
+#goalCard{position:absolute;top:calc(48px + env(safe-area-inset-top));left:10px;z-index:9;max-width:min(66vw,330px);padding:8px 10px;border-radius:14px;background:#fffaf0e8;border:2px solid #fff;box-shadow:0 5px 14px #2b55752d;font-size:11px;font-weight:900;pointer-events:none}
+#goalCard b{display:block;color:#c34f8f;font-size:10px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+#toast{position:absolute;left:50%;top:26%;transform:translate(-50%,-12px);z-index:60;opacity:0;transition:.22s;pointer-events:none;max-width:82vw;text-align:center;background:#fff9ecf4;border:3px solid white;border-radius:18px;padding:10px 14px;font-weight:1000;box-shadow:0 10px 25px #1234;color:#34415d}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#controls{position:absolute;left:0;right:0;bottom:0;z-index:12;height:154px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none;background:linear-gradient(transparent,#6bb5d628 30%,#6bb5d65c)}
+#joyBase{pointer-events:auto;position:relative;width:122px;height:122px;border-radius:50%;background:#fff9e69c;border:3px solid #ffffffd9;box-shadow:inset 0 0 0 8px #63b8df45,0 7px 18px #224b6a44;touch-action:none}
+#joyKnob{position:absolute;width:52px;height:52px;border-radius:50%;left:32px;top:32px;background:linear-gradient(#ff9fd3,#ff6ebd);border:3px solid #fff;box-shadow:0 5px 10px #7c285846;transform:translate(0,0)}
+#actionCluster{pointer-events:auto;display:grid;grid-template-columns:70px 82px;grid-template-rows:54px 54px;gap:7px;align-items:end}
+.ctrlBtn{border:3px solid #fff;border-radius:18px;background:linear-gradient(#7bd0ff,#4b9fea);color:white;font-weight:1000;box-shadow:0 6px 0 #3678af,0 8px 18px #24577844;text-shadow:0 2px 1px #3c6f98;min-height:54px;padding:4px 6px;font-size:12px}
+.ctrlBtn:active{transform:translateY(3px);box-shadow:0 3px 0 #3678af}
+#actBtn{grid-row:1/3;grid-column:2;background:linear-gradient(#ffbd6f,#ff8d48);box-shadow:0 6px 0 #c96932,0 8px 18px #69341544;font-size:13px}
+#jumpBtn{background:linear-gradient(#9be986,#5bc66a);box-shadow:0 6px 0 #40974b}
+#barkBtn{background:linear-gradient(#c7a3ff,#9a70ec);box-shadow:0 6px 0 #7254b3}
+#miniBtns{position:absolute;right:9px;top:calc(88px + env(safe-area-inset-top));z-index:11;display:flex;gap:6px}
+.miniBtn{border:2px solid white;border-radius:12px;background:#fff9e9dc;color:#31415c;font-weight:1000;font-size:10px;min-height:34px;padding:5px 8px;box-shadow:0 3px 8px #2344}
+.overlay{position:absolute;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(#77cfffeb,#d8f4ffeb);overflow:auto}
+.overlay.open{display:flex}
+.panel{width:min(640px,100%);max-height:94vh;overflow:auto;border-radius:28px;background:var(--panel);border:4px solid white;box-shadow:0 20px 50px #27567555;padding:16px}
+.panel h2{margin:0 0 8px;text-align:center;color:#d04e94;font-size:clamp(24px,7vw,38px);text-shadow:0 2px white}.panel h3{margin:10px 0 6px}.sub{text-align:center;font-weight:800;font-size:13px;line-height:1.35;color:#5f6f82}
+.closeBtn,.bigBtn,.shopBtn,.choiceBtn{border:3px solid white;border-radius:16px;background:linear-gradient(#7bd0ff,#4b9fea);color:white;font-weight:1000;box-shadow:0 5px 0 #3678af;min-height:48px;padding:8px 12px}.bigBtn{width:100%;margin-top:10px;background:linear-gradient(#ff9fd3,#ff6ebd);box-shadow:0 5px 0 #bb4789;font-size:16px}.closeBtn{width:100%;margin-top:10px}
+#startOverlay{background:linear-gradient(#8fddff,#f9dfff)}#startOverlay.open{display:flex}#startOverlay:not(.open){display:none}
+#startOverlay .panel{background:#fffaf3f4;text-align:center;overflow:hidden;position:relative}
+.titlePup{height:190px;position:relative;margin:-4px auto 4px;width:240px}
+.titlePup .bed{position:absolute;left:20px;right:20px;bottom:15px;height:62px;border-radius:35px;background:#ffb2d9;border:7px solid #fff;box-shadow:0 8px 0 #cf7da8}
+.titlePup .pup{position:absolute;left:75px;top:30px;width:95px;height:95px;border-radius:48% 48% 44% 44%;background:#c98e58;border:5px solid #784d2d;animation:breath 1.8s ease-in-out infinite}
+.titlePup .pup:before,.titlePup .pup:after{content:"";position:absolute;top:-12px;width:38px;height:55px;background:#9b653b;border:5px solid #784d2d;border-radius:60% 60% 45% 45%}.titlePup .pup:before{left:-17px;transform:rotate(-24deg)}.titlePup .pup:after{right:-17px;transform:rotate(24deg)}
+.eye{position:absolute;top:38px;width:12px;height:15px;border-radius:50%;background:#2f2430}.eye.l{left:23px}.eye.r{right:23px}.nose{position:absolute;left:39px;top:58px;width:18px;height:13px;border-radius:50% 50% 60% 60%;background:#382632}.smile{position:absolute;left:35px;top:67px;width:28px;height:13px;border-bottom:3px solid #6f4033;border-radius:50%}
+@keyframes breath{50%{transform:translateY(4px) scaleY(.97)}}
+#startOverlay h1{margin:0;color:#d54791;font-size:clamp(36px,10vw,58px);line-height:.95;text-shadow:0 3px white}.version{font-size:11px;font-weight:1000;color:#718093;margin:6px 0 10px}.startRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.startRow button{min-height:54px}
+#bathStage{position:relative;height:300px;border-radius:24px;background:linear-gradient(#c2f0ff,#f8ffff);border:3px solid #fff;overflow:hidden;touch-action:none}.tub{position:absolute;left:10%;right:10%;bottom:14px;height:105px;border-radius:20px 20px 55px 55px;background:#8bd9f6;border:7px solid #e9fbff;box-shadow:inset 0 15px #b8edff}.bathPup{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);width:135px;height:155px}.bathHead{position:absolute;left:18px;top:8px;width:100px;height:90px;border-radius:48%;background:#c98e58;border:5px solid #7b4d2e}.bathBody{position:absolute;left:32px;top:80px;width:72px;height:70px;border-radius:50% 50% 38% 38%;background:#c98e58;border:5px solid #7b4d2e}.bathEar{position:absolute;top:1px;width:35px;height:62px;border-radius:65%;background:#9d653b;border:5px solid #7b4d2e}.bathEar.l{left:2px;transform:rotate(-23deg)}.bathEar.r{right:2px;transform:rotate(23deg)}.bathEye{position:absolute;top:38px;width:11px;height:13px;border-radius:50%;background:#2d2630}.bathEye.l{left:24px}.bathEye.r{right:24px}.bathNose{position:absolute;left:39px;top:56px;width:17px;height:12px;border-radius:50%;background:#32242e}.bubble{position:absolute;border-radius:50%;background:#ffffffc9;border:2px solid #d8f8ff;pointer-events:none;animation:bob 1.5s ease-in-out infinite alternate}@keyframes bob{to{transform:translateY(-7px)}}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.toolBtn{min-height:46px;border:3px solid #fff;border-radius:14px;background:#eafaff;color:#426276;font-weight:1000}.toolBtn.active{background:#ff9fd3;color:white}.bathMeters{display:grid;gap:5px;margin-top:8px}.meterRow{display:grid;grid-template-columns:54px 1fr;align-items:center;gap:6px;font-size:11px;font-weight:1000}.meterRow .bar{height:13px}.meterRow .bar i{background:linear-gradient(90deg,#68cfff,#9ef0c7)}
+#dressPreview{height:230px;border-radius:24px;background:linear-gradient(#fff6ce,#d9f5ff);border:3px solid white;position:relative;overflow:hidden}.dressFloor{position:absolute;left:0;right:0;bottom:0;height:42%;background:#bce49c}.previewPup{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:150px;height:155px}.previewBody{position:absolute;left:39px;top:60px;width:75px;height:78px;border-radius:50%;background:#c98e58;border:5px solid #784d2d}.previewHead{position:absolute;left:27px;top:5px;width:100px;height:88px;border-radius:50%;background:#c98e58;border:5px solid #784d2d}.previewEar{position:absolute;top:0;width:34px;height:58px;border-radius:60%;background:#9b653b;border:5px solid #784d2d}.previewEar.l{left:12px;transform:rotate(-22deg)}.previewEar.r{right:12px;transform:rotate(22deg)}.previewCollar{position:absolute;left:35px;top:82px;width:84px;height:16px;border-radius:8px;background:#ff5a9f;border:3px solid white}.previewHat{position:absolute;left:46px;top:-5px;width:62px;height:30px;border-radius:40px 40px 10px 10px;background:#ffd45f;border:4px solid #fff;display:none}.previewBow{position:absolute;right:12px;top:37px;width:30px;height:22px;display:none}.previewBow:before,.previewBow:after{content:"";position:absolute;top:3px;width:17px;height:17px;background:#ff7bc1;border:3px solid white;border-radius:50% 50% 40% 50%}.previewBow:before{left:0;transform:rotate(25deg)}.previewBow:after{right:0;transform:rotate(-25deg)}
+.optionTabs{display:flex;gap:5px;margin:8px 0}.optionTabs button{flex:1;min-height:40px;border:2px solid white;border-radius:12px;background:#e8f7ff;color:#526579;font-weight:1000}.optionTabs button.active{background:#ff91c9;color:white}.optionsGrid,.shopGrid,.friendGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.choiceBtn,.shopBtn{background:#fff;color:#41526a;box-shadow:0 4px 0 #d6dce2;border-color:#fff;min-height:56px;text-align:left}.choiceBtn.locked,.shopBtn.locked{opacity:.52}.choiceBtn.selected{outline:3px solid #ff7fc0;background:#fff0f8}.shopBtn strong{display:block}.shopBtn small{display:block;color:#728396;font-size:10px;margin-top:2px}
+#sleepOverlay{background:linear-gradient(#16294d,#644f84);color:white}.sleepScene{height:250px;border-radius:25px;background:linear-gradient(#243f69,#5e5b8d);position:relative;overflow:hidden;border:3px solid #a8b7ff}.moon{position:absolute;right:34px;top:24px;width:55px;height:55px;border-radius:50%;background:#fff6c7;box-shadow:0 0 30px #fff3b5}.stars i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff}.sleepBed{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);width:220px;height:78px;border-radius:42px;background:#f0a8ce;border:7px solid #ffd8eb}.sleepPup{position:absolute;left:50%;bottom:55px;transform:translateX(-50%) rotate(-7deg);width:105px;height:72px;border-radius:50%;background:#c98e58;border:5px solid #784d2d}.sleepPup:after{content:"";position:absolute;right:-13px;top:5px;width:48px;height:30px;border:5px solid #784d2d;border-left:0;border-radius:0 45px 45px 0;background:#c98e58}.zzz{position:absolute;left:64%;bottom:145px;font-size:26px;font-weight:1000;color:#e9e5ff;animation:floatZ 1.8s ease-in-out infinite}@keyframes floatZ{50%{transform:translateY(-12px);opacity:.65}}
+#summaryList{font-weight:900;line-height:1.6;background:#ffffff1d;border-radius:14px;padding:9px}
+#debugBadge{display:none}
+@media(max-width:430px){#hud{gap:4px}.hudPill{font-size:10px;padding:4px 6px}.hudPill strong{font-size:11px}#energyWrap{padding:4px 5px}#controls{height:145px}#joyBase{width:112px;height:112px}#joyKnob{left:29px;top:29px;width:48px;height:48px}#actionCluster{grid-template-columns:66px 78px}.panel{padding:12px}.optionsGrid,.shopGrid{grid-template-columns:1fr 1fr}}
+@media(min-width:700px){#controls{height:175px;padding-left:26px;padding-right:26px}#joyBase{width:145px;height:145px}#joyKnob{width:60px;height:60px;left:39px;top:39px}#actionCluster{grid-template-columns:88px 100px;grid-template-rows:62px 62px}.ctrlBtn{font-size:15px}.panel{padding:20px}.optionsGrid,.shopGrid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="game"></canvas>
+  <div id="hud">
+    <div class="hudPill"><strong id="dayTxt">Day 1</strong></div>
+    <div class="hudPill"><span class="coinDot"></span><strong id="coinTxt">0</strong></div>
+    <div class="hudPill"><span class="starDot"></span><strong id="starTxt">0</strong></div>
+    <div id="energyWrap"><div id="energyLabel">ENERGY</div><div class="bar"><i id="energyBar" style="width:100%"></i></div></div>
+  </div>
+  <div id="goalCard"><b>Today</b><span id="goalTxt">Wake up and stretch!</span></div>
+  <div id="miniBtns"><button class="miniBtn" id="shopMini">SHOP</button><button class="miniBtn" id="dressMini">DRESS</button></div>
+  <div id="toast"></div>
+  <div id="controls">
+    <div id="joyBase"><div id="joyKnob"></div></div>
+    <div id="actionCluster">
+      <button class="ctrlBtn" id="jumpBtn">JUMP</button>
+      <button class="ctrlBtn" id="barkBtn">BARK</button>
+      <button class="ctrlBtn" id="actBtn">PLAY</button>
+    </div>
+  </div>
+
+  <div id="startOverlay" class="overlay open"><div class="panel">
+    <div class="titlePup"><div class="bed"></div><div class="pup"><span class="eye l"></span><span class="eye r"></span><span class="nose"></span><span class="smile"></span></div></div>
+    <h1>Puppy Simulator</h1>
+    <div class="sub">Wake up. Run around. Get muddy. Make friends. Dress cute. Dream about tomorrow.</div>
+    <div class="version">Gemma's Puppy Simulator • v1.0</div>
+    <div class="startRow"><button class="bigBtn" id="wakeBtn">WAKE UP!</button><button class="closeBtn" id="continueBtn">CONTINUE</button></div>
+    <button class="miniBtn" id="resetBtn" style="margin-top:10px">Reset Save</button>
+  </div></div>
+
+  <div id="bathOverlay" class="overlay"><div class="panel">
+    <h2>Bubble Bath!</h2><div class="sub" id="bathHint">Rub the soapy puppy with your finger.</div>
+    <div id="bathStage"><div class="tub"></div><div class="bathPup"><div class="bathEar l"></div><div class="bathEar r"></div><div class="bathBody"></div><div class="bathHead"><span class="bathEye l"></span><span class="bathEye r"></span><span class="bathNose"></span></div></div></div>
+    <div class="tools"><button class="toolBtn active" data-tool="soap">SOAP</button><button class="toolBtn" data-tool="rinse">RINSE</button><button class="toolBtn" data-tool="brush">BRUSH</button></div>
+    <div class="bathMeters"><div class="meterRow"><span>Soap</span><div class="bar"><i id="soapBar" style="width:0%"></i></div></div><div class="meterRow"><span>Rinse</span><div class="bar"><i id="rinseBar" style="width:0%"></i></div></div><div class="meterRow"><span>Brush</span><div class="bar"><i id="brushBar" style="width:0%"></i></div></div></div>
+    <button class="bigBtn" id="bathDone" disabled>ALL CLEAN!</button><button class="closeBtn" id="bathClose">Back</button>
+  </div></div>
+
+  <div id="dressOverlay" class="overlay"><div class="panel"><h2>Dress Up!</h2><div class="sub">Pick a look. It stays on while you run and play.</div>
+    <div id="dressPreview"><div class="dressFloor"></div><div class="previewPup"><div class="previewBody"></div><div class="previewHead"></div><div class="previewEar l"></div><div class="previewEar r"></div><div class="previewCollar" id="previewCollar"></div><div class="previewHat" id="previewHat"></div><div class="previewBow" id="previewBow"></div></div></div>
+    <div class="optionTabs"><button data-tab="collar" class="active">COLLARS</button><button data-tab="hat">HATS</button><button data-tab="accessory">ACCESSORIES</button></div><div id="dressOptions" class="optionsGrid"></div>
+    <button class="bigBtn" id="wearBtn">WEAR THIS LOOK</button><button class="closeBtn" id="dressClose">Back</button>
+  </div></div>
+
+  <div id="shopOverlay" class="overlay"><div class="panel"><h2>Puppy Shop</h2><div class="sub">Spend puppy coins on things you can wear and play with.</div><div class="hudPill" style="display:inline-flex;margin-bottom:8px"><span class="coinDot"></span><strong id="shopCoins">0</strong></div><div id="shopGrid" class="shopGrid"></div><button class="closeBtn" id="shopClose">Back</button></div></div>
+
+  <div id="friendsOverlay" class="overlay"><div class="panel"><h2>Animal Friends</h2><div class="sub">Friends you meet can come play with you.</div><div id="friendGrid" class="friendGrid"></div><button class="closeBtn" id="friendsClose">Back</button></div></div>
+
+  <div id="sleepOverlay" class="overlay"><div class="panel" style="background:#263960ee;color:white"><h2 style="color:#fff1a5">Cozy Bedtime</h2><div class="sleepScene"><div class="moon"></div><div class="stars"><i style="left:13%;top:16%"></i><i style="left:28%;top:30%"></i><i style="left:48%;top:13%"></i><i style="left:76%;top:28%"></i><i style="left:88%;top:14%"></i></div><div class="sleepBed"></div><div class="sleepPup"></div><div class="zzz">Z z z</div></div><div id="summaryList"></div><button class="bigBtn" id="nextDayBtn">DREAM & START A NEW DAY</button></div></div>
+</div>
+<script>
+(()=>{
+'use strict';
+const SAVE_KEY='gemmaPuppySimulator_v1';
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+let W=0,H=0,DPR=1,last=performance.now(),running=false,started=false;
+const state={
+  day:1,level:1,xp:0,coins:0,stars:0,energy:100,clean:100,
+  x:205,y:180,z:0,vz:0,faceX:0,faceY:1,walking:false,wakePhase:0,
+  challengeDone:false,groomed:false,dressed:false,bedReady:false,time:'morning',
+  activeChallenge:null,challengeProgress:0,carrying:null,companion:null,
+  unlockedAreas:['home','yard'],unlockedFriends:[],
+  owned:{collar:['Pink'],hat:['None'],accessory:['None'],toy:['Red Ball']},
+  worn:{collar:'Pink',hat:'None',accessory:'None'},
+  metToday:[],surprise:'',dirtyPatches:0,tutorialDone:false
+};
+const defaults=()=>JSON.parse(JSON.stringify(state));
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){}}
+function load(){try{const raw=localStorage.getItem(SAVE_KEY);if(!raw)return false;const s=JSON.parse(raw);Object.assign(state,defaults(),s);state.owned=Object.assign(defaults().owned,s.owned||{});state.worn=Object.assign(defaults().worn,s.worn||{});return true}catch(e){return false}}
+function resetSave(){try{localStorage.removeItem(SAVE_KEY)}catch(e){};location.reload()}
+const ui={day:$('dayTxt'),coins:$('coinTxt'),stars:$('starTxt'),energy:$('energyBar'),goal:$('goalTxt'),toast:$('toast'),act:$('actBtn')};
+function resize(){DPR=Math.min(2,Math.max(1,devicePixelRatio||1));const r=canvas.getBoundingClientRect();W=Math.round(r.width*DPR);H=Math.round(r.height*DPR);canvas.width=W;canvas.height=H;ctx.setTransform(1,0,0,1,0,0)}
+addEventListener('resize',resize);resize();
+function toast(msg){ui.toast.textContent=msg;ui.toast.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>ui.toast.classList.remove('show'),1450)}
+function beep(freq=500,dur=.08,type='sine',vol=.045){try{const AC=window.AudioContext||window.webkitAudioContext;if(!beep.ac)beep.ac=new AC();const a=beep.ac;if(a.state==='suspended')a.resume();const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+dur)}catch(e){}}
+function reward(coins=0,stars=0,msg=''){state.coins+=coins;state.stars+=stars;state.xp+=stars;while(state.xp>=3){state.xp-=3;state.level++;toast('Level '+state.level+' puppy!');beep(820,.18,'triangle',.06)};if(msg)toast(msg);save();syncHud()}
+function syncHud(){ui.day.textContent='Day '+state.day;ui.coins.textContent=state.coins;ui.stars.textContent=state.stars;ui.energy.style.width=Math.max(0,state.energy)+'%';$('shopCoins').textContent=state.coins;const goal=state.activeChallenge?challengeGoalText():(!state.tutorialDone&&state.day===1)?'Play with the squeaky toy by the living-room rug!':!state.challengeDone?'Head outside to the challenge board.':!state.groomed?'You got muddy! Time for a bath & brush.':!state.dressed?'Pick a favorite outfit before bedtime.':'Return to your cozy puppy bed and sleep.';ui.goal.textContent=goal;const near=nearestInteraction();ui.act.textContent=near?near.label:(state.carrying?'DROP':'PLAY')}
+function challengeForDay(day){const arr=['fetch','scent','hidden','obstacle','kitten'];return arr[(day-1)%arr.length]}
+function challengeGoalText(){const c=state.activeChallenge;if(c==='fetch')return `Fetch the balls! ${state.challengeProgress}/3`;if(c==='scent')return `Follow the scent trail! ${state.challengeProgress}/5`;if(c==='hidden')return state.challengeProgress?'Bring the hidden toy back to the basket!':'Sniff the bushes to find the hidden toy!';if(c==='obstacle')return `Puppy obstacle course! ${state.challengeProgress}/4`;if(c==='kitten')return state.carrying==='Ribbon'?'Bring the ribbon to the kitten!':'Find the kitten\'s missing ribbon!';return 'Play!'}
+const world={w:3200,h:940};
+const zones=[
+  {id:'bedroom',x:40,y:50,w:330,h:260},{id:'bathroom',x:390,y:50,w:300,h:260},{id:'living',x:40,y:330,w:650,h:380},
+  {id:'yard',x:720,y:50,w:760,h:820},{id:'park',x:1510,y:30,w:760,h:850},{id:'garden',x:2300,y:30,w:820,h:850}
+];
+const objects=[
+  {id:'bed',type:'bed',x:205,y:150,w:180,h:115,label:'SLEEP'},
+  {id:'bath',type:'bath',x:535,y:150,w:130,h:100,label:'BATH'},
+  {id:'wardrobe',type:'dress',x:148,y:465,w:105,h:130,label:'DRESS'},
+  {id:'board',type:'board',x:908,y:165,w:90,h:110,label:'CHALLENGE'},
+  {id:'shop',type:'shop',x:1342,y:180,w:125,h:115,label:'SHOP'},
+  {id:'basket',type:'basket',x:875,y:660,w:75,h:55,label:'BASKET'},
+  {id:'morningToy',type:'morningToy',x:390,y:555,w:45,h:30,label:'PLAY'},
+  {id:'kitten',type:'friend',friend:'Kitten',unlock:2,x:1165,y:610,w:55,h:55,label:'HELLO'},
+  {id:'bunny',type:'friend',friend:'Bunny',unlock:4,x:1910,y:660,w:55,h:55,label:'HELLO'},
+  {id:'puppy2',type:'friend',friend:'Puppy Pal',unlock:6,x:2060,y:230,w:55,h:55,label:'HELLO'},
+  {id:'bird',type:'friend',friend:'Bird',unlock:8,x:2570,y:190,w:45,h:45,label:'HELLO'},
+  {id:'dog',type:'friend',friend:'Neighbor Dog',unlock:10,x:2850,y:640,w:65,h:65,label:'HELLO'}
+];
+let challengeItems=[];
+function buildChallengeItems(){challengeItems=[];const c=state.activeChallenge;if(c==='fetch'){[[1030,300],[1320,490],[1010,760]].forEach((p,i)=>challengeItems.push({id:'ball'+i,type:'ball',x:p[0],y:p[1],done:false}))}else if(c==='scent'){[[960,230],[1100,330],[1230,440],[1350,550],[1420,700]].forEach((p,i)=>challengeItems.push({id:'scent'+i,type:'scent',x:p[0],y:p[1],index:i,done:i<state.challengeProgress}))}else if(c==='hidden'){[[985,530],[1185,375],[1370,685]].forEach((p,i)=>challengeItems.push({id:'bush'+i,type:'bush',x:p[0],y:p[1],hidden:i===((state.day*7)%3),done:false}))}else if(c==='obstacle'){[[960,300],[1110,390],[1230,510],[1380,620]].forEach((p,i)=>challengeItems.push({id:'gate'+i,type:'gate',x:p[0],y:p[1],index:i,done:i<state.challengeProgress}))}else if(c==='kitten'){challengeItems.push({id:'ribbon',type:'ribbon',x:1020,y:770,done:state.challengeProgress>0})}}
+function currentArea(){if(state.x<710)return 'home';if(state.x<1490)return 'yard';if(state.x<2290)return 'park';return 'garden'}
+function areaUnlocked(id){return state.unlockedAreas.includes(id)}
+const walls=[
+  {x:0,y:0,w:720,h:35},{x:0,y:0,w:35,h:750},{x:0,y:715,w:720,h:35},
+  {x:370,y:35,w:20,h:275},{x:35,y:310,w:655,h:20},
+  {x:690,y:35,w:30,h:440},{x:690,y:585,w:30,h:165},
+  {x:720,y:0,w:760,h:30},{x:720,y:870,w:760,h:30},{x:720,y:0,w:25,h:900},{x:1455,y:0,w:25,h:360},{x:1455,y:520,w:25,h:380},
+  {x:1510,y:0,w:760,h:30},{x:1510,y:870,w:760,h:30},{x:1510,y:0,w:25,h:330},{x:1510,y:520,w:25,h:380},{x:2245,y:0,w:25,h:360},{x:2245,y:520,w:25,h:380},
+  {x:2300,y:0,w:850,h:30},{x:2300,y:870,w:850,h:30},{x:2300,y:0,w:25,h:340},{x:2300,y:520,w:25,h:380},{x:3120,y:0,w:30,h:900}
+];
+const obstacles=[
+  {x:880,y:360,w:90,h:55},{x:1260,y:700,w:120,h:50},{x:1060,y:555,w:75,h:55},
+  {x:1740,y:270,w:110,h:90},{x:2020,y:500,w:120,h:80},{x:2440,y:360,w:100,h:80},{x:2730,y:490,w:120,h:90}
+];
+function blocked(nx,ny){const r=22;const rects=walls.concat(obstacles);for(const o of rects)if(nx+r>o.x&&nx-r<o.x+o.w&&ny+r>o.y&&ny-r<o.y+o.h)return true;if(nx>1460&&nx<1530&&!areaUnlocked('park'))return true;if(nx>2245&&nx<2325&&!areaUnlocked('garden'))return true;return false}
+const camera={x:state.x,y:state.y};
+function sx(wx){return (wx-camera.x)*DPR+W*.5}function sy(wy){return (wy-camera.y)*DPR+H*.56}
+function drawRounded(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y)}
+function drawWorld(){ctx.clearRect(0,0,W,H);const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#aee5ff');bg.addColorStop(1,'#dcf4c8');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);drawGround();drawStructures();drawChallenge();drawObjects();drawCompanion();drawPuppy();drawAreaGateHints();}
+function drawGround(){const area=currentArea();const ox=sx(0),oy=sy(0);ctx.save();
+  // HOME floors
+  ctx.fillStyle='#f7e7ca';ctx.fillRect(sx(35),sy(35),655*DPR,680*DPR);ctx.fillStyle='#f0cfae';for(let x=50;x<680;x+=48)ctx.fillRect(sx(x),sy(60),2*DPR,620*DPR);
+  ctx.fillStyle='#f6d8e8';ctx.fillRect(sx(45),sy(50),315*DPR,250*DPR);ctx.fillStyle='#cdeaf2';ctx.fillRect(sx(400),sy(50),280*DPR,250*DPR);ctx.fillStyle='#ffe9b8';ctx.fillRect(sx(45),sy(340),635*DPR,360*DPR);
+  // YARD
+  ctx.fillStyle='#7fcf69';ctx.fillRect(sx(720),sy(30),760*DPR,840*DPR);grassDots(720,30,760,840,'#5cab50');
+  ctx.fillStyle='#d8b56d';ctx.fillRect(sx(720),sy(450),760*DPR,80*DPR);ctx.fillRect(sx(815),sy(120),120*DPR,410*DPR);
+  // PARK
+  if(areaUnlocked('park')){ctx.fillStyle='#77c768';ctx.fillRect(sx(1510),sy(30),760*DPR,840*DPR);grassDots(1510,30,760,840,'#4fa94e');ctx.fillStyle='#ddc17f';ctx.fillRect(sx(1510),sy(400),760*DPR,90*DPR);ctx.fillStyle='#84cfe6';ctx.beginPath();ctx.ellipse(sx(1930),sy(210),170*DPR,95*DPR,0,0,7);ctx.fill()}
+  // GARDEN
+  if(areaUnlocked('garden')){ctx.fillStyle='#87cc69';ctx.fillRect(sx(2300),sy(30),820*DPR,840*DPR);grassDots(2300,30,820,840,'#55a949');for(let y=160;y<760;y+=160){ctx.fillStyle='#9c744d';ctx.fillRect(sx(2400),sy(y),580*DPR,55*DPR);for(let x=2440;x<2960;x+=70)flower(sx(x),sy(y+27),10*DPR)}}
+  ctx.restore();
+}
+function grassDots(x,y,w,h,c){ctx.fillStyle=c;for(let yy=y+20;yy<y+h;yy+=62)for(let xx=x+18;xx<x+w;xx+=66){ctx.fillRect(sx(xx+(yy%17)),sy(yy),3*DPR,10*DPR)}}
+function flower(x,y,r){ctx.fillStyle='#ff7ebc';for(let a=0;a<6;a++){const q=a*Math.PI/3;ctx.beginPath();ctx.arc(x+Math.cos(q)*r*.65,y+Math.sin(q)*r*.65,r*.35,0,7);ctx.fill()}ctx.fillStyle='#ffe36e';ctx.beginPath();ctx.arc(x,y,r*.28,0,7);ctx.fill()}
+function drawStructures(){
+  // bedroom bed
+  shadowRect(115,105,180,110,30);ctx.fillStyle='#ffadd6';roundedWorld(115,90,180,110,35);ctx.fill();ctx.fillStyle='#fff8f0';roundedWorld(135,105,140,42,18);ctx.fill();
+  // bathroom tub
+  shadowRect(470,125,130,85,25);ctx.fillStyle='#a8e5fa';roundedWorld(465,95,140,100,28);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=6*DPR;ctx.stroke();
+  // wardrobe
+  shadowRect(95,425,105,125,15);ctx.fillStyle='#bb855d';roundedWorld(95,395,105,135,14);ctx.fill();ctx.fillStyle='#8f5d3d';ctx.fillRect(sx(145),sy(410),4*DPR,105*DPR);ctx.fillStyle='#ffd469';ctx.beginPath();ctx.arc(sx(154),sy(465),5*DPR,0,7);ctx.fill();
+  // living rug/sofa/bowl
+  ctx.fillStyle='#9ad3ee';roundedWorld(255,470,220,140,30);ctx.fill();ctx.fillStyle='#81bd95';roundedWorld(465,395,145,75,22);ctx.fill();drawBowl(590,610);
+  // yard fence
+  drawFence(740,60,700,0);drawFence(740,840,700,0);drawFence(750,70,0,760);drawFence(1440,70,0,300);drawFence(1440,560,0,280);
+  // shop kiosk
+  shadowRect(1280,175,125,100,15);ctx.fillStyle='#ffcf73';roundedWorld(1275,125,135,110,18);ctx.fill();ctx.fillStyle='#ff8fc8';ctx.beginPath();ctx.moveTo(sx(1265),sy(140));ctx.lineTo(sx(1343),sy(85));ctx.lineTo(sx(1420),sy(140));ctx.closePath();ctx.fill();ctx.fillStyle='#fff';ctx.font=`${15*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('PUPPY SHOP',sx(1342),sy(175));
+  // challenge board
+  ctx.fillStyle='#8e633f';ctx.fillRect(sx(900),sy(150),10*DPR,95*DPR);ctx.fillStyle='#ffe39c';roundedWorld(855,125,105,78,10);ctx.fill();ctx.strokeStyle='#8e633f';ctx.lineWidth=4*DPR;ctx.stroke();ctx.fillStyle='#6b4d34';ctx.font=`${12*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('TODAY!',sx(908),sy(154));ctx.font=`${9*DPR}px system-ui`;ctx.fillText('PUPPY FUN',sx(908),sy(170));
+  // obstacles / bushes
+  obstacles.forEach((o,i)=>{if(i<3)drawBush(o.x+o.w/2,o.y+o.h/2,Math.max(o.w,o.h)*.65);else if(areaUnlocked('park'))drawBush(o.x+o.w/2,o.y+o.h/2,Math.max(o.w,o.h)*.65)});
+  if(areaUnlocked('park')){drawTree(1690,680,52);drawTree(2160,705,60);drawBench(1830,600);drawFence(1535,55,700,0);drawFence(1535,842,700,0)}
+  if(areaUnlocked('garden')){drawTree(2390,700,55);drawTree(3030,145,65);drawFence(2325,55,760,0);drawFence(2325,842,760,0)}
+}
+function roundedWorld(x,y,w,h,r){drawRounded(sx(x),sy(y),w*DPR,h*DPR,r*DPR)}function shadowRect(x,y,w,h,r){ctx.fillStyle='#38592b40';drawRounded(sx(x)+5*DPR,sy(y)+8*DPR,w*DPR,h*DPR,r*DPR);ctx.fill()}
+function drawFence(x,y,w,h){ctx.strokeStyle='#7d5835';ctx.lineWidth=5*DPR;ctx.beginPath();ctx.moveTo(sx(x),sy(y));ctx.lineTo(sx(x+w),sy(y+h));ctx.stroke();const len=Math.max(w,h),steps=Math.floor(len/55);for(let i=0;i<=steps;i++){const px=x+(w?i*w/steps:0),py=y+(h?i*h/steps:0);ctx.fillStyle='#8e633d';ctx.fillRect(sx(px)-4*DPR,sy(py)-10*DPR,8*DPR,24*DPR)}}
+function drawBush(x,y,r){ctx.fillStyle='#3f8d44';for(const [dx,dy,s] of [[0,0,1],[-.35,.1,.72],[.38,.12,.7],[0,-.28,.65]]){ctx.beginPath();ctx.arc(sx(x+dx*r),sy(y+dy*r),r*s*DPR*.48,0,7);ctx.fill()}ctx.fillStyle='#6bb95b';ctx.beginPath();ctx.arc(sx(x-8),sy(y-12),r*.2*DPR,0,7);ctx.fill()}
+function drawTree(x,y,r){ctx.fillStyle='#745235';ctx.fillRect(sx(x)-7*DPR,sy(y),14*DPR,45*DPR);ctx.fillStyle='#3d8c43';for(const [dx,dy,s] of [[0,-30,1],[-28,-10,.72],[27,-8,.75],[0,-55,.65]]){ctx.beginPath();ctx.arc(sx(x+dx),sy(y+dy),r*s*DPR,0,7);ctx.fill()}}
+function drawBench(x,y){ctx.fillStyle='#90623e';ctx.fillRect(sx(x)-55*DPR,sy(y),110*DPR,14*DPR);ctx.fillRect(sx(x)-45*DPR,sy(y)+18*DPR,90*DPR,10*DPR)}
+function drawBowl(x,y){ctx.fillStyle='#e66d83';ctx.beginPath();ctx.ellipse(sx(x),sy(y),28*DPR,14*DPR,0,0,7);ctx.fill();ctx.fillStyle='#794b38';ctx.beginPath();ctx.ellipse(sx(x),sy(y)-3*DPR,20*DPR,7*DPR,0,0,7);ctx.fill()}
+function drawChallenge(){for(const it of challengeItems){if(it.done)continue;if(it.type==='ball')drawBall(it.x,it.y);else if(it.type==='scent')drawScent(it);else if(it.type==='bush')drawBush(it.x,it.y,36);else if(it.type==='gate')drawGate(it);else if(it.type==='ribbon')drawRibbon(it.x,it.y)}}
+function drawBall(x,y){ctx.fillStyle='#f15161';ctx.beginPath();ctx.arc(sx(x),sy(y)-8*DPR,18*DPR,0,7);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=4*DPR;ctx.beginPath();ctx.arc(sx(x),sy(y)-8*DPR,10*DPR,-1.1,1.1);ctx.stroke()}
+function drawScent(it){const active=it.index===state.challengeProgress;ctx.fillStyle=active?'#ffca69':'#ddb18a';ctx.globalAlpha=active?.85:.3;for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(sx(it.x+i*12),sy(it.y-i*6),7*DPR,0,7);ctx.fill()}ctx.globalAlpha=1}
+function drawGate(it){const active=it.index===state.challengeProgress;ctx.strokeStyle=active?'#ffe05c':'#9c7446';ctx.lineWidth=7*DPR;ctx.beginPath();ctx.moveTo(sx(it.x-34),sy(it.y));ctx.lineTo(sx(it.x-34),sy(it.y)-50*DPR);ctx.moveTo(sx(it.x+34),sy(it.y));ctx.lineTo(sx(it.x+34),sy(it.y)-50*DPR);ctx.moveTo(sx(it.x-34),sy(it.y)-48*DPR);ctx.lineTo(sx(it.x+34),sy(it.y)-48*DPR);ctx.stroke()}
+function drawRibbon(x,y){ctx.fillStyle='#ff78c7';ctx.beginPath();ctx.ellipse(sx(x)-9*DPR,sy(y),12*DPR,8*DPR,.45,0,7);ctx.ellipse(sx(x)+9*DPR,sy(y),12*DPR,8*DPR,-.45,0,7);ctx.fill()}
+function drawObjects(){for(const o of objects){if(o.type==='morningToy'){if(!state.tutorialDone)drawMorningToy(o.x,o.y);continue}if(o.type==='friend'&&state.day<o.unlock&&!state.unlockedFriends.includes(o.friend))continue;if(o.type==='friend')drawFriend(o);if(o.type==='basket')drawBasket(o.x,o.y)}}
+function drawMorningToy(x,y){ctx.fillStyle='#f7e8d2';ctx.beginPath();ctx.arc(sx(x)-13*DPR,sy(y),10*DPR,0,7);ctx.arc(sx(x)+13*DPR,sy(y),10*DPR,0,7);ctx.fill();ctx.fillRect(sx(x)-14*DPR,sy(y)-7*DPR,28*DPR,14*DPR);ctx.strokeStyle='#b9926d';ctx.lineWidth=2*DPR;ctx.stroke()}
+function drawBasket(x,y){ctx.fillStyle='#9b6a3e';ctx.beginPath();ctx.moveTo(sx(x-30),sy(y-15));ctx.lineTo(sx(x+30),sy(y-15));ctx.lineTo(sx(x+23),sy(y+20));ctx.lineTo(sx(x-23),sy(y+20));ctx.closePath();ctx.fill();ctx.strokeStyle='#d3a36e';ctx.lineWidth=3*DPR;ctx.stroke()}
+function friendColor(name){return {'Kitten':'#d9a9d7','Bunny':'#e9e1dc','Puppy Pal':'#e3a66d','Bird':'#76b6e8','Neighbor Dog':'#9c704a'}[name]||'#ccc'}
+function drawFriend(o){const x=sx(o.x),y=sy(o.y);ctx.fillStyle='#20334433';ctx.beginPath();ctx.ellipse(x,y+15*DPR,21*DPR,8*DPR,0,0,7);ctx.fill();ctx.fillStyle=friendColor(o.friend);ctx.beginPath();ctx.arc(x,y-4*DPR,20*DPR,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(x,y+15*DPR,24*DPR,20*DPR,0,0,7);ctx.fill();ctx.fillStyle='#2c2a35';ctx.beginPath();ctx.arc(x-7*DPR,y-8*DPR,3*DPR,0,7);ctx.arc(x+7*DPR,y-8*DPR,3*DPR,0,7);ctx.fill();if(state.unlockedFriends.includes(o.friend)){ctx.fillStyle='#ff77b8';ctx.font=`${16*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('♥',x,y-34*DPR)}}
+function drawCompanion(){if(!state.companion)return;const o=objects.find(v=>v.friend===state.companion);if(!o)return;const tx=state.x-55*(state.faceX||1),ty=state.y-45*(state.faceY||1);const fake={friend:o.friend,x:tx,y:ty};drawFriend(fake)}
+function drawPuppy(){const x=sx(state.x),ground=sy(state.y),z=state.z*DPR;ctx.save();ctx.translate(x,ground-z);const angle=Math.atan2(state.faceY||0.001,state.faceX||0.001);ctx.fillStyle='#263b4a33';ctx.beginPath();ctx.ellipse(0,z+18*DPR,31*DPR,10*DPR,0,0,7);ctx.fill();
+  const bob=state.walking?Math.sin(performance.now()/90)*2*DPR:0;ctx.translate(0,bob);
+  // tail
+  ctx.strokeStyle='#784d2d';ctx.lineWidth=10*DPR;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-30*DPR,7*DPR);const wag=Math.sin(performance.now()/85)*14;ctx.quadraticCurveTo(-48*DPR,-6*DPR+wag*DPR*.15,-55*DPR,-20*DPR+wag*DPR*.25);ctx.stroke();
+  ctx.fillStyle='#c98e58';ctx.strokeStyle='#784d2d';ctx.lineWidth=4*DPR;ctx.beginPath();ctx.ellipse(0,8*DPR,39*DPR,31*DPR,0,0,7);ctx.fill();ctx.stroke();ctx.beginPath();ctx.arc(20*DPR,-23*DPR,29*DPR,0,7);ctx.fill();ctx.stroke();
+  // ears
+  ctx.fillStyle='#9b653b';ctx.beginPath();ctx.ellipse(5*DPR,-30*DPR,11*DPR,25*DPR,-.4,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(39*DPR,-31*DPR,11*DPR,25*DPR,.4,0,7);ctx.fill();
+  // eyes/nose on forward side
+  ctx.fillStyle='#27222d';ctx.beginPath();ctx.arc(14*DPR,-28*DPR,4*DPR,0,7);ctx.arc(29*DPR,-29*DPR,4*DPR,0,7);ctx.fill();ctx.beginPath();ctx.ellipse(24*DPR,-17*DPR,6*DPR,4*DPR,0,0,7);ctx.fill();
+  // legs
+  ctx.strokeStyle='#9b653b';ctx.lineWidth=9*DPR;ctx.beginPath();ctx.moveTo(-19*DPR,26*DPR);ctx.lineTo(-22*DPR,42*DPR);ctx.moveTo(21*DPR,27*DPR);ctx.lineTo(23*DPR,42*DPR);ctx.stroke();
+  drawWorn();if(state.clean<55){ctx.fillStyle='#795f3c88';for(const [dx,dy,r] of [[-10,2,7],[18,8,6],[2,19,5]]){ctx.beginPath();ctx.arc(dx*DPR,dy*DPR,r*DPR,0,7);ctx.fill()}}
+  if(state.carrying){ctx.fillStyle=state.carrying==='Ribbon'?'#ff78c7':'#f15161';ctx.beginPath();ctx.arc(25*DPR,-7*DPR,9*DPR,0,7);ctx.fill()}
+  ctx.restore()}
+function drawWorn(){const c={'Pink':'#ff5ea5','Blue':'#5a9fff','Green':'#65c96b','Rainbow':'#ff9f4f'}[state.worn.collar]||'#ff5ea5';ctx.strokeStyle=c;ctx.lineWidth=7*DPR;ctx.beginPath();ctx.arc(9*DPR,-3*DPR,25*DPR,.15,2.95);ctx.stroke();if(state.worn.hat&&state.worn.hat!=='None'){ctx.fillStyle=state.worn.hat==='Sun Hat'?'#ffd667':state.worn.hat==='Party Hat'?'#9f78ff':'#6fb7ec';ctx.beginPath();if(state.worn.hat==='Party Hat'){ctx.moveTo(11*DPR,-48*DPR);ctx.lineTo(30*DPR,-78*DPR);ctx.lineTo(43*DPR,-46*DPR)}else{ctx.ellipse(24*DPR,-49*DPR,28*DPR,11*DPR,0,0,7)}ctx.fill()}if(state.worn.accessory==='Bow'){ctx.fillStyle='#ff72bf';ctx.beginPath();ctx.ellipse(46*DPR,-27*DPR,10*DPR,7*DPR,.4,0,7);ctx.ellipse(56*DPR,-27*DPR,10*DPR,7*DPR,-.4,0,7);ctx.fill()}if(state.worn.accessory==='Bandana'){ctx.fillStyle='#75d0ef';ctx.beginPath();ctx.moveTo(-4*DPR,3*DPR);ctx.lineTo(10*DPR,25*DPR);ctx.lineTo(23*DPR,3*DPR);ctx.closePath();ctx.fill()}}
+function drawAreaGateHints(){if(!areaUnlocked('park')){ctx.fillStyle='#fff3d5';ctx.font=`${11*DPR}px system-ui`;ctx.textAlign='center';ctx.fillText('Park unlocks on Day 3',sx(1490),sy(430))}if(areaUnlocked('park')&&!areaUnlocked('garden')){ctx.fillStyle='#fff3d5';ctx.fillText('Garden unlocks on Day 5',sx(2270),sy(430))}}
+let joy={x:0,y:0,active:false,id:null};
+function setJoyFromEvent(e){const b=$('joyBase').getBoundingClientRect();const p=e.touches?e.touches[0]:e;let dx=p.clientX-(b.left+b.width/2),dy=p.clientY-(b.top+b.height/2);const max=b.width*.32,d=Math.hypot(dx,dy)||1;if(d>max){dx*=max/d;dy*=max/d}joy.x=dx/max;joy.y=dy/max;$('joyKnob').style.transform=`translate(${dx}px,${dy}px)`}
+function joyStart(e){joy.active=true;setJoyFromEvent(e);e.preventDefault()}function joyMove(e){if(!joy.active)return;setJoyFromEvent(e);e.preventDefault()}function joyEnd(){joy.active=false;joy.x=joy.y=0;$('joyKnob').style.transform='translate(0,0)'}
+$('joyBase').addEventListener('touchstart',joyStart,{passive:false});$('joyBase').addEventListener('touchmove',joyMove,{passive:false});$('joyBase').addEventListener('touchend',joyEnd);$('joyBase').addEventListener('pointerdown',joyStart);addEventListener('pointermove',joyMove);addEventListener('pointerup',joyEnd);
+const keys={};addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+function inputVec(){let x=joy.x,y=joy.y;if(keys['arrowleft']||keys['a'])x=-1;if(keys['arrowright']||keys['d'])x=1;if(keys['arrowup']||keys['w'])y=-1;if(keys['arrowdown']||keys['s'])y=1;const d=Math.hypot(x,y);return d>1?{x:x/d,y:y/d}:{x,y}}
+function update(dt){if(!running)return;const v=inputVec();state.walking=Math.abs(v.x)+Math.abs(v.y)>.08;if(state.walking){const speed=state.energy<20?75:120;const nx=state.x+v.x*speed*dt/1000,ny=state.y+v.y*speed*dt/1000;if(!blocked(nx,state.y))state.x=nx;if(!blocked(state.x,ny))state.y=ny;state.faceX=v.x;state.faceY=v.y;state.energy=Math.max(0,state.energy-dt*.0017);if(currentArea()!=='home'){state.clean=Math.max(0,state.clean-dt*.0012);if(state.clean<65)state.dirtyPatches=3}}
+  if(state.z>0||state.vz!==0){state.vz-=450*dt/1000;state.z+=state.vz*dt/1000;if(state.z<=0){state.z=0;state.vz=0}}
+  // obstacle course checkpoint when jumping near active gate
+  if(state.activeChallenge==='obstacle'&&state.z>8){const it=challengeItems.find(q=>q.type==='gate'&&q.index===state.challengeProgress);if(it&&dist(state.x,state.y,it.x,it.y)<58){it.done=true;state.challengeProgress++;beep(700,.09,'square',.04);toast('Nice jump!');if(state.challengeProgress>=4)completeChallenge()}}
+  camera.x+=(state.x-camera.x)*Math.min(1,dt*.006);camera.y+=(state.y-camera.y)*Math.min(1,dt*.006);syncHud();drawWorld()}
+function loop(t){const dt=Math.min(35,t-last||16);last=t;update(dt);requestAnimationFrame(loop)}requestAnimationFrame(loop);
+function dist(a,b,c,d){return Math.hypot(a-c,b-d)}
+function nearestInteraction(){if(!started||!running)return null;let best=null,bd=95;for(const o of objects){if(o.type==='friend'&&state.day<o.unlock&&!state.unlockedFriends.includes(o.friend))continue;const d=dist(state.x,state.y,o.x,o.y);if(d<bd){bd=d;best=o}}for(const it of challengeItems){if(it.done)continue;const d=dist(state.x,state.y,it.x,it.y);if(d<bd&&['ball','scent','bush','ribbon'].includes(it.type)){bd=d;best={...it,label:it.type==='scent'?'SNIFF':it.type==='bush'?'SNIFF':'PICK UP'}}}return best}
+function act(){const o=nearestInteraction();if(!o){if(state.carrying){toast('Carry it to where it belongs!')}else{state.energy=Math.max(0,state.energy-1);beep(440,.05,'triangle',.03);toast('Happy puppy wiggle!')}return}beep(560,.06,'triangle',.04);if(o.type==='bed')bedAction();else if(o.type==='morningToy')morningToyAction();else if(o.type==='bath')openBath();else if(o.type==='dress')openDress();else if(o.type==='board')startChallenge();else if(o.type==='shop')openShop();else if(o.type==='friend')friendAction(o);else if(o.type==='basket')basketAction();else challengeItemAction(o)}
+function jump(){if(state.z===0){state.vz=220;beep(620,.05,'triangle',.03);state.energy=Math.max(0,state.energy-1)}}
+function bark(){beep(250,.08,'square',.035);setTimeout(()=>beep(320,.07,'square',.03),70);toast(['Woof!','Arf arf!','Happy bark!'][Math.floor(Math.random()*3)]);state.energy=Math.max(0,state.energy-.5)}
+$('actBtn').onclick=act;$('jumpBtn').onclick=jump;$('barkBtn').onclick=bark;
+function morningToyAction(){if(state.tutorialDone){toast('Squeak squeak!');return}state.tutorialDone=true;reward(2,0,'Squeak! +2 puppy coins');beep(700,.08,'triangle',.04);save();syncHud()}
+function startChallenge(){if(state.challengeDone){toast('Today\'s challenge is complete!');return}if(!state.activeChallenge){state.activeChallenge=challengeForDay(state.day);state.challengeProgress=0;state.carrying=null;buildChallengeItems();toast('Challenge started: '+challengeName(state.activeChallenge)+'!');beep(760,.12,'triangle',.055);syncHud()}else toast(challengeGoalText())}
+function challengeName(c){return {fetch:'Fetch Frenzy',scent:'Super Sniffer',hidden:'Hidden Toy Hunt',obstacle:'Puppy Obstacle Course',kitten:'Help the Kitten'}[c]||'Puppy Challenge'}
+function challengeItemAction(o){if(state.activeChallenge==='fetch'&&o.type==='ball'){if(state.carrying){toast('Your mouth is already full!');return}const it=challengeItems.find(q=>q.id===o.id);it.done=true;state.carrying='Ball';toast('Got the ball! Bring it to the basket.')}else if(state.activeChallenge==='scent'&&o.type==='scent'){if(o.index!==state.challengeProgress){toast('Sniff the glowing scent first!');return}const it=challengeItems.find(q=>q.id===o.id);it.done=true;state.challengeProgress++;beep(720,.07,'sine',.04);toast(state.challengeProgress>=5?'You found it!':'Sniff sniff... this way!');if(state.challengeProgress>=5)completeChallenge()}else if(state.activeChallenge==='hidden'&&o.type==='bush'){const it=challengeItems.find(q=>q.id===o.id);if(it.hidden){state.carrying='Lost Toy';state.challengeProgress=1;it.done=true;toast('You found the squeaky toy!')}else{toast('Sniff sniff... not this bush!');beep(300,.05,'sine',.03)}}else if(state.activeChallenge==='kitten'&&o.type==='ribbon'){state.carrying='Ribbon';state.challengeProgress=1;challengeItems[0].done=true;toast('Found the kitten\'s ribbon!')}}
+function basketAction(){if(state.activeChallenge==='fetch'&&state.carrying==='Ball'){state.carrying=null;state.challengeProgress++;beep(800,.08,'triangle',.05);reward(2,0,'Good fetch!');if(state.challengeProgress>=3)completeChallenge();else toast(`Fetch ${3-state.challengeProgress} more!`)}else if(state.activeChallenge==='hidden'&&state.carrying==='Lost Toy'){state.carrying=null;completeChallenge()}else toast('This is the toy basket.')}
+function friendAction(o){if(!state.unlockedFriends.includes(o.friend)){state.unlockedFriends.push(o.friend);reward(5,1,o.friend+' is your new friend!');if(o.friend==='Kitten'&&state.activeChallenge==='kitten'&&state.carrying==='Ribbon'){state.carrying=null;completeChallenge()}}else if(state.activeChallenge==='kitten'&&o.friend==='Kitten'&&state.carrying==='Ribbon'){state.carrying=null;completeChallenge()}else{state.companion=state.companion===o.friend?null:o.friend;toast(state.companion?o.friend+' is coming with you!':o.friend+' will wait here.');save()}}
+function completeChallenge(){state.challengeDone=true;state.activeChallenge=null;state.challengeProgress=0;state.carrying=null;state.time='afternoon';state.clean=Math.min(state.clean,42);state.energy=Math.max(35,state.energy-12);reward(12,1,'Challenge complete! +12 coins +1 star');checkUnlocks();syncHud()}
+function checkUnlocks(){if(state.day>=3&&!areaUnlocked('park')){state.unlockedAreas.push('park');toast('The neighborhood park is now open!')}if(state.day>=5&&!areaUnlocked('garden')){state.unlockedAreas.push('garden');toast('The sunny garden is now open!')}}
+function bedAction(){if(!state.challengeDone){toast('Too excited to sleep! Finish today\'s challenge first.');return}if(!state.groomed){toast('Phew! Muddy paws. Take a bath before bed.');return}if(!state.dressed){toast('Pick a bedtime-cute outfit first!');return}openSleep()}
+function openBath(){running=false;$('bathOverlay').classList.add('open');bath={tool:'soap',soap:0,rinse:0,brush:0};renderBath();spawnBubbles()}
+let bath={tool:'soap',soap:0,rinse:0,brush:0};
+function renderBath(){document.querySelectorAll('.toolBtn').forEach(b=>b.classList.toggle('active',b.dataset.tool===bath.tool));$('soapBar').style.width=bath.soap+'%';$('rinseBar').style.width=bath.rinse+'%';$('brushBar').style.width=bath.brush+'%';$('bathDone').disabled=!(bath.soap>=100&&bath.rinse>=100&&bath.brush>=100);$('bathHint').textContent=bath.tool==='soap'?'Rub the puppy to make lots of bubbles!':bath.tool==='rinse'?'Swipe over the puppy to rinse the soap away!':'Brush the puppy with long gentle strokes!'}
+function spawnBubbles(){const st=$('bathStage');st.querySelectorAll('.bubble').forEach(x=>x.remove());for(let i=0;i<20;i++){const b=document.createElement('i');b.className='bubble';const s=12+Math.random()*24;b.style.width=b.style.height=s+'px';b.style.left=(10+Math.random()*80)+'%';b.style.bottom=(10+Math.random()*45)+'%';b.style.animationDelay=(Math.random()*1.4)+'s';st.appendChild(b)}}
+document.querySelectorAll('.toolBtn').forEach(b=>b.onclick=()=>{bath.tool=b.dataset.tool;renderBath()});
+let bathDrag=false,lastBathPoint=null;$('bathStage').addEventListener('pointerdown',e=>{bathDrag=true;lastBathPoint={x:e.clientX,y:e.clientY};bathStroke(e)});$('bathStage').addEventListener('pointermove',e=>{if(bathDrag)bathStroke(e)});addEventListener('pointerup',()=>bathDrag=false);
+function bathStroke(e){const r=$('bathStage').getBoundingClientRect();if(e.clientX<r.left+r.width*.22||e.clientX>r.right-r.width*.22||e.clientY<r.top+r.height*.1||e.clientY>r.bottom-r.height*.12)return;const amt=bath.tool==='brush'?7:5;bath[bath.tool]=Math.min(100,bath[bath.tool]+amt);beep(bath.tool==='rinse'?520:620,.018,'sine',.012);renderBath()}
+$('bathDone').onclick=()=>{state.clean=100;state.groomed=true;state.time='evening';reward(6,1,'Sparkly clean! +6 coins +1 star');$('bathOverlay').classList.remove('open');running=true;save();syncHud()};$('bathClose').onclick=()=>{$('bathOverlay').classList.remove('open');running=true};
+const catalog={
+  collar:[{n:'Pink',p:0},{n:'Blue',p:12},{n:'Green',p:12},{n:'Rainbow',p:24}],
+  hat:[{n:'None',p:0},{n:'Sun Hat',p:18},{n:'Party Hat',p:22},{n:'Rain Hat',p:28}],
+  accessory:[{n:'None',p:0},{n:'Bow',p:14},{n:'Bandana',p:18}],
+  toy:[{n:'Red Ball',p:0},{n:'Squeaky Bone',p:16},{n:'Rope Toy',p:18},{n:'Frisbee',p:24}]
+};
+let dressTab='collar',draftLook={};function openDress(){draftLook={...state.worn};dressTab='collar';running=false;$('dressOverlay').classList.add('open');renderDress()}
+function renderDress(){document.querySelectorAll('.optionTabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===dressTab));const owned=state.owned[dressTab]||[];$('dressOptions').innerHTML=catalog[dressTab].map(it=>`<button class="choiceBtn ${owned.includes(it.n)?'':'locked'} ${draftLook[dressTab]===it.n?'selected':''}" data-name="${it.n}"><strong>${it.n}</strong><small>${owned.includes(it.n)?'Owned':it.p+' coins in shop'}</small></button>`).join('');document.querySelectorAll('#dressOptions .choiceBtn').forEach(b=>b.onclick=()=>{if(!(state.owned[dressTab]||[]).includes(b.dataset.name)){toast('Buy this in the Puppy Shop first!');return}draftLook[dressTab]=b.dataset.name;renderDress()});const col={'Pink':'#ff5a9f','Blue':'#5a9fff','Green':'#65c96b','Rainbow':'linear-gradient(90deg,#ff5c7b,#ffd45f,#5bd67b,#5a9fff,#b57cff)'}[draftLook.collar]||'#ff5a9f';$('previewCollar').style.background=col;$('previewHat').style.display=draftLook.hat&&draftLook.hat!=='None'?'block':'none';$('previewHat').style.background=draftLook.hat==='Party Hat'?'#9f78ff':draftLook.hat==='Rain Hat'?'#6fb7ec':'#ffd45f';$('previewBow').style.display=draftLook.accessory==='Bow'?'block':'none'}
+document.querySelectorAll('.optionTabs button').forEach(b=>b.onclick=()=>{dressTab=b.dataset.tab;renderDress()});$('wearBtn').onclick=()=>{state.worn={...draftLook};state.dressed=true;reward(2,0,'Looking adorable!');save();$('dressOverlay').classList.remove('open');running=true;syncHud()};$('dressClose').onclick=()=>{$('dressOverlay').classList.remove('open');running=true};
+function openShop(){running=false;$('shopOverlay').classList.add('open');renderShop()}
+function renderShop(){const all=[];['collar','hat','accessory','toy'].forEach(cat=>catalog[cat].forEach(it=>{if(it.p>0)all.push({...it,cat})}));$('shopGrid').innerHTML=all.map(it=>{const owned=(state.owned[it.cat]||[]).includes(it.n);return `<button class="shopBtn ${owned?'locked':''}" data-cat="${it.cat}" data-name="${it.n}"><strong>${it.n}</strong><small>${owned?'Already owned':it.p+' puppy coins'}</small></button>`}).join('');document.querySelectorAll('#shopGrid .shopBtn').forEach(b=>b.onclick=()=>{const cat=b.dataset.cat,n=b.dataset.name,it=catalog[cat].find(x=>x.n===n);if((state.owned[cat]||[]).includes(n)){toast('You already own it!');return}if(state.coins<it.p){toast('Need '+(it.p-state.coins)+' more coins!');return}state.coins-=it.p;state.owned[cat].push(n);beep(850,.12,'triangle',.05);toast('Bought '+n+'!');save();syncHud();renderShop()})}
+$('shopClose').onclick=()=>{$('shopOverlay').classList.remove('open');running=true};$('shopMini').onclick=openShop;$('dressMini').onclick=openDress;
+function openFriends(){running=false;$('friendsOverlay').classList.add('open');const names=['Kitten','Bunny','Puppy Pal','Bird','Neighbor Dog'];$('friendGrid').innerHTML=names.map((n,i)=>{const u=state.unlockedFriends.includes(n);return `<button class="choiceBtn ${u?'':'locked'}" data-name="${n}"><strong>${n}</strong><small>${u?(state.companion===n?'Playing with you':'Tap to invite'):('Meet after Day '+[2,4,6,8,10][i])}</small></button>`}).join('');document.querySelectorAll('#friendGrid .choiceBtn').forEach(b=>b.onclick=()=>{if(!state.unlockedFriends.includes(b.dataset.name)){toast('You haven\'t met this friend yet!');return}state.companion=b.dataset.name;toast(b.dataset.name+' will come play!');save();openFriends()})}
+$('friendsClose').onclick=()=>{$('friendsOverlay').classList.remove('open');running=true};
+function openSleep(){running=false;$('sleepOverlay').classList.add('open');$('summaryList').innerHTML=`<strong>Day ${state.day} complete!</strong><br>⭐ Stars: ${state.stars}<br>🪙 Puppy coins: ${state.coins}<br>🧼 Clean & brushed<br>🎀 Outfit: ${state.worn.collar}${state.worn.hat!=='None'?', '+state.worn.hat:''}`;beep(392,.18,'sine',.03);setTimeout(()=>beep(523,.22,'sine',.025),190)}
+$('nextDayBtn').onclick=()=>{state.day++;state.energy=100;state.clean=100;state.challengeDone=false;state.groomed=false;state.dressed=false;state.time='morning';state.activeChallenge=null;state.challengeProgress=0;state.carrying=null;state.metToday=[];state.x=205;state.y=230;state.z=0;checkUnlocks();const surprise=state.day%3===0?'A shiny treat is waiting by the toy basket!':state.day%2===0?'A new animal friend may be nearby today!':'The yard smells like a brand-new adventure!';state.surprise=surprise;save();$('sleepOverlay').classList.remove('open');running=true;toast('Good morning! '+surprise);syncHud()};
+function wakeSequence(newGame){started=true;running=true;$('startOverlay').classList.remove('open');state.x=205;state.y=180;state.wakePhase=1;toast('Good morning, puppy!');beep(523,.09,'triangle',.04);setTimeout(()=>{state.y=240;toast('Stretch... wag... hop!');beep(660,.08,'triangle',.04)},700);setTimeout(()=>{state.y=340;state.faceY=1;toast(state.day===1?'Your red ball rolled outside. Explore the yard!':'Another puppy day begins!');running=true;syncHud()},1500)}
+$('wakeBtn').onclick=()=>{Object.assign(state,defaults());save();wakeSequence(true)};$('continueBtn').onclick=()=>{if(!load())Object.assign(state,defaults());checkUnlocks();wakeSequence(false)};$('resetBtn').onclick=()=>{if(confirm('Reset Puppy Simulator progress?'))resetSave()};
+// dev/test API
+window.PuppyGame={state,start:()=>{started=true;running=true;$('startOverlay').classList.remove('open');syncHud()},setPos:(x,y)=>{state.x=x;state.y=y;camera.x=x;camera.y=y;drawWorld()},startChallenge:(c)=>{state.activeChallenge=c;state.challengeProgress=0;buildChallengeItems();syncHud()},completeChallenge,openBath,openDress,openShop,openSleep,save,load};
+if(load())$('continueBtn').textContent='CONTINUE DAY '+state.day;else $('continueBtn').textContent='NEW PUPPY';syncHud();
+})();
+</script>
+</body>
+</html>
